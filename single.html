@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-PJsj/BTMqILvmcej7ulplguok8ag4xFTPryRq8xevL7eBYSmpXKcbNVuy+P0RMgq" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body class="">
+    <div class="container-fluid single-page p-0 bg-white">
+
+        <nav class="navbar navbar-expand-lg bg-white container-fluid sticky-top shadow">
+            <div class="right-section me-auto d-flex align-items-center">
+                <a class="navbar-brand" href="#">
+                    <img src="images/logo.png" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html"><i class="fas fa-home fa-xl me-1"></i> صفحه اصلی
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center flex-row-reverse" href="#"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                دسته بندی محصولات <i class="fas fa-bars fa-xl me-2"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-start p-0  shadow-lg me-4">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/luggage--v1.png"
+                                            alt="luggage--v1" />
+                                        <span> سفر </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/accent-chair--v1.png"
+                                            alt="accent-chair--v1" />
+                                        <span> لوازم خانگی </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/monitor.png"
+                                            alt="cryptocurrency-website" />
+                                        <span> کالا های دیجیتال </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/football2.png"
+                                            alt="football2" />
+
+                                        <span> ورزشی </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/makeup--v1.png"
+                                            alt="makeup--v1" />
+                                        <span> زیبایی و سلامت </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <img class="me-2"
+                                            src="https://img.icons8.com/pastel-glyph/30/000024/clothes--v1.png"
+                                            alt="clothes--v1" />
+                                        <span> مد و پوشاک </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="productpage.html"><i class="fas fa-percent fa-xl me-1"></i>
+                                تخفیف‌ها و پیشنهادها
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="productpage.html"><i class="fas fa-fire fa-xl me-1"></i>
+                                پرفروش‌ترین‌ها </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html"><i class="fas fa-book fa-xl me-1"></i> خواندنی ها </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="left-section ms-auto d-flex align-items-center">
+                <form action="#" class="search-wrapper bg-white">
+                    <div class="input-holder">
+                        <input type="text" class="search-input" placeholder="جستجو کنید ..." />
+                        <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
+                    </div>
+                    <span class="close" onclick="searchToggle(this, event);"></span>
+                </form>
+                <div class="d-flex align-items-center ms-5 position-relative">
+                    <div class="dropdown-center">
+                        <a href="#" class="link" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg me-4 mt-2">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user me-2 fa-xl"></i>
+                                    <span> حساب کاربری </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-bag-shopping me-2 fa-xl"></i>
+                                    <span> سفارش ها </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-heart me-2 fa-xl"></i>
+                                    <span> لیست ها </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-location-arrow me-2 fa-xl"></i>
+                                    <span> ادرس ها </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-sign-out me-2 fa-lg"></i>
+                                    <span> خروج از حساب </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="cart.html" class="text-decoration-none">
+                        <div class="badge d-none">0</div>
+                        <i class="fas fa-cart-shopping"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row p-0">
+            <div class="product-image col-xl-5 col-lg-6 p-lg-5 pt-lg-2 p-0 mt-5">
+                <div id="demo" class="carousel slide text-center">
+                    <div class="carousel-indicators flex-row-reverse">
+                        <img class="bottom-image rounded-2" type="button" data-bs-target="#demo" data-bs-slide-to="3"
+                            src="images/1.png" alt="">
+                        <img class="bottom-image rounded-2" type="button" data-bs-target="#demo" data-bs-slide-to="2"
+                            src="images/1.png" alt="">
+                        <img class="bottom-image rounded-2" type="button" data-bs-target="#demo" data-bs-slide-to="1"
+                            src="images/1.png" alt="">
+                        <img class="bottom-image rounded-2 active" type="button" data-bs-target="#demo"
+                            data-bs-slide-to="0" src="images/1.png" alt="">
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item image-1 active">
+                            <a href="images/1.png">
+                                <img class="rounded-3" src="images/1.png" alt="">
+                            </a>
+                        </div>
+                        <div class="carousel-item image-2">
+                            <a href="images/1.png">
+                                <img class="rounded-3" src="images/1.png" alt="">
+                            </a>
+                        </div>
+                        <div class="carousel-item image-3">
+                            <a href="images/1.png">
+                                <img class="rounded-3" src="images/1.png" alt="">
+                            </a>
+                        </div>
+                        <div class="carousel-item image-4">
+                            <a href="images/1.png">
+                                <img class="rounded-3" src="images/1.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                        <i class="fas fa-arrow-right fa-2x text-black"></i>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+                        <i class="fas fa-arrow-left fa-2x text-black"></i>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="details col-lg-6 p-lg-5 p-3 mt-3">
+                <span class="company-name">تاپ شاپ</span>
+                <h1 class="title mt-2">لورم ایپسوم متن ساختگی با تولید </h1>
+                <ul class="mt-4">
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">جنس :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                    <li class="h6"><span style="font-family: vazirBold;">رنگ :</span> قرمز </li>
+                </ul>
+                <div class="add-to-cart mt-lg-4 mt-3">
+                    <div class="price me-2 mb-5">
+                        <h2 class="new-price d-flex justify-content-end">
+                            <div class="h5 discount-text p-lg-3 pt-lg-2 pb-lg-1 p-2 pt-1 pb-1 rounded-3 me-3 mt-lg-1">
+                                ۲۰%
+                            </div>
+                            <span class="me-2">تومان</span> ۲۰,۰۰۰
+                        </h2>
+                        <h5 class="original-price col-lg-12 col-6 text-end">
+                            تومان ۲۰۲,۰۰۰
+                        </h5>
+                    </div>
+                    <div class="row d-flex justify-content-end">
+                        <div
+                            class="container-number col-lg-4 p-lg-0 p-3 rounded-4 d-flex justify-content-around align-items-center">
+                            <div class="plus">
+                                <i class="fas fa-plus h4 m-0"></i>
+                            </div>
+                            <span class="number-of-product h3 m-0">0</span>
+                            <div class="minus">
+                                <i class="fas fa-minus h4 m-0"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-lg-0 mt-4 ps-lg-3 pe-lg-3 p-0">
+                            <div
+                                class="add-to-cart-btn shadow p-3 rounded-4 d-flex justify-content-center align-items-center">
+                                <span> افزودن به سبد خرید </span>
+                                <div class="cart-icon ms-2 mb-1">
+                                    <svg width="21" height="20" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M20.925 3.641H3.863L3.61.816A.896.896 0 0 0 2.717 0H.897a.896.896 0 1 0 0 1.792h1l1.031 11.483c.073.828.52 1.726 1.291 2.336C2.83 17.385 4.099 20 6.359 20c1.875 0 3.197-1.87 2.554-3.642h4.905c-.642 1.77.677 3.642 2.555 3.642a2.72 2.72 0 0 0 2.717-2.717 2.72 2.72 0 0 0-2.717-2.717H6.365c-.681 0-1.274-.41-1.53-1.009l14.321-.842a.896.896 0 0 0 .817-.677l1.821-7.283a.897.897 0 0 0-.87-1.114ZM6.358 18.208a.926.926 0 0 1 0-1.85.926.926 0 0 1 0 1.85Zm10.015 0a.926.926 0 0 1 0-1.85.926.926 0 0 1 0 1.85Zm2.021-7.243-13.8.81-.57-6.341h15.753l-1.383 5.53Z"
+                                            fill="#fff" fill-rule="nonzero" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/scripts.js"></script>
+
+</html>

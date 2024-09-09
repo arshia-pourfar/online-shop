@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-PJsj/BTMqILvmcej7ulplguok8ag4xFTPryRq8xevL7eBYSmpXKcbNVuy+P0RMgq" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body class="blog-page container-fluid p-0">
+
+    <nav class="navbar navbar-expand-lg bg-white container-fluid sticky-top shadow">
+        <div class="right-section me-auto d-flex align-items-center">
+            <a class="navbar-brand" href="#">
+                <img src="images/logo.png" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home fa-xl me-1"></i> صفحه اصلی
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center flex-row-reverse" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            دسته بندی محصولات <i class="fas fa-bars fa-xl me-2"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-start p-0  shadow-lg me-4">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <img class="me-2"
+                                        src="https://img.icons8.com/pastel-glyph/30/000024/luggage--v1.png"
+                                        alt="luggage--v1" />
+                                    <span> سفر </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <img class="me-2"
+                                        src="https://img.icons8.com/pastel-glyph/30/000024/accent-chair--v1.png"
+                                        alt="accent-chair--v1" />
+                                    <span> لوازم خانگی </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <img class="me-2" src="https://img.icons8.com/pastel-glyph/30/000024/monitor.png"
+                                        alt="cryptocurrency-website" />
+                                    <span> کالا های دیجیتال </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <img class="me-2" src="https://img.icons8.com/pastel-glyph/30/000024/football2.png"
+                                        alt="football2" />
+
+                                    <span> ورزشی </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+
+                                    <img class="me-2" src="https://img.icons8.com/pastel-glyph/30/000024/makeup--v1.png"
+                                        alt="makeup--v1" />
+                                    <span> زیبایی و سلامت </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <img class="me-2"
+                                        src="https://img.icons8.com/pastel-glyph/30/000024/clothes--v1.png"
+                                        alt="clothes--v1" />
+                                    <span> مد و پوشاک </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productpage.html"><i class="fas fa-percent fa-xl me-1"></i>
+                            تخفیف‌ها و پیشنهادها
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="productpage.html"><i class="fas fa-fire fa-xl me-1"></i>
+                            پرفروش‌ترین‌ها </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html"><i class="fas fa-book fa-xl me-1"></i> خواندنی ها </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="left-section ms-auto d-flex align-items-center">
+            <form action="#" class="search-wrapper bg-white">
+                <div class="input-holder">
+                    <input type="text" class="search-input" placeholder="جستجو کنید ..." />
+                    <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
+                </div>
+                <span class="close" onclick="searchToggle(this, event);"></span>
+            </form>
+            <div class="d-flex align-items-center ms-5 position-relative">
+                <div class="dropdown-center">
+                    <a href="#" class="link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg me-4 mt-2">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user me-2 fa-xl"></i>
+                                <span> حساب کاربری </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-bag-shopping me-2 fa-xl"></i>
+                                <span> سفارش ها </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-heart me-2 fa-xl"></i>
+                                <span> لیست ها </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-location-arrow me-2 fa-xl"></i>
+                                <span> ادرس ها </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-sign-out me-2 fa-lg"></i>
+                                <span> خروج از حساب </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="cart.html" class="text-decoration-none">
+                    <div class="badge d-none">0</div>
+                    <i class="fas fa-cart-shopping"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="search-blog d-flex justify-content-center align-items-start flex-column">
+        <div class="header-image"></div>
+        <div class="header-text text-light">
+            <h2 class="title"> تاپ شاپ مگ </h2>
+            <p class="sub-title mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان
+                گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی
+                تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود
+            </p>
+        </div>
+        <form action="#"
+            class="search-box bg-light d-flex justify-content-start align-items-center rounded-pill shadow">
+            <button type="submit" class="btn-submit border-0"><i class="fas fa-search"></i></button>
+            <input type="text" class="bg-transparent border-0 w-100 h-100 ms-2" name="search" id=""
+                placeholder="جستجو کنید ...">
+        </form>
+    </div>
+    <section id="blog" class="container last-post">
+        <div class="main-title col-12">
+            <div class="border-bottom border-3 border-black p-2 h4">
+                اخرین مقالات
+            </div>
+        </div>
+        <div class="row">
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/Best-Mic-For-Mobiles.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/summer-drinks.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/blog-image.png" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/blog-image2.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/Best-Mic-For-Mobiles.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/summer-drinks.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/blog-image.png" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-3 blog-item p-2">
+                <div class="shadow-sm border border-2 rounded-3">
+                    <img class="image rounded-top-2" src="images/blog-image2.jpg" alt="">
+                    <div class="bottom-section m-2">
+                        <h6 class="category mt-4">آموزش و ترفند لوازم جانبی</h6>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
+                            استفاده
+                            از طراحان گرافیک است، چاپگرها و </p>
+                        <div class="date mt-5">
+                            <span> در تاریخ 10 تیر 1402 </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
+    <footer id="footer" class="container-fluid bg-light pb-5 border-top pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="whyus row text-center mt-5">
+                    <a href="#" class="col-3 link">
+                        <img src="images/footer-icon/original-products.svg" alt="">
+                        <div class="title mt-3">ضمانت اصالت و بازگشت کالا</div>
+                    </a>
+                    <a href="#" class="col-3 link">
+                        <img src="images/footer-icon/cash-on-delivery.svg" alt="">
+                        <div class="title mt-3">امکان پرداخت در محل</div>
+                    </a>
+                    <a href="#" class="col-3 link">
+                        <img src="images/footer-icon/support.svg" alt="">
+                        <div class="title mt-3">پشتیبانی در 7 روز هفته</div>
+                    </a>
+                    <a href="#" class="col-3 link">
+                        <img src="images/footer-icon/express-delivery.svg" alt="">
+                        <div class="title mt-3">ارسال رایگان و فوری</div>
+                    </a>
+                </div>
+                <div class="links row mt-5">
+                    <div class="col-4 about-us pe-4">
+                        <h3 class="title"> فروشگاه اینترنتی شاپ </h3>
+                        <p class="content mt-3">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از
+                            صنعت
+                            چاپ، و با
+                            استفاده
+                            از
+                            طراحان گرافیک
+                            است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط
+                            فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی</p>
+                        <div class="mt-4"> <i class="fas fa-shop fa-lg me-2"></i> تهران، پائین‌تر از میدان
+                            ولیعصر(عج)، خیابان
+                            شهید
+                            ولدی،
+                            مجتمع
+                            ولیعصر، برج
+                            اداری شمالی، طبقه 8، واحد 46</div>
+                        <div class="phone-number mt-3"> 0900 000 0000 <span>: تلفن </span></div>
+                        <div>ایمیل : testEmail22@gmail.com</div>
+                    </div>
+                    <div class="col-4 most-view-page">
+                        <h3 class="title">صفحات پربازدید :</h3>
+                        <div class="list-unstyled ms-1 d-flex">
+                            <ul class="list-unstyled mt-3">
+                                <li>
+                                    <a class="link" href="#">
+                                        - رویه ارسال
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - حریم خصوصی
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - مجوز ها
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - حریم خصوصی
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - مجوز ها
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="list-unstyled mt-3 ms-5">
+                                <li>
+                                    <a class="link" href="#">
+                                        - نحوه ثبت سفارش
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - شیوه های پرداخت
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - پرسش های متداول
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - شیوه های پرداخت
+                                    </a>
+                                </li>
+                                <li class="mt-4">
+                                    <a class="link" href="#">
+                                        - پرسش های متداول
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-4 contact-us">
+                        <h3 class="title border-0"> با ما همراه باشید ! </h3>
+                        <ul class="d-flex justify-content-around align-items-center list-unstyled pt-3">
+                            <li class="telegram">
+                                <a class="link text-info" href="#">
+                                    <i class="fab fa-telegram fa-3x"></i>
+                                </a>
+                            </li>
+                            <li class="whatsapp">
+                                <a class="link text-success" href="#">
+                                    <i class="fab fa-whatsapp fa-3x"></i>
+                                </a>
+                            </li>
+                            <li class="twitter">
+                                <a class="link text-info" href="#">
+                                    <i class="fab fa-twitter fa-3x"></i>
+                                </a>
+                            </li>
+                            <li class="instagram">
+                                <a class="link text-danger" href="#">
+                                    <i class="fab fa-instagram fa-3x"></i>
+                                </a>
+                            </li>
+                            <li class="linkedin">
+                                <a class="link text-primary" href="#">
+                                    <i class="fab fa-linkedin fa-3x"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div style="font-family: vazirBold;" class="h6 m-0 mt-5">با ثبت ایمیل، از جدید‌ترین تخفیف‌ها
+                            با‌خبر شوید</div>
+                        <form action="#" class="position-relative p-2 rounded-3 mt-3">
+                            <input class="input-email w-100 text-start" type="email"
+                                placeholder="ایمیل خود را وارد کنید">
+                            <button type="submit" class="h-100 rounded-end-3 btn-submit">
+                                ثبت
+                            </button>
+                        </form>
+                        <div class="symbols text-center mt-5">
+                            <a href="#" class="link">
+                                <img class="" src="images/footer-icon/enamad.png" alt="">
+                            </a>
+                            <a href="#" class="link">
+                                <img class="" src="images/footer-icon/samandehi.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="js/scripts.js"></script>
+
+</html>

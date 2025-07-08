@@ -1,8 +1,31 @@
 @import "tailwindcss";
 
+/* my theme */
+/* 
+Primary Background Color      #1A1A2E
+Secondary Background/Card Color           #24263B
+Primary Text Color      #E0E0E0
+Secondary Text Color/Subtle Info     #A0A0A0
+Accent Color    #6C63FF     or      #00BFFF
+
+
+(Status Colors):
+(Positive/Growth): #00C853 (green)
+(Negative/Decline): #FF5252 (red)
+(Neutral/Warning): #FFD600 (yellow)
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary-bg: #1A1A2E;
+  --color-secondary-bg: #24263B;
+  --color-primary-text: #E0E0E0;
+  --color-secondary-text: #A0A0A0;
+  --color-accent: #6C63FF;
+  --color-accent-alt: #00BFFF;
+  --color-status-positive: #00C853;
+  --color-status-negative: #FF5252;
+  --color-status-neutral: #FFD600;
+  --background: var(--color-primary-bg);
+  --foreground: var(--color-primary-text);
 }
 
 @theme inline {
@@ -12,12 +35,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* check system theme
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);

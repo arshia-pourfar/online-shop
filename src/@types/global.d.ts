@@ -1,1 +1,0 @@
-declare type UserRole = 'admin' | 'user' | 'guest'; 

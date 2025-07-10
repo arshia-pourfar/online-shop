@@ -1,19 +1,36 @@
 'use client';
 
-export default function DashboardPage() {
-    return (
-        <div>this is dashboard page</div>
-    );
-}
+// import { useEffect, useState } from 'react';
+// import { getUsers } from '@/lib/api/users';
 
-// chart-data.ts
-// export const data = [
-//     { day: '1', sales: 400 },
-//     { day: '5', sales: 600 },
-//     { day: '9', sales: 800 },
-//     { day: '13', sales: 700 },
-//     { day: '17', sales: 900 },
-//     { day: '21', sales: 850 },
-//     { day: '25', sales: 950 },
-//     { day: '29', sales: 1000 },
-// ];
+// type User = {
+//   id: string;
+//   name: string;
+//   email: string;
+//   role: string;
+// };
+
+export default function UsersPage() {
+  // const [users, setUsers] = useState<User[]>([]);
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+    // getUsers().then(setUsers).catch(console.error);
+    // setLoading(false)
+  // }, []);
+
+  // if (loading) return <p>Loading...</p>;
+
+  return (
+    <div className="">
+
+      {/* <ul className="space-y-2">
+         {users.map((user) => (
+          <li key={user.id} className="p-4 bg-gray-100 rounded-md shadow">
+            <strong>{user.name}</strong> - {user.email} - <em>{user.role}</em>
+          </li>
+        ))} 
+      </ul> */}
+    </div>
+  );
+}

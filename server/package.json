@@ -1,0 +1,27 @@
+{
+  "name": "admin-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "seed": "tsx prisma/seed.ts",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^latest",
+    "cors": "^latest",
+    "dotenv": "^latest",
+    "express": "^latest"
+  },
+  "devDependencies": {
+    "@types/express": "^latest",
+    "@types/node": "^latest",
+    "nodemon": "^latest",
+    "prisma": "^latest",
+    "ts-node": "^latest",
+    "typescript": "^latest",
+    "tsx": "^latest"
+  }
+}

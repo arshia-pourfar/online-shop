@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../styles/globals.css";
 import { Inter } from "next/font/google";
 // import { Roboto } from "next/font/google";
 // import { Open_Sans } from "next/font/google";

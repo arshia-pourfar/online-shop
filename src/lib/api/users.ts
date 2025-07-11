@@ -1,11 +1,37 @@
-import axios from 'axios';
+import { User } from '../../types/user';
+const API_BASE = 'http://localhost:5000';
 
-export async function getUsers() {
-  const res = await axios.get('http://localhost:5000/api/users');
-  return res.data;
+export async function getUsers(): Promise<User[]> {
+  const res = await fetch(`${API_BASE}/api/users`);
+  if (!res.ok) throw new Error('Failed to fetch users');
+  return res.json();
 }
 
-export async function getUser(id: string) {
-  const res = await axios.get(`http://localhost:5000/api/users/${id}`);
-  return res.data;
+export async function getUserById(id: string): Promise<User> {
+  const res = await fetch(`${API_BASE}/api/users/${id}`);
+  if (!res.ok) throw new Error('Failed to fetch user');
+  return res.json();
+}
+
+export async function createUser(data: {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+}): Promise<User> {
+  const res = await fetch(`${API_BASE}/api/users`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to create user');
+  return res.json();
+}
+
+export async function deleteUser(id: string): Promise<{ message: string }> {
+  const res = await fetch(`${API_BASE}/api/users/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete user');
+  return res.json();
 }

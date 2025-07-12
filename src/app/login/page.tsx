@@ -11,7 +11,7 @@ const LoginPage = () => {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState(''); // 'success' or 'error'
 
-    const handleAuth = (e) => {
+    const handleAuth = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setMessage('');
         setMessageType('');

@@ -23,9 +23,20 @@
 // if (loading) return <p>Loading...</p>;
 
 import React from 'react';
-import { LineChart, BarChart, AreaChart, Card, Title, Text } from '@tremor/react'; // Ensure @tremor/react is installed: npm install @tremor/react
+import { LineChart, BarChart, AreaChart, Card, Title, Text, Button } from '@tremor/react'; // Ensure @tremor/react is installed: npm install @tremor/react
 // import { ChevronDown, User, ShoppingBag, PieChart, BarChart2, Settings, Mail, Bell } from 'lucide-react'; // Ensure lucide-react is installed: npm install lucide-react
-
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
+} from 'recharts';
+import Header from '@/components/Header';
 // Mock Data for Charts (simplified for demonstration)
 const salesData = [
   { date: 'Jan', Sales: 500, Clicks: 500, Photo: 400 },
@@ -34,6 +45,21 @@ const salesData = [
   { date: 'Apr', Sales: 600, Clicks: 650, Photo: 550 },
   { date: 'May', Sales: 580, Clicks: 700, Photo: 600 },
   { date: 'Jun', Sales: 650, Clicks: 750, Photo: 650 },
+];
+
+const data = [
+  { month: 'Jan', sales: 220, revenue: 3500 },
+  { month: 'Feb', sales: 1800, revenue: 300 },
+  { month: 'Mar', sales: 2400, revenue: 390 },
+  { month: 'Apr', sales: 1500, revenue: 2500 },
+  { month: 'May', sales: 270, revenue: 400 },
+  { month: 'Jun', sales: 190, revenue: 300 },
+  { month: 'Jul', sales: 300, revenue: 800 },
+  { month: 'Aug', sales: 210, revenue: 3400 },
+  { month: 'Sep', sales: 1600, revenue: 2200 },
+  { month: 'Oct', sales: 280, revenue: 4500 },
+  { month: 'Nov', sales: 140, revenue: 190 },
+  { month: 'Dec', sales: 310, revenue: 4700 },
 ];
 
 // const analyticsData = [
@@ -58,32 +84,27 @@ const ordersData = [
   { date: '250', value: 320 },
 ];
 
-const customicsData = [
-  { date: '160', value: 100 },
-  { date: '180', value: 120 },
-  { date: '190', value: 110 },
-  { date: '200', value: 130 },
-  { date: '210', value: 125 },
-  { date: '220', value: 140 },
-  { date: '230', value: 135 },
-  { date: '240', value: 150 },
-];
+// const customicsData = [
+//   { date: '160', value: 100 },
+//   { date: '180', value: 120 },
+//   { date: '190', value: 110 },
+//   { date: '200', value: 130 },
+//   { date: '210', value: 125 },
+//   { date: '220', value: 140 },
+//   { date: '230', value: 135 },
+//   { date: '240', value: 150 },
+// ];
 
 
 export default function DashboardPage() {
   return (
-    <div className="flex h-full w-full bg-primary-bg text-primary-text font-inter">
-      {/* Sidebar Component */}
+    <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text font-inter">
+      <Header />
 
-      {/* Main content area */}
       <div className="flex-1 flex flex-col">
-        {/* Header Component */}
 
-
-        {/* Dashboard Content */}
         <main className="p-8 flex-1 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {/* Sales Card */}
             <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-primary-text">Sales</h3>
@@ -134,10 +155,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="flex my-6 space-x-6">
             {/* Analytics Card */}
 
-            <Card className="text-white bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col text-left">
+            <Card className="text-white bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col text-left basis-2/3">
               <div className='flex-grow'>
                 <Title className="text-lg font-semibold text-primary-text">Analytics</Title>
                 <Text className="text-gray-400 mb-6">Monthly sales trend for the past year.</Text>
@@ -157,50 +178,116 @@ export default function DashboardPage() {
 
 
             {/* Orders Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-primary-text">Orders</h3>
-                <span className="text-sm text-accent cursor-pointer">Detail</span>
+            <Card className="flex flex-col justify-between basis-1/3 p-0">
+              <div className='bg-secondary-bg p-6 py-8 rounded-xl shadow-lg flex flex-col'>
+                <div className="flex justify-between items-center mb-4">
+                  <Title className="text-lg font-semibold text-primary-text">Orders</Title>
+                  <Text className="text-sm text-accent cursor-pointer">Detail</Text>
+                </div>
+                <Title className="text-4xl font-bold text-primary-text mb-2">$275%</Title>
+                <div className="flex-grow">
+                  <BarChart
+                    data={ordersData}
+                    index="date"
+                    categories={['value',]}
+                    colors={['status-neutral', 'accent', 'status-positive']}
+                    showXAxis={true}
+                    showYAxis={false}
+                    showLegend={false}
+                    className="h-48"
+                  />
+                </div>
               </div>
-              <div className="text-4xl font-bold text-primary-text mb-2">$275%</div>
-              <div className="flex-grow">
-                <BarChart
-                  data={ordersData}
-                  index="date"
-                  categories={['value',]}
-                  colors={['status-neutral', 'accent', 'status-positive']}
-                  showXAxis={true}
-                  showYAxis={false}
-                  showLegend={false}
-                  className="h-48"
-                />
+              <div className='bg-secondary-bg p-6 rounded-xl shadow-lg flex justify-between'>
+                <Title className="text-lg font-semibold text-primary-text">Orders</Title>
+                <Button />
               </div>
-            </div>
+            </Card>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex my-6 space-x-6">
             {/* Customics Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-primary-text">Customics</h3>
-                <span className="text-sm text-accent cursor-pointer">Smear</span>
-              </div>
-              <div className="flex-grow">
-                <BarChart
-                  data={customicsData}
-                  index="date"
-                  categories={['value']}
-                  colors={['accent']}
-                  showXAxis={true}
-                  showYAxis={true}
-                  showLegend={false}
-                  className="h-32"
-                />
-              </div>
-            </div>
+            <Card className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-3/6">
+              <Title className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
+                Monthly Sales
+              </Title>
+              <Text className="text-sm text-accent cursor-pointer ml-2">Smear</Text>
+
+              {/* Chart Area */}
+              <ResponsiveContainer width="100%" height={250}>
+                <ComposedChart
+                  data={data}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="4 4"
+                    stroke="#e0e0e0"
+                    className="dark:stroke-gray-600"
+                  />
+
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={{ stroke: '#9ca3af' }}
+                    className="text-sm font-medium text-gray-600 dark:text-gray-400"
+                    interval={0} // نمایش تمام برچسب‌ها
+                  />
+
+                  <YAxis
+                    tickLine={false}
+                    axisLine={{ stroke: '#9ca3af' }}
+                    className="text-sm font-medium text-gray-600 dark:text-gray-400"
+                  />
+
+                  <Tooltip
+                    cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      padding: '12px',
+                    }}
+                    labelStyle={{ fontWeight: 'bold', color: '#333' }}
+                    itemStyle={{ color: '#555' }}
+                  />
+
+                  <Legend
+                    verticalAlign="top"
+                    height={36}
+                    wrapperStyle={{ paddingTop: '10px', paddingBottom: '10px' }}
+                    iconType="circle"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  />
+
+                  <Bar
+                    dataKey="sales"
+                    barSize={40}
+                    fill="#3b82f6" // رنگ آبی (معادل blue-500 در Tailwind)
+                    name="Sales Count"
+                    radius={[5, 5, 0, 0]} // گوشه‌های گرد در بالا
+                  />
+
+                  <Line
+                    type="natural"
+                    dataKey="revenue"
+                    stroke="#10b981"
+                    strokeWidth={3}
+                    name="Revenue"
+                    dot={{ stroke: '#10b981', strokeWidth: 2, r: 4 }}
+                    activeDot={{ stroke: '#10b981', strokeWidth: 2, r: 6 }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </Card>
 
             {/* Masteicontod & Mawelo Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col justify-center">
+            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-2/6 justify-center">
               <div className="flex items-center mb-3">
                 <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
                 <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
@@ -224,7 +311,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Doskage Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
+            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-1/6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-primary-text">Doskage</h3>
                 <span className="text-sm text-accent cursor-pointer">Dotaaa</span>
@@ -240,8 +327,8 @@ export default function DashboardPage() {
                 <span className="ml-auto text-primary-text text-lg font-bold">1.98</span>
               </div>
             </div>
-          </div>
-        </main>
+          </div >
+        </main >
       </div >
     </div >
   );

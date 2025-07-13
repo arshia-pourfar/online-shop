@@ -23,10 +23,10 @@ export default function RootLayout({
       <body className={`${inter.className} flex bg-primary-bg text-primary-text overflow-hidden`}>
         <div className="flex bg-primary-bg text-primary-text">
           <Navbar />
-          <main className="flex-grow flex w-screen h-screen overflow-y-visible">
-            <div className="ps-64"> </div>
+          {/* <Header /> */}
+          <main className="flex-grow flex w-screen h-screen overflow-y-auto">
+            <div className="ps-64"></div>
             {children}
-
           </main>
         </div>
       </body>

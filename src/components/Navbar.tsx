@@ -23,14 +23,14 @@ const adminNavLinks = [
     { href: '/reports', icon: faChartLine, text: 'Reports' },
 ];
 
-const navLinks = [
-    { href: '/', icon: faHome, text: 'Home' },
-    { href: '/dashboard', icon: faDashboard, text: 'Dashboard' },
-    { href: '/orders', icon: faBox, text: 'Orders' },
-    { href: '/products', icon: faTag, text: 'Products' },
-    { href: '/customers', icon: faUsers, text: 'Customers' },
-    { href: '/reports', icon: faChartLine, text: 'Reports' },
-];
+// const navLinks = [
+//     { href: '/', icon: faHome, text: 'Home' },
+//     { href: '/dashboard', icon: faDashboard, text: 'Dashboard' },
+//     { href: '/orders', icon: faBox, text: 'Orders' },
+//     { href: '/products', icon: faTag, text: 'Products' },
+//     { href: '/customers', icon: faUsers, text: 'Customers' },
+//     { href: '/reports', icon: faChartLine, text: 'Reports' },
+// ];
 const secondaryLinks = [
     { href: '/analytics', icon: faChartPie, text: 'Analytics' },
     { href: '/login', icon: faCircleUser, text: 'Login/Logout' },

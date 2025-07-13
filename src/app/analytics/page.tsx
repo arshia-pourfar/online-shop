@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Product } from '../types/product';
+import { Product } from '../../types/product';
 import { getProducts } from '@/lib/api/products';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faDollarSign } from '@fortawesome/free-solid-svg-icons';

@@ -132,6 +132,23 @@ async function main() {
         },
     });
 
+    await prisma.salesStats.createMany({
+        data: [
+            { year: 2025, month: 'Jan', revenue: 2200, sales: 45 },
+            { year: 2025, month: 'Feb', revenue: 1500, sales: 23 },
+            { year: 2025, month: 'Mar', revenue: 3100, sales: 15 },
+            { year: 2025, month: 'Apr', revenue: 1800, sales: 33 },
+            { year: 2025, month: 'May', revenue: 5800, sales: 200 },
+            { year: 2025, month: 'Jun', revenue: 2600, sales: 76 },
+            { year: 2025, month: 'Jul', revenue: 7400, sales: 35 },
+            { year: 2025, month: 'Aug', revenue: 4000, sales: 67 },
+            { year: 2025, month: 'Sep', revenue: 1200, sales: 48 },
+            { year: 2025, month: 'Oct', revenue: 5100, sales: 41 },
+            { year: 2025, month: 'Nov', revenue: 2000, sales: 89 },
+            { year: 2025, month: 'Dec', revenue: 8000, sales: 42 },
+        ],
+    });
+
     console.log('✅ Seed data generated with 5 users, 15 products, 4 orders.');
 }
 

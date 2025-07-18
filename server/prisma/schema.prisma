@@ -52,13 +52,14 @@ model OrderItem {
   quantity  Int
 }
 
-model SalesStats {
-  id         String   @id @default(cuid())
-  year       Int
-  month      Int
-  revenue    Float
-  orderCount Int
-}
+model salesStats {
+    id         String   @id @default(cuid())
+    year       Int
+    month      String
+    sales      Int
+    revenue    Int
+    createdAt  DateTime @default(now())
+  }
 
 enum Role {
   USER

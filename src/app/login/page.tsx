@@ -1,61 +1,68 @@
 "use client";
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-
-
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { loginUser, saveToken } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState(''); // 'success' or 'error'
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState(""); // 'success' or 'error'
 
-    const handleAuth = (e: React.FormEvent<HTMLFormElement>) => {
+    const router = useRouter();
+
+    const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setMessage('');
-        setMessageType('');
+        setMessage("");
+        setMessageType("");
 
-        // --- Frontend-only simulation of auth logic ---
-        // In a real application, you would send this data to your backend
-        // for actual authentication/registration.
+        try {
+            const response = await loginUser(email, password);
 
-        if (email === 'test@example.com' && password === 'password') {
-            setMessage(`Successfully ${isRegistering ? 'registered' : 'logged in'}! (Simulated)`);
-            setMessageType('success');
-            // In a real app, you'd redirect the user here
-            console.log(`Simulated ${isRegistering ? 'registration' : 'login'} for: ${email}`);
-        } else if (isRegistering && password.length < 6) {
-            setMessage('Password must be at least 6 characters long for registration.');
-            setMessageType('error');
+            setMessage(`خوش آمدید ${response.user.name}`);
+            setMessageType("success");
+
+            saveToken(response.token);
+            localStorage.setItem("user", JSON.stringify(response.user));
+
+            // بعد از ورود موفق به داشبورد می‌ریم
+            if (response.user.role === "ADMIN") {
+                router.push("/dashboard");
+            } else {
+                router.push("/");
+            }
+
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setMessage(error.message);
+            } else {
+                setMessage("خطای ناشناخته در ورود");
+            }
+            setMessageType("error");
         }
-        else {
-            setMessage(`Failed to ${isRegistering ? 'register' : 'log in'}. Invalid credentials. (Simulated)`);
-            setMessageType('error');
-        }
-        // --- End of simulation ---
     };
-
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-900 font-sans p-4 w-full h-full">
-            <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-700">
-                <h2 className="text-3xl font-extrabold text-white text-center mb-6">
-                    {isRegistering ? 'Register' : 'Login'}
+        <div className="flex items-center justify-center min-h-screen bg-primary-bg font-sans p-4 w-full h-full">
+            <div className="bg-secondary-bg p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-700/30">
+                <h2 className="text-3xl font-extrabold text-primary-text text-center mb-6">
+                    {isRegistering ? "Register" : "Login"}
                 </h2>
                 {message && (
-                    <div className={`p-3 mb-4 rounded-lg text-sm ${messageType === 'error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}>
+                    <div className={`p-3 mb-4 rounded-lg text-sm ${messageType === "error" ? "bg-status-negative text-primary-text" : "bg-status-positive text-primary-text"}`}>
                         {message}
                     </div>
                 )}
                 <form onSubmit={handleAuth} className="space-y-5">
                     <div>
-                        <label htmlFor="email" className="block text-gray-300 text-sm font-medium mb-2">Email</label>
+                        <label htmlFor="email" className="block text-secondary-text text-sm font-medium mb-2">Email</label>
                         <div className="relative">
-                            <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text" />
                             <input
                                 type="email"
                                 id="email"
-                                className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-10 pr-3 py-2 bg-primary-bg border border-secondary-bg rounded-lg text-primary-text placeholder-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
                                 placeholder="your@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -64,13 +71,13 @@ const LoginPage = () => {
                         </div>
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-gray-300 text-sm font-medium mb-2">Password</label>
+                        <label htmlFor="password" className="block text-secondary-text text-sm font-medium mb-2">Password</label>
                         <div className="relative">
-                            <FontAwesomeIcon icon={faLock} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <FontAwesomeIcon icon={faLock} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text" />
                             <input
                                 type="password"
                                 id="password"
-                                className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-10 pr-3 py-2 bg-primary-bg border border-secondary-bg rounded-lg text-primary-text placeholder-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
                                 placeholder="********"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -80,23 +87,22 @@ const LoginPage = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+                        className="w-full bg-accent hover:bg-accent-alt text-primary-bg font-bold py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
                     >
-                        {isRegistering ? 'Register' : 'Login'}
+                        {isRegistering ? "Register" : "Login"}
                     </button>
                 </form>
                 <div className="mt-6 text-center">
                     <button
                         onClick={() => setIsRegistering(!isRegistering)}
-                        className="text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                        className="text-accent hover:text-accent-alt text-sm transition-colors duration-200"
                     >
-                        {isRegistering ? 'Already have an account? Login' : 'Need an account? Register'}
+                        {isRegistering ? "Already have an account? Login" : "Need an account? Register"}
                     </button>
                 </div>
             </div>
         </div>
     );
 };
-
 
 export default LoginPage;

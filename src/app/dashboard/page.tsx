@@ -22,7 +22,7 @@
 
 // if (loading) return <p>Loading...</p>;
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, BarChart, AreaChart, Card, Title, Text, Button } from '@tremor/react'; // Ensure @tremor/react is installed: npm install @tremor/react
 // import { ChevronDown, User, ShoppingBag, PieChart, BarChart2, Settings, Mail, Bell } from 'lucide-react'; // Ensure lucide-react is installed: npm install lucide-react
 import {
@@ -37,6 +37,8 @@ import {
   Legend,
 } from 'recharts';
 import Header from '@/components/Header';
+import { SaleStats } from 'types/salestats';
+import { getSaleStats } from '@/lib/api/salestats';
 // Mock Data for Charts (simplified for demonstration)
 const salesData = [
   { date: 'Jan', Sales: 500, Clicks: 500, Photo: 400 },
@@ -46,32 +48,6 @@ const salesData = [
   { date: 'May', Sales: 580, Clicks: 700, Photo: 600 },
   { date: 'Jun', Sales: 650, Clicks: 750, Photo: 650 },
 ];
-
-const data = [
-  { month: 'Jan', sales: 220, revenue: 3500 },
-  { month: 'Feb', sales: 1800, revenue: 300 },
-  { month: 'Mar', sales: 2400, revenue: 390 },
-  { month: 'Apr', sales: 1500, revenue: 2500 },
-  { month: 'May', sales: 270, revenue: 400 },
-  { month: 'Jun', sales: 190, revenue: 300 },
-  { month: 'Jul', sales: 300, revenue: 800 },
-  { month: 'Aug', sales: 210, revenue: 3400 },
-  { month: 'Sep', sales: 1600, revenue: 2200 },
-  { month: 'Oct', sales: 280, revenue: 4500 },
-  { month: 'Nov', sales: 140, revenue: 190 },
-  { month: 'Dec', sales: 310, revenue: 4700 },
-];
-
-// const analyticsData = [
-//   { date: '160', Sales: 300, Clicks: 450, Photo: 350 },
-//   { date: '180', Sales: 350, Clicks: 500, Photo: 400 },
-//   { date: '200', Sales: 400, Clicks: 550, Photo: 450 },
-//   { date: '220', Sales: 450, Clicks: 600, Photo: 500 },
-//   { date: '240', Sales: 500, Clicks: 650, Photo: 550 },
-//   { date: '260', Sales: 550, Clicks: 700, Photo: 600 },
-//   { date: '280', Sales: 600, Clicks: 750, Photo: 650 },
-//   { date: '300', Sales: 650, Clicks: 800, Photo: 700 },
-// ];
 
 const ordersData = [
   { date: '180', value: 200 },
@@ -84,19 +60,18 @@ const ordersData = [
   { date: '250', value: 320 },
 ];
 
-// const customicsData = [
-//   { date: '160', value: 100 },
-//   { date: '180', value: 120 },
-//   { date: '190', value: 110 },
-//   { date: '200', value: 130 },
-//   { date: '210', value: 125 },
-//   { date: '220', value: 140 },
-//   { date: '230', value: 135 },
-//   { date: '240', value: 150 },
-// ];
-
 
 export default function DashboardPage() {
+  const [saleStats, setSaleStats] = useState<SaleStats[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      getSaleStats().then(setSaleStats),
+    ]).finally();
+  }, []);
+
+  console.log(saleStats);
+
   return (
     <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text font-inter">
       <Header />
@@ -207,7 +182,7 @@ export default function DashboardPage() {
 
           <div className="flex my-6 space-x-6">
             {/* Customics Card */}
-            <Card className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-3/6">
+            <Card className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-4/6">
               <Title className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
                 Monthly Sales
               </Title>
@@ -216,7 +191,7 @@ export default function DashboardPage() {
               {/* Chart Area */}
               <ResponsiveContainer width="100%" height={250}>
                 <ComposedChart
-                  data={data}
+                  data={saleStats}
                   margin={{
                     top: 20,
                     right: 30,
@@ -234,8 +209,8 @@ export default function DashboardPage() {
                     dataKey="month"
                     tickLine={false}
                     axisLine={{ stroke: '#9ca3af' }}
-                    className="text-sm font-medium text-gray-600 dark:text-gray-400"
-                    interval={0} // نمایش تمام برچسب‌ها
+                    className="text-sm font-medium text-white dark:text-white"
+                    interval={10} // نمایش تمام برچسب‌ها
                   />
 
                   <YAxis
@@ -286,48 +261,50 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </Card>
 
-            {/* Masteicontod & Mawelo Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-2/6 justify-center">
-              <div className="flex items-center mb-3">
-                <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">$35%</span>
+            <div className='flex flex-col basis-2/6 justify-center space-y-6'>
+              {/* Masteicontod & Mawelo Card */}
+              <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-2/6 justify-center">
+                <div className="flex items-center mb-3">
+                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">$35%</span>
+                </div>
+                <div className="flex items-center mb-3">
+                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Mawelo</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">435%</span>
+                </div>
+                <div className="flex items-center mb-3">
+                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">$22%</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Mawelo</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">$450%</span>
+                </div>
               </div>
-              <div className="flex items-center mb-3">
-                <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Mawelo</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">435%</span>
-              </div>
-              <div className="flex items-center mb-3">
-                <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">$22%</span>
-              </div>
-              <div className="flex items-center">
-                <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Mawelo</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">$450%</span>
-              </div>
-            </div>
 
-            {/* Doskage Card */}
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-1/6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-primary-text">Doskage</h3>
-                <span className="text-sm text-accent cursor-pointer">Dotaaa</span>
+              {/* Doskage Card */}
+              <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-1/6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-primary-text">Doskage</h3>
+                  <span className="text-sm text-accent cursor-pointer">Dotaaa</span>
+                </div>
+                <div className="flex items-center mb-3">
+                  <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Powelore</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">$88%</span>
+                </div>
+                <div className="flex items-center mb-3">
+                  <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
+                  <span className="text-primary-text text-lg font-semibold">Glonstant</span>
+                  <span className="ml-auto text-primary-text text-lg font-bold">1.98</span>
+                </div>
               </div>
-              <div className="flex items-center mb-3">
-                <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Powelore</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">$88%</span>
-              </div>
-              <div className="flex items-center mb-3">
-                <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
-                <span className="text-primary-text text-lg font-semibold">Glonstant</span>
-                <span className="ml-auto text-primary-text text-lg font-bold">1.98</span>
-              </div>
-            </div>
-          </div >
+            </div >
+          </div>
         </main >
       </div >
     </div >

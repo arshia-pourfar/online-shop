@@ -27,7 +27,7 @@ export default function RootLayout({
             <Navbar />
             {/* <Header /> */}
             <main className="flex-grow flex w-screen h-screen overflow-y-auto">
-              <div className="ps-64"></div>
+              <div className="ps-20"></div>
               {children}
             </main>
           </div>

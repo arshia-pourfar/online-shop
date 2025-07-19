@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { loginUser, saveToken } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/context/authContext";  // اضافه کن
+
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -12,6 +14,7 @@ const LoginPage = () => {
     const [messageType, setMessageType] = useState(""); // 'success' or 'error'
 
     const router = useRouter();
+    const { login } = useAuth();  // از Context، تابع login رو بگیر
 
     const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,28 +24,33 @@ const LoginPage = () => {
         try {
             const response = await loginUser(email, password);
 
-            setMessage(`خوش آمدید ${response.user.name}`);
+            setMessage(`Welcome ${response.user.name}`);
             setMessageType("success");
 
             saveToken(response.token);
-            localStorage.setItem("user", JSON.stringify(response.user));
 
-            // بعد از ورود موفق به داشبورد می‌ریم
+            // این خط رو حذف کن چون حالا Context ذخیره می‌کنه
+            // localStorage.setItem("user", JSON.stringify(response.user));
+
+            // آپدیت Context
+            login(response.user);
+
+            // هدایت بعد از لاگین
             if (response.user.role === "ADMIN") {
                 router.push("/dashboard");
             } else {
                 router.push("/");
             }
-
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setMessage(error.message);
             } else {
-                setMessage("خطای ناشناخته در ورود");
+                setMessage("Unknown login error");
             }
             setMessageType("error");
         }
     };
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-primary-bg font-sans p-4 w-full h-full">
             <div className="bg-secondary-bg p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-700/30">

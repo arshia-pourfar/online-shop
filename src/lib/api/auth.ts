@@ -1,5 +1,3 @@
-// import Cookies from 'js-cookie'; // اگه لازم نداریم فعلاً می‌تونیم حذفش کنیم
-
 const API_BASE = 'http://localhost:5000';
 
 export const saveToken = (token: string) => {

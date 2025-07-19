@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
+import { AuthProvider } from '@/lib/context/authContext';
 
 import { Inter } from "next/font/google";
 // import { Roboto } from "next/font/google";
@@ -21,16 +22,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} flex bg-primary-bg text-primary-text overflow-hidden`}>
-        <div className="flex bg-primary-bg text-primary-text">
-          <Navbar />
-          {/* <Header /> */}
-          <main className="flex-grow flex w-screen h-screen overflow-y-auto">
-            <div className="ps-64"></div>
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex bg-primary-bg text-primary-text">
+            <Navbar />
+            {/* <Header /> */}
+            <main className="flex-grow flex w-screen h-screen overflow-y-auto">
+              <div className="ps-64"></div>
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
-    </html>
+    </html >
   );
 }
 

@@ -94,14 +94,14 @@ const Navbar = () => {
                         <li key={link.href}>
                             <Link
                                 href={link.href}
-                                className={`group flex items-center p-3 ps-3.5 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
+                                className={`group flex items-center p-3 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
                                     ? "bg-primary-bg text-primary-text"
                                     : "text-secondary-text hover:bg-primary-bg hover:text-primary-text"
                                     }`}
                             >
                                 <FontAwesomeIcon
                                     icon={link.icon}
-                                    className="text-lg min-w-[20px]"
+                                    className="text-lg flex items-center justify-center min-w-6"
                                 />
                                 {/* Always render text, control visibility with opacity */}
                                 <span
@@ -130,7 +130,7 @@ const Navbar = () => {
                         >
                             <FontAwesomeIcon
                                 icon={link.icon}
-                                className="text-lg min-w-[20px]"
+                                className="text-lg flex items-center justify-center min-w-6"
                             />
                             {/* Always render text, control visibility with opacity */}
                             <span

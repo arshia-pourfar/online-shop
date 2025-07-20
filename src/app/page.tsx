@@ -6,6 +6,7 @@ import { getProducts } from '@/lib/api/products';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import Header from '@/components/Header';
+import Image from 'next/image';
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,19 +21,19 @@ const Home = () => {
       <Header />
       <h1 className="text-4xl font-extrabold text-center my-4 text-blue-400">Our Shop</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12 p-6">
         {products.length > 0 ? (
           products.map((product) => (
             <div key={product.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 flex flex-col transform hover:scale-105 transition-transform duration-300">
-              {/* <Image
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-48 object-cover object-center rounded-t-xl"
-                onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/300x200/4a5568/ffffff?text=No+Image"; }}
-              /> */}
-              {/* test image */}
-              <div className='w-full h-48 object-cover object-center rounded-t-xl bg-amber-400'></div>
-              {/* test image */}
+              {product.imageUrl && (
+                <Image
+                  src={`/products/${product.imageUrl}`}
+                  alt={product.name}
+                  width={200}
+                  height={200}
+                  className="w-full max-h-48 object-contain object-center bg-gray-800 rounded-t-xl p-4"
+                />
+              )}
               <div className="p-6 flex-grow flex flex-col justify-between">
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">{product.name}</h3>

@@ -52,21 +52,21 @@ async function main() {
 
     // 2. ایجاد محصولات با توضیحات کامل
     const productData = [
-        { name: 'Wireless Mouse', price: 29.99, description: 'Ergonomic wireless mouse with adjustable DPI' },
-        { name: 'Mechanical Keyboard', price: 89.99, description: 'Backlit mechanical keyboard with blue switches' },
-        { name: 'Gaming Monitor', price: 199.99, description: '24-inch Full HD 144Hz gaming monitor' },
-        { name: 'USB-C Cable', price: 9.99, description: '1.5m fast charging USB-C cable' },
-        { name: 'Laptop Stand', price: 39.99, description: 'Adjustable aluminum laptop stand for all sizes' },
-        { name: 'Bluetooth Speaker', price: 49.99, description: 'Portable Bluetooth speaker with deep bass' },
-        { name: 'Webcam Full HD', price: 59.99, description: '1080p webcam with built-in microphone' },
-        { name: 'Gaming Chair', price: 149.99, description: 'Comfortable gaming chair with lumbar support' },
-        { name: 'SSD 1TB', price: 99.99, description: 'Fast 1TB NVMe solid state drive' },
-        { name: 'Smartwatch', price: 119.99, description: 'Fitness smartwatch with heart rate monitor' },
-        { name: 'Headphones', price: 79.99, description: 'Over-ear noise-cancelling headphones' },
-        { name: 'Router Wi-Fi 6', price: 89.99, description: 'Dual-band Wi-Fi 6 router with high speed' },
-        { name: 'Power Bank', price: 29.99, description: '10000mAh portable charger with USB-C' },
-        { name: 'LED Desk Lamp', price: 19.99, description: 'Touch control LED lamp with brightness settings' },
-        { name: 'Wireless Charger', price: 24.99, description: 'Fast wireless charger for all Qi devices' },
+        { name: 'Wireless Mouse', price: 29.99, description: 'Ergonomic wireless mouse with adjustable DPI', imageUrl: '61EZQh0-TZL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Mechanical Keyboard', price: 89.99, description: 'Backlit mechanical keyboard with blue switches', imageUrl: '61ozM9WWtmL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Gaming Monitor', price: 199.99, description: '24-inch Full HD 144Hz gaming monitor', imageUrl: '71u4mAb+V6L._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'USB-C Cable', price: 9.99, description: '1.5m fast charging USB-C cable', imageUrl: '71TBf2WJmOL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Laptop Stand', price: 39.99, description: 'Adjustable aluminum laptop stand for all sizes', imageUrl: '81tmTKxscbL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Bluetooth Speaker', price: 49.99, description: 'Portable Bluetooth speaker with deep bass', imageUrl: '61068h6mIgL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Webcam Full HD', price: 59.99, description: '1080p webcam with built-in microphone', imageUrl: '714pdREnqjL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Gaming Chair', price: 149.99, description: 'Comfortable gaming chair with lumbar support', imageUrl: '61PKkJkMS8L._AC_UL480_FMwebp_QL65_.webp' },
+        { name: 'SSD 1TB', price: 99.99, description: 'Fast 1TB NVMe solid state drive', imageUrl: '911ujeCkGfL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Smartwatch', price: 119.99, description: 'Fitness smartwatch with heart rate monitor', imageUrl: '61ACOwvUwSL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Headphones', price: 79.99, description: 'Over-ear noise-cancelling headphones', imageUrl: '51V1bf76cML._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Router Wi-Fi 6', price: 89.99, description: 'Dual-band Wi-Fi 6 router with high speed', imageUrl: '41VlTprOFdL._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'Power Bank', price: 29.99, description: '10000mAh portable charger with USB-C', imageUrl: '516tnauVb+L._AC_UY327_FMwebp_QL65_.webp' },
+        { name: 'LED Desk Lamp', price: 19.99, description: 'Touch control LED lamp with brightness settings', imageUrl: '61jVnjd9EIL._AC_UL480_FMwebp_QL65_.webp' },
+        { name: 'Wireless Charger', price: 24.99, description: 'Fast wireless charger for all Qi devices', imageUrl: '61jj23Nv75L._AC_UY327_FMwebp_QL65_.webp' },
     ];
 
     const products = await Promise.all(
@@ -149,7 +149,7 @@ async function main() {
         ],
     });
 
-    console.log('✅ Seed data generated with 5 users, 15 products, 4 orders.');
+    console.log('✅ Seed data generated.');
 }
 
 main()

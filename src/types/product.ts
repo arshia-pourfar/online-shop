@@ -4,5 +4,6 @@ export type Product = {
     name: string;
     price: number;
     description: string | null;
+    imageUrl: string | null;
     createdAt: string; // یا Date
 };

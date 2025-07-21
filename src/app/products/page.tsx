@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import Pagination from "@/components/Pagination";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { Product } from '../../types/product';
-import { getProducts } from '@/lib/api/products';
+import { Product } from "../../types/product";
+import { getProducts } from "@/lib/api/products";
 import ProductModal from "@/components/EditAddProductModal";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import SortableTH from "@/components/Sortable";
@@ -12,16 +12,15 @@ import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
 import { getStatuses } from "@/lib/api/statuses";
 
-const categories = await getCategories();
-const statuses = await getStatuses();
-
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [statuses, setStatuses] = useState<string[]>([]);
 
     // State ها
     const [search, setSearch] = useState("");
-    const [filterCategory, setFilterCategory] = useState("");
-    const [filterStatus, setFilterStatus] = useState("");
+    const [filterCategory, setFilterCategory] = useState<string>("");
+    const [filterStatus, setFilterStatus] = useState<string>("");
     const [filterMinPrice, setFilterMinPrice] = useState<number | "">("");
     const [filterMaxPrice, setFilterMaxPrice] = useState<number | "">("");
     const [sortField, setSortField] = useState<keyof Product | null>(null);
@@ -38,10 +37,20 @@ export default function ProductsPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
-    // get product data
+    // بارگذاری داده‌ها
     useEffect(() => {
         getProducts().then(setProducts);
+        getCategories().then(setCategories);
+        getStatuses().then(setStatuses);
     }, []);
+
+    // کمک‌گیرنده برای گرفتن شناسه دسته‌بندی از محصول
+    const getCategoryId = (category: Category | string | number) => {
+        if (typeof category === "object" && category !== null && "id" in category) {
+            return category.id.toString();
+        }
+        return category.toString();
+    };
 
     // آمار
     const totalProducts = products.length;
@@ -54,10 +63,14 @@ export default function ProductsPage() {
             !search ||
             p.name.toLowerCase().includes(search.toLowerCase()) ||
             (p.description && p.description.toLowerCase().includes(search.toLowerCase()));
-        const matchCategory = !filterCategory || (typeof p.category === "object" ? p.category.id.toString() === filterCategory : p.category === filterCategory);
+
+        const categoryId = getCategoryId(p.category);
+        const matchCategory = !filterCategory || categoryId === filterCategory;
+
         const matchStatus = !filterStatus || p.status === filterStatus;
         const matchMinPrice = filterMinPrice === "" || p.price >= filterMinPrice;
         const matchMaxPrice = filterMaxPrice === "" || p.price <= filterMaxPrice;
+
         return matchSearch && matchCategory && matchStatus && matchMinPrice && matchMaxPrice;
     });
 
@@ -82,7 +95,7 @@ export default function ProductsPage() {
         currentPage * itemsPerPage
     );
 
-    // انتخاب همه / یک محصول
+    // انتخاب همه / انتخاب تک محصول
     const toggleSelectAll = () => {
         if (selectedIds.length === paginatedProducts.length) {
             setSelectedIds([]);
@@ -152,9 +165,9 @@ export default function ProductsPage() {
         }
     };
 
-    // نمایش وضعیت با رنگ و آیکون
+    // کامپوننت نمایش وضعیت با رنگ و آیکون
     const StatusBadge = ({ status }: { status: string }) => {
-        const active = status === "available";
+        const active = status.toLowerCase() === "active" || status.toLowerCase() === "available";
         return (
             <span
                 className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${active ? "bg-green-600 text-white" : "bg-red-600 text-white"
@@ -264,7 +277,6 @@ export default function ProductsPage() {
                         }}
                     >
                         <option value="">All Statuses</option>
-                        {/* Uncomment and adjust when statuses are available */}
                         {statuses.map((st: string) => (
                             <option key={st} value={st}>
                                 {st}
@@ -328,12 +340,7 @@ export default function ProductsPage() {
                                         onChange={toggleSelectAll}
                                     />
                                 </th>
-                                <SortableTH
-                                    title="Image"
-                                    onClick={() => { }}
-                                    sortable={false}
-                                    width="w-16"
-                                />
+                                <SortableTH title="Image" onClick={() => { }} sortable={false} width="w-16" />
                                 <SortableTH
                                     title="Name"
                                     onClick={() => onSortClick("name")}
@@ -418,7 +425,10 @@ export default function ProductsPage() {
                                         <td className="px-2 py-2">${p.price.toFixed(2)}</td>
                                         <td className="px-2 py-2">{p.stock}</td>
                                         <td className="px-2 py-2">
-                                            {typeof p.category === "object" ? p.category.name : p.category}
+                                            {typeof p.category === "object" && p.category !== null
+                                                ? p.category.name
+                                                : categories.find((c) => c.id.toString() === p.category.toString())?.name ||
+                                                p.category}
                                         </td>
                                         <td className="px-2 py-2">
                                             <StatusBadge status={p.status} />
@@ -458,11 +468,8 @@ export default function ProductsPage() {
                 </div>
 
                 {/* صفحه‌بندی */}
-                <Pagination
-                    currentPage={currentPage}
-                    pageCount={pageCount}
-                    onPageChange={goToPage}
-                />
+                <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={goToPage} />
+
                 {/* مودال‌ها */}
                 <ProductModal
                     show={showModal}

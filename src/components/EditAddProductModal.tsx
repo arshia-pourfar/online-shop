@@ -7,10 +7,21 @@ import { Product } from "types/product";
 const categories = ["Shoes", "Bags", "Accessories"];
 const statuses = ["Active", "Inactive"];
 
+interface FormState {
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+    category: string; // فقط نام دسته بندی
+    status: string;
+    imageUrl: string;
+    description?: string;
+}
+
 export default function ProductModal({
     show,
     onClose,
-    onSave,
+    // onSave,
     product,
     type,
 }: {
@@ -20,22 +31,30 @@ export default function ProductModal({
     product: Product | null;
     type: "add" | "edit";
 }) {
-    const [form, setForm] = useState<Product>(
-        product || {
-            id: 0,
-            name: "",
-            price: 0,
-            stock: 0,
-            category: categories[0],
-            status: statuses[0],
-            imageUrl: "",
-            description: "",
-        }
-    );
+    const [form, setForm] = useState<FormState>({
+        id: 0,
+        name: "",
+        price: 0,
+        stock: 0,
+        category: categories[0],
+        status: statuses[0],
+        imageUrl: "",
+        description: "",
+    });
 
     useEffect(() => {
-        if (product) setForm(product);
-        else
+        if (product) {
+            setForm({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                stock: product.stock,
+                category: typeof product.category === "string" ? product.category : product.category.name,
+                status: product.status,
+                imageUrl: product.imageUrl,
+                // description: product.description,
+            });
+        } else {
             setForm({
                 id: 0,
                 name: "",
@@ -46,6 +65,7 @@ export default function ProductModal({
                 imageUrl: "",
                 description: "",
             });
+        }
     }, [product]);
 
     if (!show) return null;
@@ -146,7 +166,14 @@ export default function ProductModal({
                     </button>
                     <button
                         className="bg-accent text-white px-4 py-2 rounded hover:bg-accent/80"
-                        onClick={() => onSave({ ...form, id: product?.id || Date.now() })}
+                        // onClick={() => {
+                        //     // موقع ارسال به بیرون، category رو به شکل کامل یا رشته در نظر بگیر
+                        //     onSave({
+                        //         ...form,
+                        //         id: product?.id || Date.now(),
+                        //         category: form.category, 
+                        //     });
+                        // }}
                         disabled={!form.name.trim()}
                     >
                         Save

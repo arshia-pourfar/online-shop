@@ -1,9 +1,14 @@
+import { Category } from "./category";
+
 // src/types/product.ts
 export type Product = {
-    id: string;
+    id: number;
     name: string;
     price: number;
+    stock: number;
+    category: Category | string;
+    status: string;
+    imageUrl: string;
     description: string | null;
-    imageUrl: string | null;
-    createdAt: string; // یا Date
+    createdAt?: string;
 };

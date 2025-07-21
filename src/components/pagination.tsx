@@ -1,44 +1,37 @@
 'use client';
 
-import { Button } from "@/components/Button";
+import { PaginationProps } from "types/pagination";
 
-interface PaginationProps {
-    currentPage: number;
-    totalPages: number;
-    onPageChange: (page: number) => void;
-}
 
 export default function Pagination({
     currentPage,
-    totalPages,
+    pageCount,
     onPageChange,
 }: PaginationProps) {
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const pages = [];
+    for (let i = 1; i <= pageCount; i++) {
+        pages.push(i);
+    }
 
     return (
-        <div className="flex justify-center mt-6 space-x-2 rtl:space-x-reverse">
-            <Button
-                onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-            >
-                قبلی
-            </Button>
-
+        <nav aria-label="Pagination" className="mt-6 flex justify-center items-center gap-2 flex-wrap">
+            <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} className="px-3 py-1 rounded bg-gray-700 text-primary-text disabled:opacity-50">
+                Prev
+            </button>
             {pages.map((page) => (
-                <Button
+                <button
                     key={page}
                     onClick={() => onPageChange(page)}
-                >
+                    className={`px-3 py-1 rounded ${page === currentPage ? "bg-accent text-white" : "bg-secondary-bg text-primary-text hover:bg-accent/70"}`} >
                     {page}
-                </Button>
+                </button>
             ))}
-
-            <Button
+            <button
                 onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-            >
-                بعدی
-            </Button>
-        </div>
+                disabled={currentPage === pageCount}
+                className="px-3 py-1 rounded bg-gray-700 text-primary-text disabled:opacity-50">
+                Next
+            </button>
+        </nav>
     );
 }

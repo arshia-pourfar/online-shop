@@ -31,7 +31,7 @@ export async function createProduct(data: {
 }
 
 // حذف محصول
-export async function deleteProduct(id: string): Promise<{ message: string }> {
+export async function deleteProduct(id: number): Promise<{ message: string }> {
     const res = await fetch(`${API_BASE}/api/products/${id}`, {
         method: 'DELETE',
     });

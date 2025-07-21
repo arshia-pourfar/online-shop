@@ -1,7 +1,5 @@
-'use client';
-
+"use client";
 import { PaginationProps } from "types/pagination";
-
 
 export default function Pagination({
     currentPage,

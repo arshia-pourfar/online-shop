@@ -1,7 +1,7 @@
 export type SaleStats = {
-    id: number;         // یا string اگر UUID استفاده می‌کنی
+    id: number;         // or string if using UUID
     year: number;
-    month: number;      // یا string اگر نام ماه به صورت رشته هست
+    month: number;      // or string if month name is a string
     orderCount: number;
     revenue: number;
     createdAt: Date;

@@ -8,20 +8,27 @@ import { faShoppingCart, faDollarSign } from '@fortawesome/free-solid-svg-icons'
 import Header from '@/components/Header';
 import Image from 'next/image';
 
+// Main home page for the dashboard/shop
+// Fetches and displays products, and renders the cart section
 const Home = () => {
+  // State for product list
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
+    // Fetch products on mount
     Promise.all([
       getProducts().then(setProducts),
     ]).finally();
   }, []);
 
   return (
+    // Page layout and product grid
     <div className="w-full h-full text-white flex flex-col">
       <Header />
+      {/* Page title */}
       <h1 className="text-4xl font-extrabold text-center my-4 text-blue-400">Our Shop</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12 p-6">
+        {/* Product cards */}
         {products.length > 0 ? (
           products.map((product) => (
             <div key={product.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 flex flex-col transform hover:scale-105 transition-transform duration-300">
@@ -61,6 +68,7 @@ const Home = () => {
       </div>
 
       <div className="bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
+        {/* Cart section (placeholder) */}
         <h2 className="text-3xl font-extrabold text-white mb-6 flex items-center space-x-3">
           <FontAwesomeIcon icon={faShoppingCart} className="text-blue-400 text-3xl" />
           <span>Your Cart</span>

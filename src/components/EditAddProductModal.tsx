@@ -7,6 +7,7 @@ import { getCategories } from "@/lib/api/categories";
 import { getStatuses } from "@/lib/api/statuses";
 
 interface FormState {
+    // State for the product form fields
     id: number;
     name: string;
     price: number;
@@ -18,6 +19,7 @@ interface FormState {
 }
 
 export default function ProductModal({
+    // Props: show (modal open), onClose, onSave, product (for edit), type (add/edit)
     show,
     onClose,
     onSave,
@@ -30,9 +32,10 @@ export default function ProductModal({
     product: Product | null;
     type: "add" | "edit";
 }) {
-    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-    const [statuses, setStatuses] = useState<string[]>([]);
+    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]); // List of categories
+    const [statuses, setStatuses] = useState<string[]>([]); // List of product statuses
     const [form, setForm] = useState<FormState>({
+        // Form state initialization
         id: 0,
         name: "",
         price: 0,
@@ -44,11 +47,14 @@ export default function ProductModal({
     });
 
     useEffect(() => {
+        // Fetch categories and statuses on mount
         getCategories().then(setCategories);
         getStatuses().then(setStatuses);
     }, []);
 
     useEffect(() => {
+        // If editing, populate form with product data
+        // If adding, reset form
         if (product) {
             const categoryName =
                 typeof product.category === "string"
@@ -79,18 +85,21 @@ export default function ProductModal({
         }
     }, [product, categories]);
 
-    if (!show) return null;
+    if (!show) return null; // Don't render modal if not shown
 
     const handleSubmit = async () => {
+        // Validate form and submit to API
         try {
             const categoryId = categories.find((cat) => cat.name === form.category)?.id;
 
             if (!form.name.trim() || isNaN(form.price) || !categoryId) {
+                // Show alert if form is invalid
                 alert("اطلاعات ورودی کامل و معتبر نیست.");
                 return;
             }
 
             const payload = {
+                // Prepare data for API
                 name: form.name.trim(),
                 price: Number(form.price),
                 stock: Number(form.stock),
@@ -101,6 +110,7 @@ export default function ProductModal({
             };
 
             const res = await fetch(
+                // Send request to API (add or edit)
                 type === "edit"
                     ? `http://localhost:5000/api/products/${form.id}`
                     : "http://localhost:5000/api/products",
@@ -113,14 +123,17 @@ export default function ProductModal({
 
 
             if (!res.ok) {
+                // Handle API error
                 const errorData = await res.json();
                 throw new Error("Failed to save product: " + JSON.stringify(errorData));
             }
 
             const savedProduct = await res.json();
+            // Call onSave and close modal
             onSave(savedProduct);
             onClose();
         } catch (error) {
+            // Handle JS error
             if (error instanceof Error) {
                 console.error("[createProduct]", error.message);
                 alert("خطا در ذخیره محصول: " + error.message);
@@ -129,6 +142,7 @@ export default function ProductModal({
     };
 
     return (
+        // Modal layout and form rendering
         <>
             <div className="fixed z-50 top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-sm"></div>
             <div className="bg-primary-bg rounded-xl p-6 w-full max-w-xl shadow-xl border border-gray-700 overflow-auto max-h-[90vh] z-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -200,6 +214,7 @@ export default function ProductModal({
                         onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                     />
                     {form.imageUrl && (
+                        // Product image preview
                         <Image
                             src={`/products/${form.imageUrl}`}
                             width={50}
@@ -210,6 +225,7 @@ export default function ProductModal({
                     )}
                 </div>
                 <div className="flex justify-end gap-3 mt-6">
+                    {/* Action buttons */}
                     <button
                         className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 text-primary-text"
                         onClick={onClose}

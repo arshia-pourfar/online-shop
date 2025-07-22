@@ -11,7 +11,7 @@ export type Order = {
     userId: string;
     total: number;
     status: string;
-    createdAt: string; // یا Date
+    createdAt: string; // or Date
     items: OrderItem[];
     user?: User;
 };

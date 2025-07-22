@@ -1,21 +1,21 @@
 import { Product } from '../../types/product';
 const API_BASE = 'http://localhost:5000';
 
-// گرفتن همه محصولات
+// Fetch all products
 export async function getProducts(): Promise<Product[]> {
     const res = await fetch(`${API_BASE}/api/products`);
     if (!res.ok) throw new Error('Failed to fetch products');
     return res.json();
 }
 
-// گرفتن یک محصول خاص
+// Fetch a specific product
 export async function getProductById(id: string): Promise<Product> {
     const res = await fetch(`${API_BASE}/api/products/${id}`);
     if (!res.ok) throw new Error('Failed to fetch product');
     return res.json();
 }
 
-// ساخت محصول جدید
+// Create a new product
 export async function createProduct(data: {
     name: string;
     price: number;
@@ -30,7 +30,7 @@ export async function createProduct(data: {
     return res.json();
 }
 
-// حذف محصول
+// Delete a product
 export async function deleteProduct(id: number): Promise<{ message: string }> {
     const res = await fetch(`${API_BASE}/api/products/${id}`, {
         method: 'DELETE',

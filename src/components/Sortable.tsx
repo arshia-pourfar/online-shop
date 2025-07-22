@@ -1,3 +1,6 @@
+import { faSort, faSortDown, faSortUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export default function SortableTH({
     title,
     onClick,
@@ -19,18 +22,18 @@ export default function SortableTH({
             onClick={sortable ? onClick : undefined}
             title={sortable ? "Click to sort" : undefined}
         >
-            <div className="flex items-center gap-1 select-none">
+            <div className="flex items-center gap-1 select-none text-accent">
                 {title}
                 {sortable && (
                     <span>
                         {isActive ? (
                             sortAsc ? (
-                                <i className="fa fa-sort-up" />
+                                <FontAwesomeIcon icon={faSortUp} />
                             ) : (
-                                <i className="fa fa-sort-down" />
+                                <FontAwesomeIcon icon={faSortDown} />
                             )
                         ) : (
-                            <i className="fa fa-sort" />
+                            <FontAwesomeIcon icon={faSort} />
                         )}
                     </span>
                 )}

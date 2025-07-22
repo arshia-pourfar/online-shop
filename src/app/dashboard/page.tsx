@@ -70,8 +70,6 @@ export default function DashboardPage() {
     ]).finally();
   }, []);
 
-  console.log(saleStats);
-
   return (
     <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text font-inter">
       <Header />

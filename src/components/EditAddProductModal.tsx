@@ -100,11 +100,17 @@ export default function ProductModal({
                 imageUrl: form.imageUrl?.trim() ?? null,
             };
 
-            const res = await fetch("http://localhost:5000/api/products", {
-                method: type === "edit" ? "PUT" : "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
+            const res = await fetch(
+                type === "edit"
+                    ? `http://localhost:5000/api/products/${form.id}`
+                    : "http://localhost:5000/api/products",
+                {
+                    method: type === "edit" ? "PUT" : "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                }
+            );
+
 
             if (!res.ok) {
                 const errorData = await res.json();

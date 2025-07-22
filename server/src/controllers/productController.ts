@@ -73,6 +73,7 @@ export const createProduct = async (req: Request, res: Response) => {
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.error('[createProduct]', err.message);
+            console.error('[createProduct - Full]', err); // ← این خط رو اضافه کن
         }
         res.status(500).json({ error: 'Failed to create product' });
     }
@@ -93,5 +94,47 @@ export const deleteProduct = async (req: Request, res: Response) => {
             console.error('[deleteProduct]', err.message);
         }
         res.status(500).json({ error: 'Failed to delete product' });
+    }
+};
+
+// ویرایش محصول
+export const updateProduct = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const { name, price, description, imageUrl, categoryId } = req.body;
+
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid product id' });
+    }
+
+    if (
+        typeof name !== 'string' ||
+        typeof price !== 'number' ||
+        typeof categoryId !== 'number' ||
+        (description && typeof description !== 'string') ||
+        (imageUrl && typeof imageUrl !== 'string')
+    ) {
+        return res.status(400).json({ error: 'Invalid product data' });
+    }
+
+    try {
+        const updatedProduct = await prisma.product.update({
+            where: { id },
+            data: {
+                name,
+                price,
+                description,
+                imageUrl,
+                category: {
+                    connect: { id: categoryId },
+                },
+            },
+        });
+
+        res.json(updatedProduct);
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('[updateProduct]', err.message);
+        }
+        res.status(500).json({ error: 'Failed to update product' });
     }
 };

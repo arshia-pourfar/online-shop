@@ -3,17 +3,16 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Product } from "types/product";
-
-const categories = ["Shoes", "Bags", "Accessories"];
-const statuses = ["Active", "Inactive"];
+import { getCategories } from "@/lib/api/categories";
+import { getStatuses } from "@/lib/api/statuses";
 
 interface FormState {
     id: number;
     name: string;
     price: number;
     stock: number;
-    category: string; // فقط نام دسته بندی
     status: string;
+    category: string;
     imageUrl: string;
     description?: string;
 }
@@ -21,7 +20,7 @@ interface FormState {
 export default function ProductModal({
     show,
     onClose,
-    // onSave,
+    onSave,
     product,
     type,
 }: {
@@ -31,28 +30,40 @@ export default function ProductModal({
     product: Product | null;
     type: "add" | "edit";
 }) {
+    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+    const [statuses, setStatuses] = useState<string[]>([]);
     const [form, setForm] = useState<FormState>({
         id: 0,
         name: "",
         price: 0,
         stock: 0,
-        category: categories[0],
-        status: statuses[0],
+        status: "",
+        category: "",
         imageUrl: "",
         description: "",
     });
 
     useEffect(() => {
+        getCategories().then(setCategories);
+        getStatuses().then(setStatuses);
+    }, []);
+
+    useEffect(() => {
         if (product) {
+            const categoryName =
+                typeof product.category === "string"
+                    ? product.category
+                    : categories.find((cat) => cat.id === (product as { categoryId?: number }).categoryId)?.name || "";
+
             setForm({
                 id: product.id,
                 name: product.name,
                 price: product.price,
-                stock: product.stock,
-                category: typeof product.category === "string" ? product.category : product.category.name,
-                status: product.status,
+                stock: product.stock || 0,
+                category: categoryName,
                 imageUrl: product.imageUrl,
-                // description: product.description,
+                status: product.status,
+                description: product.description ?? "",
             });
         } else {
             setForm({
@@ -60,15 +71,56 @@ export default function ProductModal({
                 name: "",
                 price: 0,
                 stock: 0,
-                category: categories[0],
-                status: statuses[0],
+                category: "",
                 imageUrl: "",
+                status: "",
                 description: "",
             });
         }
-    }, [product]);
+    }, [product, categories]);
 
     if (!show) return null;
+
+    const handleSubmit = async () => {
+        try {
+            const categoryId = categories.find((cat) => cat.name === form.category)?.id;
+
+            if (!form.name.trim() || isNaN(form.price) || !categoryId) {
+                alert("اطلاعات ورودی کامل و معتبر نیست.");
+                return;
+            }
+
+            const payload = {
+                name: form.name.trim(),
+                price: Number(form.price),
+                stock: Number(form.stock),
+                categoryId,
+                status: form.status,
+                description: form.description?.trim() ?? null,
+                imageUrl: form.imageUrl?.trim() ?? null,
+            };
+
+            const res = await fetch("http://localhost:5000/api/products", {
+                method: type === "edit" ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error("Failed to save product: " + JSON.stringify(errorData));
+            }
+
+            const savedProduct = await res.json();
+            onSave(savedProduct);
+            onClose();
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error("[createProduct]", error.message);
+                alert("خطا در ذخیره محصول: " + error.message);
+            }
+        }
+    };
 
     return (
         <>
@@ -99,9 +151,7 @@ export default function ProductModal({
                             className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="Price"
                             value={form.price}
-                            onChange={(e) =>
-                                setForm({ ...form, price: Number(e.target.value) })
-                            }
+                            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
                         />
                         <input
                             type="number"
@@ -109,37 +159,33 @@ export default function ProductModal({
                             className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="Stock"
                             value={form.stock}
-                            onChange={(e) =>
-                                setForm({ ...form, stock: Number(e.target.value) })
-                            }
+                            onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
                         />
                     </div>
-                    <div className="flex gap-3">
-                        <select
-                            className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                            value={form.category}
-                            onChange={(e) =>
-                                setForm({ ...form, category: e.target.value })
-                            }
-                        >
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                            value={form.status}
-                            onChange={(e) => setForm({ ...form, status: e.target.value })}
-                        >
-                            {statuses.map((st) => (
-                                <option key={st} value={st}>
-                                    {st}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
+                        value={form.category}
+                        onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    >
+                        <option value="">انتخاب دسته‌بندی</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.name}>
+                                {cat.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <select
+                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
+                        value={form.status}
+                        onChange={(e) => setForm({ ...form, status: e.target.value })}
+                    >
+                        {statuses.map((status) => (
+                            <option key={status} value={status}>
+                                {status}
+                            </option>
+                        ))}
+                    </select>
                     <input
                         type="text"
                         className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
@@ -166,14 +212,7 @@ export default function ProductModal({
                     </button>
                     <button
                         className="bg-accent text-white px-4 py-2 rounded hover:bg-accent/80"
-                        // onClick={() => {
-                        //     // موقع ارسال به بیرون، category رو به شکل کامل یا رشته در نظر بگیر
-                        //     onSave({
-                        //         ...form,
-                        //         id: product?.id || Date.now(),
-                        //         category: form.category, 
-                        //     });
-                        // }}
+                        onClick={handleSubmit}
                         disabled={!form.name.trim()}
                     >
                         Save

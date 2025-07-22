@@ -59,11 +59,15 @@ export default function ProductsPage() {
     }, []);
 
     // کمک‌گیرنده برای گرفتن شناسه دسته‌بندی از محصول
-    const getCategoryId = (category: Category | string | number) => {
-        if (typeof category === "object" && category !== null && "id" in category) {
+    const getCategoryId = (category: Category | string | number | null | undefined) => {
+        if (category === null || category === undefined) return "";
+        if (typeof category === "object" && "id" in category && category.id !== undefined && category.id !== null) {
             return category.id.toString();
         }
-        return category.toString();
+        if (category !== null && category !== undefined && category.toString) {
+            return category.toString();
+        }
+        return "";
     };
 
     // آمار
@@ -441,8 +445,7 @@ export default function ProductsPage() {
                                         <td className="px-2 py-2">
                                             {typeof p.category === "object" && p.category !== null
                                                 ? p.category.name
-                                                : categories.find((c) => c.id.toString() === p.category.toString())?.name ||
-                                                p.category}
+                                                : categories.find((c) => c.id.toString() === p.category?.toString())?.name || p.category || ""}
                                         </td>
                                         <td className="px-2 py-2">
                                             <StatusBadge status={p.status} />

@@ -1,6 +1,6 @@
 "use client";
 import Header from "@/components/Header";
-// import Pagination from "@/components/Pagination";
+import Pagination from "@/components/Pagination";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Product } from "../../types/product";
@@ -11,6 +11,20 @@ import SortableTH from "@/components/Sortable";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
 import { getStatuses } from "@/lib/api/statuses";
+
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
+// pagination ////////////////////////////////////////////////////////////////////////////////
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -89,7 +103,7 @@ export default function ProductsPage() {
     }
 
     // صفحه‌بندی
-    // const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
+    const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
     const paginatedProducts = filteredProducts.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
@@ -200,11 +214,11 @@ export default function ProductsPage() {
     };
 
     // تغییر صفحه
-    // const goToPage = (page: number) => {
-    //     if (page < 1 || page > pageCount) return;
-    //     setCurrentPage(page);
-    //     setSelectedIds([]);
-    // };
+    const goToPage = (page: number) => {
+        if (page < 1 || page > pageCount) return;
+        setCurrentPage(page);
+        setSelectedIds([]);
+    };
 
     return (
         <div className="w-full h-full flex flex-col">
@@ -468,7 +482,7 @@ export default function ProductsPage() {
                 </div>
 
                 {/* صفحه‌بندی */}
-                {/* <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={goToPage} /> */}
+                <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={goToPage} />
 
                 {/* مودال‌ها */}
                 <ProductModal

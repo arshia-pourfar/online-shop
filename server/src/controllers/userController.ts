@@ -112,7 +112,8 @@ export const deleteUser = async (req: Request, res: Response) => {
         });
 
         // Get an array of order IDs
-        const orderIds = userOrders.map(order => order.id);
+        // Explicitly type 'order' to resolve 'implicitly has an 'any' type' error
+        const orderIds = userOrders.map((order: { id: string }) => order.id);
 
         // 1. Delete related OrderItems for these orders (if any)
         if (orderIds.length > 0) {

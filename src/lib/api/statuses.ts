@@ -13,3 +13,16 @@ export async function getStatuses() {
         return [];
     }
 }
+export async function getCustomerStatuses() {
+    try {
+        const res = await fetch(`${API_BASE}/api/statuses`);
+        if (!res.ok) {
+            throw new Error("Failed to fetch statuses");
+        }
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error("getStatuses error:", error);
+        return [];
+    }
+}

@@ -7,7 +7,6 @@ import { getCategories } from "@/lib/api/categories";
 import { getStatuses } from "@/lib/api/statuses";
 
 interface FormState {
-    // State for the product form fields
     id: number;
     name: string;
     price: number;
@@ -19,7 +18,6 @@ interface FormState {
 }
 
 export default function ProductModal({
-    // Props: show (modal open), onClose, onSave, product (for edit), type (add/edit)
     show,
     onClose,
     onSave,
@@ -32,10 +30,11 @@ export default function ProductModal({
     product: Product | null;
     type: "add" | "edit";
 }) {
-    const [categories, setCategories] = useState<{ id: number; name: string }[]>([]); // List of categories
-    const [statuses, setStatuses] = useState<string[]>([]); // List of product statuses
+    const [categories, setCategories] = useState<{ id: number; name: string }[]>(
+        []
+    );
+    const [statuses, setStatuses] = useState<string[]>([]);
     const [form, setForm] = useState<FormState>({
-        // Form state initialization
         id: 0,
         name: "",
         price: 0,
@@ -47,19 +46,17 @@ export default function ProductModal({
     });
 
     useEffect(() => {
-        // Fetch categories and statuses on mount
         getCategories().then(setCategories);
         getStatuses().then(setStatuses);
     }, []);
 
     useEffect(() => {
-        // If editing, populate form with product data
-        // If adding, reset form
         if (product) {
             const categoryName =
                 typeof product.category === "string"
                     ? product.category
-                    : categories.find((cat) => cat.id === (product as { categoryId?: number }).categoryId)?.name || "";
+                    : categories.find((cat) => cat.id === (product as { categoryId?: number }).categoryId)
+                        ?.name || "";
 
             setForm({
                 id: product.id,
@@ -85,21 +82,18 @@ export default function ProductModal({
         }
     }, [product, categories]);
 
-    if (!show) return null; // Don't render modal if not shown
+    if (!show) return null;
 
     const handleSubmit = async () => {
-        // Validate form and submit to API
         try {
             const categoryId = categories.find((cat) => cat.name === form.category)?.id;
 
             if (!form.name.trim() || isNaN(form.price) || !categoryId) {
-                // Show alert if form is invalid
                 alert("اطلاعات ورودی کامل و معتبر نیست.");
                 return;
             }
 
             const payload = {
-                // Prepare data for API
                 name: form.name.trim(),
                 price: Number(form.price),
                 stock: Number(form.stock),
@@ -110,7 +104,6 @@ export default function ProductModal({
             };
 
             const res = await fetch(
-                // Send request to API (add or edit)
                 type === "edit"
                     ? `http://localhost:5000/api/products/${form.id}`
                     : "http://localhost:5000/api/products",
@@ -121,19 +114,15 @@ export default function ProductModal({
                 }
             );
 
-
             if (!res.ok) {
-                // Handle API error
                 const errorData = await res.json();
                 throw new Error("Failed to save product: " + JSON.stringify(errorData));
             }
 
             const savedProduct = await res.json();
-            // Call onSave and close modal
             onSave(savedProduct);
             onClose();
         } catch (error) {
-            // Handle JS error
             if (error instanceof Error) {
                 console.error("[createProduct]", error.message);
                 alert("خطا در ذخیره محصول: " + error.message);
@@ -142,103 +131,183 @@ export default function ProductModal({
     };
 
     return (
-        // Modal layout and form rendering
         <>
-            <div className="fixed z-50 top-0 left-0 w-screen h-screen bg-black/50 backdrop-blur-sm"></div>
-            <div className="bg-primary-bg rounded-xl p-6 w-full max-w-xl shadow-xl border border-gray-700 overflow-auto max-h-[90vh] z-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <h2 className="text-2xl font-semibold mb-6 text-accent">
-                    {type === "add" ? "Add New Product" : "Edit Product"}
-                </h2>
-                <div className="space-y-4">
-                    <input
-                        type="text"
-                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                        placeholder="Product Name"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    />
-                    <textarea
-                        rows={3}
-                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-                        placeholder="Description"
-                        value={form.description ?? ""}
-                        onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    />
-                    <div className="flex gap-3">
-                        <input
-                            type="number"
-                            min={0}
-                            className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                            placeholder="Price"
-                            value={form.price}
-                            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                        />
-                        <input
-                            type="number"
-                            min={0}
-                            className="flex-1 border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                            placeholder="Stock"
-                            value={form.stock}
-                            onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
-                        />
-                    </div>
-                    <select
-                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                        value={form.category}
-                        onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    >
-                        <option value="">انتخاب دسته‌بندی</option>
-                        {categories.map((cat) => (
-                            <option key={cat.id} value={cat.name}>
-                                {cat.name}
-                            </option>
-                        ))}
-                    </select>
+            <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50"></div>
+            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+                <div className="bg-primary-bg rounded-3xl p-10 max-w-xl w-full shadow-2xl border border-gray-700 max-h-[90vh] overflow-auto">
+                    <h2 className="text-3xl font-extrabold text-accent mb-8 text-center tracking-wide">
+                        {type === "add" ? "Add New Product" : "Edit Product"}
+                    </h2>
+                    <div className="space-y-6">
+                        {/* Name */}
+                        <div>
+                            <label
+                                htmlFor="name"
+                                className="block text-sm font-medium text-secondary-text mb-1"
+                            >
+                                Product Name
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                placeholder="Product Name"
+                                value={form.name}
+                                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            />
+                        </div>
 
-                    <select
-                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                        value={form.status}
-                        onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    >
-                        {statuses.map((status) => (
-                            <option key={status} value={status}>
-                                {status}
-                            </option>
-                        ))}
-                    </select>
-                    <input
-                        type="text"
-                        className="w-full border border-gray-600 rounded px-3 py-2 bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent"
-                        placeholder="Image URL"
-                        value={form.imageUrl}
-                        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                    />
-                    {form.imageUrl && (
-                        // Product image preview
-                        <Image
-                            src={`/products/${form.imageUrl}`}
-                            width={50}
-                            height={50}
-                            alt="Preview"
-                            className="w-32 h-32 object-contain mt-2 rounded"
-                        />
-                    )}
-                </div>
-                <div className="flex justify-end gap-3 mt-6">
-                    {/* Action buttons */}
-                    <button
-                        className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 text-primary-text"
-                        onClick={onClose}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        className="bg-accent text-white px-4 py-2 rounded hover:bg-accent/80"
-                        onClick={handleSubmit}
-                        disabled={!form.name.trim()}
-                    >
-                        Save
-                    </button>
+                        {/* Description */}
+                        <div>
+                            <label
+                                htmlFor="description"
+                                className="block text-sm font-medium text-secondary-text mb-1"
+                            >
+                                Description
+                            </label>
+                            <textarea
+                                id="description"
+                                rows={3}
+                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out resize-none"
+                                placeholder="Description"
+                                value={form.description ?? ""}
+                                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Price & Stock */}
+                        <div className="flex gap-4">
+                            <div className="flex-1">
+                                <label
+                                    htmlFor="price"
+                                    className="block text-sm font-medium text-secondary-text mb-1"
+                                >
+                                    Price
+                                </label>
+                                <input
+                                    id="price"
+                                    type="number"
+                                    min={0}
+                                    className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                    placeholder="Price"
+                                    value={form.price}
+                                    onChange={(e) =>
+                                        setForm({ ...form, price: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <label
+                                    htmlFor="stock"
+                                    className="block text-sm font-medium text-secondary-text mb-1"
+                                >
+                                    Stock
+                                </label>
+                                <input
+                                    id="stock"
+                                    type="number"
+                                    min={0}
+                                    className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                    placeholder="Stock"
+                                    value={form.stock}
+                                    onChange={(e) =>
+                                        setForm({ ...form, stock: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        {/* Category */}
+                        <div>
+                            <label
+                                htmlFor="category"
+                                className="block text-sm font-medium text-secondary-text mb-1"
+                            >
+                                Category
+                            </label>
+                            <select
+                                id="category"
+                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                value={form.category}
+                                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                            >
+                                <option value="">Choose Category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.name}>
+                                        {cat.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Status */}
+                        <div>
+                            <label
+                                htmlFor="status"
+                                className="block text-sm font-medium text-secondary-text mb-1"
+                            >
+                                Status
+                            </label>
+                            <select
+                                id="status"
+                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                value={form.status}
+                                onChange={(e) => setForm({ ...form, status: e.target.value })}
+                            >
+                                <option value="">Choose Status</option>
+                                {statuses.map((status) => (
+                                    <option key={status} value={status}>
+                                        {status}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Image URL */}
+                        <div>
+                            <label
+                                htmlFor="imageUrl"
+                                className="block text-sm font-medium text-secondary-text mb-1"
+                            >
+                                Image URL
+                            </label>
+                            <input
+                                id="imageUrl"
+                                type="text"
+                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                                placeholder="Image URL"
+                                value={form.imageUrl}
+                                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                            />
+                            {form.imageUrl && (
+                                <Image
+                                    src={`/products/${form.imageUrl}`}
+                                    width={128}
+                                    height={128}
+                                    alt="Preview"
+                                    className="w-32 h-32 object-contain mt-3 rounded-2xl"
+                                />
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-6 mt-10">
+                        <button
+                            className="px-6 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className={`px-6 py-3 rounded-3xl font-semibold text-white shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${form.name.trim()
+                                    ? "bg-accent hover:bg-accent/90 cursor-pointer"
+                                    : "bg-gray-600 opacity-70 cursor-not-allowed"
+                                }`}
+                            onClick={handleSubmit}
+                            disabled={!form.name.trim()}
+                        >
+                            Save Product
+                        </button>
+                    </div>
                 </div>
             </div>
         </>

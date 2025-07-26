@@ -44,13 +44,15 @@ export const getProductById = async (req: Request, res: Response) => {
 
 // ساخت محصول جدید
 export const createProduct = async (req: Request, res: Response) => {
-    const { name, price, description, imageUrl, categoryId } = req.body;
+    const { name, price, stock, description, status, imageUrl, categoryId } = req.body;
 
     // اعتبارسنجی ساده
     if (
         typeof name !== 'string' ||
         typeof price !== 'number' ||
+        typeof stock !== 'number' ||
         typeof categoryId !== 'number' ||
+        (status && typeof status !== 'string') ||
         (description && typeof description !== 'string') ||
         (imageUrl && typeof imageUrl !== 'string')
     ) {
@@ -62,7 +64,9 @@ export const createProduct = async (req: Request, res: Response) => {
             data: {
                 name,
                 price,
+                stock,
                 description,
+                status,
                 imageUrl,
                 category: {
                     connect: { id: categoryId },
@@ -81,35 +85,58 @@ export const createProduct = async (req: Request, res: Response) => {
 
 // حذف محصول
 export const deleteProduct = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).json({ error: 'Invalid product id' });
-    }
-
+    const { id } = req.params;
+    console.log(`[Backend] Received DELETE request for product ID: ${id}`); // Log received ID
     try {
-        await prisma.product.delete({ where: { id } });
-        res.json({ message: 'Product deleted' });
+        // Ensure the ID is parsed to an integer if your Prisma schema uses Int for product ID
+        const productId = parseInt(id, 10);
+        if (isNaN(productId)) {
+            console.error(`[deleteProduct] Invalid product ID received: ${id}`);
+            return res.status(400).json({ error: 'شناسه محصول نامعتبر است.' }); // Invalid product ID
+        }
+
+        // IMPORTANT: Delete related OrderItem records first to satisfy foreign key constraint
+        // This line was commented out previously but is now active to fix the error.
+        await prisma.orderItem.deleteMany({ where: { productId: productId } });
+        console.log(`[Backend] Deleted all OrderItems related to product ID: ${productId}`);
+
+
+        const deletedProduct = await prisma.product.delete({ where: { id: productId } });
+        console.log(`[Backend] Product with ID ${productId} deleted successfully.`);
+        res.json({ message: 'محصول با موفقیت حذف شد.', deletedProduct }); // Send success message and deleted product data
     } catch (err: unknown) {
         if (err instanceof Error) {
-            console.error('[deleteProduct]', err.message);
+            console.error(`[deleteProduct] Error deleting product ID ${id}:`, err.message);
+            // Handle specific Prisma errors, e.g., if the record doesn't exist
+            if (err.message.includes('RecordNotFound') || err.message.includes('No Product found') || err.message.includes('An operation failed because it depends on one or more records that were required but not found')) {
+                return res.status(404).json({ error: 'محصول یافت نشد.' }); // Product not found
+            }
+            // Handle foreign key constraint errors (if related records exist and no cascade delete)
+            // This specific error should now be prevented by deleting OrderItems first.
+            if (err.message.includes('Foreign key constraint failed')) {
+                return res.status(409).json({ error: 'این محصول دارای سفارشات مرتبط است و نمی‌توان آن را حذف کرد. ابتدا سفارشات مرتبط را حذف کنید.' });
+            }
         }
-        res.status(500).json({ error: 'Failed to delete product' });
+        res.status(500).json({ error: 'خطا در حذف محصول.' }); // Generic server error
     }
 };
 
 // ویرایش محصول
 export const updateProduct = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    const { name, price, description, imageUrl, categoryId } = req.body;
+    const { name, price, stock, description, status, imageUrl, categoryId } = req.body;
 
     if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid product id' });
     }
 
+    // اعتبارسنجی ساده
     if (
         typeof name !== 'string' ||
         typeof price !== 'number' ||
+        typeof stock !== 'number' ||
         typeof categoryId !== 'number' ||
+        (status && typeof status !== 'string') ||
         (description && typeof description !== 'string') ||
         (imageUrl && typeof imageUrl !== 'string')
     ) {
@@ -122,7 +149,9 @@ export const updateProduct = async (req: Request, res: Response) => {
             data: {
                 name,
                 price,
+                stock,
                 description,
+                status,
                 imageUrl,
                 category: {
                     connect: { id: categoryId },

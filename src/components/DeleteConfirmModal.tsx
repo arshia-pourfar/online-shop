@@ -2,10 +2,12 @@
 
 export default function DeleteConfirmModal({
     show,
+    message,
     onCancel,
     onConfirm,
 }: {
     show: boolean;
+    message: string;
     onCancel: () => void;
     onConfirm: () => void;
 }) {
@@ -17,7 +19,7 @@ export default function DeleteConfirmModal({
                     Confirm Delete
                 </h3>
                 <p className="mb-6 text-primary-text">
-                    Are you sure you want to delete this product?
+                    {message}
                 </p>
                 <div className="flex justify-end gap-3">
                     <button

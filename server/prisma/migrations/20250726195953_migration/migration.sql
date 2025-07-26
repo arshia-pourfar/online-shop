@@ -7,12 +7,17 @@ CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'SHIPPED', 'DELIVERED', 'CANCELED'
 -- CreateEnum
 CREATE TYPE "ProductStatus" AS ENUM ('AVAILABLE', 'OUT_OF_STOCK', 'DISCONTINUED', 'COMING_SOON', 'HIDDEN');
 
+-- CreateEnum
+CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING', 'SUSPENDED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
     "password" TEXT NOT NULL,
+    "phone" TEXT,
+    "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
     "role" "Role" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -64,7 +69,7 @@ CREATE TABLE "OrderItem" (
 );
 
 -- CreateTable
-CREATE TABLE "salesStats" (
+CREATE TABLE "SalesStats" (
     "id" TEXT NOT NULL,
     "year" INTEGER NOT NULL,
     "month" TEXT NOT NULL,
@@ -72,7 +77,7 @@ CREATE TABLE "salesStats" (
     "revenue" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "salesStats_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "SalesStats_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

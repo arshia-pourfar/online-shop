@@ -17,10 +17,7 @@ module.exports = {
         'status-positive': '#00C853',
         'status-negative': '#FF5252',
         'status-neutral': '#FFD600',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'status-hidden': '#757575',
       },
     },
   },

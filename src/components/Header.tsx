@@ -21,7 +21,7 @@ const Header = () => {
     return (
         <header className="h-16 w-full p-6 bg-secondary-bg flex justify-between items-center" >
             <div className="text-2xl sm:text-3xl font-bold text-primary-text">
-                <h2>E-commerce <span className='ml-2 text-base font-normal text-muted-foreground'>/{pageName}</span></h2>
+                <h2>E-commerce <span className='ml-12 text-base font-normal text-secondary-text'>/{pageName}</span></h2>
             </div>
             <div>
                 <FontAwesomeIcon icon={faCircleUser} className='size-10' />

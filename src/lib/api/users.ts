@@ -15,7 +15,9 @@ export async function getUserById(id: string): Promise<User> {
 
 export async function createUser(data: {
   name: string;
+  phone: string;
   email: string;
+  status: string;
   password: string;
   role: string;
 }): Promise<User> {

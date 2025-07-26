@@ -14,13 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   name      String?
   password  String
-  role      Role     @default(USER)
+  phone     String?
+  status    UserStatus @default(ACTIVE)
+  role      Role       @default(USER)
   orders    Order[]
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
 }
 
 model Category {
@@ -62,14 +64,14 @@ model OrderItem {
   quantity  Int
 }
 
-model salesStats {
-    id         String   @id @default(cuid())
-    year       Int
-    month      String
-    sales      Int
-    revenue    Int
-    createdAt  DateTime @default(now())
-  }
+model SalesStats {
+  id         String   @id @default(cuid())
+  year       Int
+  month      String
+  sales      Int
+  revenue    Int
+  createdAt  DateTime @default(now())
+}
 
 enum Role {
   USER
@@ -89,4 +91,11 @@ enum ProductStatus {
   DISCONTINUED
   COMING_SOON
   HIDDEN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  SUSPENDED
 }

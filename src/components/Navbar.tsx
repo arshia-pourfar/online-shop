@@ -30,7 +30,7 @@ const adminNavLinks = [
     { href: "/dashboard", icon: faTachometerAlt, text: "Dashboard" },
     { href: "/orders", icon: faClipboardList, text: "Orders" },
     { href: "/productsManagement", icon: faBox, text: "Products" },
-    { href: "/customers", icon: faUsers, text: "Customers" },
+    { href: "/customersManagement", icon: faUsers, text: "Customers" },
     { href: "/reports", icon: faChartLine, text: "Reports" },
 ];
 

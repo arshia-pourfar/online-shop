@@ -24,3 +24,14 @@ body {
 .recharts-wrapper .tremor-Legend-root li {
   margin-right: 15px;
 }
+
+/* حذف دکمه های spinner برای input number */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+}

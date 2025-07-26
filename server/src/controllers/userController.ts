@@ -88,19 +88,76 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 };
 
+
 export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
+    console.log(`[Backend] Received DELETE request for user ID: ${id}`);
     try {
-        await prisma.user.delete({ where: { id } });
-        res.json({ message: 'User deleted' });
+        // =====================================================================================
+        // CRITICAL STEP: Handle ALL related records that have foreign key constraints
+        // pointing to this user BEFORE attempting to delete the user.
+        //
+        // You MUST uncomment and ADAPT these lines based on YOUR ACTUAL `schema.prisma` relationships.
+        // If a User has Orders, Reviews, CartItems, etc., you need to delete them first.
+        //
+        // ALTERNATIVE: If you want automatic deletion, add `onDelete: Cascade` to the
+        // foreign key definitions in your `schema.prisma` for these relationships,
+        // then run `npx prisma migrate dev`. If you do this, you might not need these `deleteMany` calls.
+        // =====================================================================================
+
+        // First, find all orders associated with this user
+        const userOrders = await prisma.order.findMany({
+            where: { userId: id },
+            select: { id: true } // Only select the ID for efficiency
+        });
+
+        // Get an array of order IDs
+        const orderIds = userOrders.map(order => order.id);
+
+        // 1. Delete related OrderItems for these orders (if any)
+        if (orderIds.length > 0) {
+            await prisma.orderItem.deleteMany({
+                where: {
+                    orderId: {
+                        in: orderIds // Delete order items where orderId is in the list of user's order IDs
+                    }
+                }
+            });
+            console.log(`[Backend] Deleted all OrderItems related to orders of user ID: ${id}`);
+        }
+
+        // 2. Delete related Orders (if any)
+        await prisma.order.deleteMany({ where: { userId: id } });
+        console.log(`[Backend] Deleted all Orders related to user ID: ${id}`);
+
+        // Example: If a User can have CartItems
+        // await prisma.cartItem.deleteMany({ where: { userId: id } });
+        // console.log(`[Backend] Deleted all CartItems related to user ID: ${id}`);
+
+        // Example: If a User can have Reviews
+        // await prisma.review.deleteMany({ where: { userId: id } });
+        // console.log(`[Backend] Deleted all Reviews related to user ID: ${id}`);
+
+
+        // =====================================================================================
+        // After handling all related records, delete the user
+        // =====================================================================================
+        const deletedUser = await prisma.user.delete({ where: { id } }); // Capture the deleted user
+        console.log(`[Backend] User with ID ${id} deleted successfully.`);
+        res.json({ message: 'User deleted successfully.', deletedUser }); // Send success message and deleted user data
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.error('[deleteUser]', err.message);
             // Handle specific errors, e.g., user not found
-            if (err.message.includes('RecordNotFound') || err.message.includes('No User found')) {
-                return res.status(404).json({ error: 'User not found' });
+            if (err.message.includes('RecordNotFound') || err.message.includes('No User found') || err.message.includes('An operation failed because it depends on one or more records that were required but not found')) {
+                return res.status(404).json({ error: 'User not found.' });
+            }
+            // If a foreign key constraint still fails, it means there's another related model
+            // that hasn't been handled by `deleteMany` or `onDelete: Cascade` in your schema.
+            if (err.message.includes('Foreign key constraint failed')) {
+                return res.status(409).json({ error: 'Cannot delete user due to related records. Please check associated data (e.g., orders, reviews, cart items).' });
             }
         }
-        res.status(500).json({ error: 'Failed to delete user' });
+        res.status(500).json({ error: 'Failed to delete user.' });
     }
 };

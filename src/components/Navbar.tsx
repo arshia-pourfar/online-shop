@@ -28,7 +28,7 @@ import { useState } from "react";
 const adminNavLinks = [
     // Navigation links for admin users
     { href: "/dashboard", icon: faTachometerAlt, text: "Dashboard" },
-    { href: "/orders", icon: faClipboardList, text: "Orders" },
+    { href: "/ordersManagement", icon: faClipboardList, text: "Orders" },
     { href: "/productsManagement", icon: faBox, text: "Products" },
     { href: "/customersManagement", icon: faUsers, text: "Customers" },
     { href: "/reports", icon: faChartLine, text: "Reports" },

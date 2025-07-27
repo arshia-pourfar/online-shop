@@ -19,3 +19,13 @@ export const getCustomerStatuses = (req: Request, res: Response) => {
     ];
     res.json(statuses);
 };
+export const getOrderStatuses = (req: Request, res: Response) => {
+    const statuses = [
+        "PENDING",
+        "PROCESSING",
+        "SHIPPED",
+        "DELIVERED",
+        "CANCELLED",
+    ];
+    res.json(statuses);
+};

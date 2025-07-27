@@ -1,13 +1,14 @@
-// /* eslint-disable @typescript-eslint/no-unused-vars */
-// import { PrismaClient } from '@prisma/client';
+// /* eslint-disable @typescript-eslint/no-unused-vars */ // This can be removed after confirming no unused vars
+// import { PrismaClient, ProductStatus, OrderStatus } from '@prisma/client'; // Import enums
 // import 'dotenv/config';
-// const prisma = new PrismaClient();
 // import bcrypt from 'bcrypt';
+
+// const prisma = new PrismaClient();
 
 // async function main() {
 //     console.log('🚀 Starting seeding...');
 
-
+//     // 1. Create Users
 //     const hashedAdminPassword = await bcrypt.hash('admin123', 10);
 //     const admin = await prisma.user.create({
 //         data: {
@@ -19,6 +20,8 @@
 //             role: 'ADMIN',
 //         },
 //     });
+//     console.log(`Created user: ${admin.name}`);
+
 
 //     const hashedPassword1 = await bcrypt.hash('ali123', 10);
 //     const user1 = await prisma.user.create({
@@ -31,6 +34,8 @@
 //             role: 'USER',
 //         },
 //     });
+//     console.log(`Created user: ${user1.name}`);
+
 
 //     const hashedPassword2 = await bcrypt.hash('sara123', 10);
 //     const user2 = await prisma.user.create({
@@ -43,6 +48,8 @@
 //             role: 'USER',
 //         },
 //     });
+//     console.log(`Created user: ${user2.name}`);
+
 
 //     const hashedPassword3 = await bcrypt.hash('reza123', 10);
 //     const user3 = await prisma.user.create({
@@ -55,6 +62,8 @@
 //             role: 'USER',
 //         },
 //     });
+//     console.log(`Created user: ${user3.name}`);
+
 
 //     const hashedPassword4 = await bcrypt.hash('maryam123', 10);
 //     const user4 = await prisma.user.create({
@@ -67,6 +76,8 @@
 //             role: 'USER',
 //         },
 //     });
+//     console.log(`Created user: ${user4.name}`);
+
 
 //     const hashedPassword5 = await bcrypt.hash('suspended123', 10);
 //     const user5 = await prisma.user.create({
@@ -79,9 +90,10 @@
 //             role: 'USER',
 //         },
 //     });
+//     console.log(`Created user: ${user5.name}`);
 
 
-//     // 2. دسته‌ها را ایجاد یا به‌روزرسانی کن
+//     // 2. Create or Update Categories
 //     const categories = [
 //         { id: 1, name: "Accessories", slug: "accessories" },
 //         { id: 2, name: "Display", slug: "display" },
@@ -110,11 +122,11 @@
 //         console.log(`Upserted category: ${cat.name}`);
 //     }
 
-//     // 3. گرفتن دسته‌ها برای مپ کردن نام به id
+//     // 3. Get Categories for mapping name to id
 //     const allCategories = await prisma.category.findMany();
 //     const categoryMap = new Map(allCategories.map(cat => [cat.slug, cat.id]));
 
-//     // 4. محصولات
+//     // 4. Products data
 //     const productData = [
 //         {
 //             name: 'Wireless Mouse',
@@ -253,7 +265,7 @@
 //         }
 //     ];
 
-//     // 5. ایجاد محصولات با categoryId صحیح
+//     // 5. Create products with correct categoryId and explicit ProductStatus casting
 //     const products = [];
 //     for (const product of productData) {
 //         const categoryId = categoryMap.get(product.category);
@@ -267,7 +279,7 @@
 //                 description: product.description,
 //                 imageUrl: product.imageUrl,
 //                 stock: product.stock,
-//                 status: product.status,
+//                 status: product.status as ProductStatus, // Explicitly cast to ProductStatus
 //                 categoryId: categoryId,
 //             },
 //         });
@@ -275,12 +287,14 @@
 //         console.log(`Created product: ${createdProduct.name}`);
 //     }
 
-//     // 6. ایجاد سفارش‌ها
+//     // 6. Create Orders with new fields and updated status values
 //     await prisma.order.create({
 //         data: {
-//             userId: admin.id, // Admin can also have orders
+//             userId: admin.id,
+//             customerName: admin.name || 'Admin User', // Added customerName
+//             shippingAddress: '123 Admin Street, City, Country', // Added shippingAddress
 //             total: products[0].price + products[1].price,
-//             status: 'DELIVERED',
+//             status: OrderStatus.DELIVERED, // Use enum member
 //             items: {
 //                 create: [
 //                     { productId: products[0].id, quantity: 1 },
@@ -294,8 +308,10 @@
 //     await prisma.order.create({
 //         data: {
 //             userId: user1.id,
+//             customerName: user1.name || 'Ali', // Added customerName
+//             shippingAddress: '456 User1 Road, Town, Country', // Added shippingAddress
 //             total: products[2].price * 2,
-//             status: 'PENDING',
+//             status: OrderStatus.PENDING, // Use enum member
 //             items: {
 //                 create: [
 //                     { productId: products[2].id, quantity: 2 },
@@ -308,8 +324,10 @@
 //     await prisma.order.create({
 //         data: {
 //             userId: user2.id,
+//             customerName: user2.name || 'Sara Ahmadi', // Added customerName
+//             shippingAddress: '789 User2 Avenue, Village, Country', // Added shippingAddress
 //             total: products[3].price + products[4].price + products[5].price,
-//             status: 'CANCELED',
+//             status: OrderStatus.CANCELLED, // Use enum member (corrected spelling)
 //             items: {
 //                 create: [
 //                     { productId: products[3].id, quantity: 1 },
@@ -324,8 +342,10 @@
 //     await prisma.order.create({
 //         data: {
 //             userId: user3.id,
+//             customerName: user3.name || 'Reza Karimi', // Added customerName
+//             shippingAddress: '101 User3 Lane, Hamlet, Country', // Added shippingAddress
 //             total: products[6].price * 3,
-//             status: 'SHIPPED',
+//             status: OrderStatus.SHIPPED, // Use enum member
 //             items: {
 //                 create: [
 //                     { productId: products[6].id, quantity: 3 },
@@ -339,8 +359,10 @@
 //     await prisma.order.create({
 //         data: {
 //             userId: user4.id,
+//             customerName: user4.name || 'Maryam Najafi', // Added customerName
+//             shippingAddress: '202 User4 Street, City, Country', // Added shippingAddress
 //             total: products[7].price + products[8].price,
-//             status: 'DELIVERED',
+//             status: OrderStatus.PROCESSING, // Use enum member (new status)
 //             items: {
 //                 create: [
 //                     { productId: products[7].id, quantity: 1 },
@@ -354,8 +376,10 @@
 //     await prisma.order.create({
 //         data: {
 //             userId: user5.id,
+//             customerName: user5.name || 'Suspended User', // Added customerName
+//             shippingAddress: '303 User5 Road, Town, Country', // Added shippingAddress
 //             total: products[9].price,
-//             status: 'PENDING',
+//             status: OrderStatus.PENDING, // Use enum member
 //             items: {
 //                 create: [
 //                     { productId: products[9].id, quantity: 1 },
@@ -366,7 +390,7 @@
 //     console.log(`Created order for ${user5.name}`);
 
 
-//     // 7. آمار فروش
+//     // 7. Sales Statistics
 //     await prisma.salesStats.createMany({
 //         data: [
 //             { year: 2025, month: 'Jan', revenue: 2200, sales: 45 },

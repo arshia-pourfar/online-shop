@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -26,51 +26,53 @@ model User {
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  slug     String    @unique
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  slug    String    @unique
   products Product[]
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   price       Float
-  stock       Int        @default(10)
-  status      ProductStatus  @default(AVAILABLE)
+  stock       Int         @default(10)
+  status      ProductStatus @default(AVAILABLE)
   imageUrl    String
   description String?
-  category    Category   @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
   orderItems  OrderItem[]
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String
-  status     OrderStatus @default(PENDING)
-  total      Float
-  items      OrderItem[]
-  createdAt  DateTime    @default(now())
+  id              String      @id @default(cuid())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+  customerName    String
+  status          OrderStatus @default(PENDING)
+  total           Float
+  items           OrderItem[]
+  shippingAddress String
+  createdAt       DateTime    @default(now())
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
-  order     Order    @relation(fields: [orderId], references: [id])
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
   productId Int
   quantity  Int
 }
 
 model SalesStats {
-  id         String   @id @default(cuid())
-  year       Int
-  month      String
-  sales      Int
-  revenue    Int
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  year      Int
+  month     String
+  sales     Int
+  revenue   Int
+  createdAt DateTime @default(now())
 }
 
 enum Role {
@@ -80,9 +82,10 @@ enum Role {
 
 enum OrderStatus {
   PENDING
+  PROCESSING // Added: To match frontend status
   SHIPPED
   DELIVERED
-  CANCELED
+  CANCELLED  // Corrected spelling from CANCELED
 }
 
 enum ProductStatus {

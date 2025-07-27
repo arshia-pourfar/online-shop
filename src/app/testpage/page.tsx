@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getCategories } from "@/lib/api/categories"; // مسیر خودت رو تنظیم کن
-import { getStatuses } from "@/lib/api/statuses"; // مسیر خودت رو تنظیم کن
+import { getProductStatuses } from "@/lib/api/statuses"; // مسیر خودت رو تنظیم کن
 import { Category } from "types/category";
 // import { Product } from "types/product";
 
@@ -33,7 +33,7 @@ export default function EditAddProductModal() {
 
     useEffect(() => {
         getCategories().then(setCategories);
-        getStatuses().then(setStatuses);
+        getProductStatuses().then(setStatuses);
     }, []);
 
     const handleSubmit = async () => {

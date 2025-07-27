@@ -1,20 +1,22 @@
 "use client";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { loginUser, saveToken } from "@/lib/api/auth";
+import { faLock, faEnvelope, faUser, faPhone } from "@fortawesome/free-solid-svg-icons";
+import { loginUser, registerUser, saveToken } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/context/authContext";  // اضافه کن
+import { useAuth } from "@/lib/context/authContext";
 
 const LoginPage = () => {
+    const [isRegistering, setIsRegistering] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isRegistering, setIsRegistering] = useState(false);
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
     const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState(""); // 'success' or 'error'
+    const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
     const router = useRouter();
-    const { login } = useAuth();  // از Context، تابع login رو بگیر
+    const { login } = useAuth();
 
     const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -22,30 +24,31 @@ const LoginPage = () => {
         setMessageType("");
 
         try {
-            const response = await loginUser(email, password);
+            if (isRegistering) {
+                const response = await registerUser(name, email, password, phone);
 
-            setMessage(`Welcome ${response.user.name}`);
-            setMessageType("success");
+                setMessage("Registration successful, you are now logged in.");
+                setMessageType("success");
 
-            saveToken(response.token);
-
-            // این خط رو حذف کن چون حالا Context ذخیره می‌کنه
-            // localStorage.setItem("user", JSON.stringify(response.user));
-
-            // آپدیت Context
-            login(response.user);
-
-            // هدایت بعد از لاگین
-            if (response.user.role === "ADMIN") {
-                router.push("/dashboard");
-            } else {
+                saveToken(response.token);
+                login(response.user);
                 router.push("/");
+            } else {
+                const response = await loginUser(email, password);
+
+                setMessage(`Welcome ${response.user.name}`);
+                setMessageType("success");
+
+                saveToken(response.token);
+                login(response.user);
+
+                router.push(response.user.role === "ADMIN" ? "/dashboard" : "/");
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setMessage(error.message);
             } else {
-                setMessage("Unknown login error");
+                setMessage("Unknown error occurred");
             }
             setMessageType("error");
         }
@@ -57,12 +60,48 @@ const LoginPage = () => {
                 <h2 className="text-3xl font-extrabold text-primary-text text-center mb-6">
                     {isRegistering ? "Register" : "Login"}
                 </h2>
+
                 {message && (
                     <div className={`p-3 mb-4 rounded-lg text-sm ${messageType === "error" ? "bg-status-negative text-primary-text" : "bg-status-positive text-primary-text"}`}>
                         {message}
                     </div>
                 )}
+
                 <form onSubmit={handleAuth} className="space-y-5">
+                    {isRegistering && (
+                        <>
+                            <div>
+                                <label htmlFor="name" className="block text-secondary-text text-sm font-medium mb-2">Name</label>
+                                <div className="relative">
+                                    <FontAwesomeIcon icon={faUser} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text" />
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        className="w-full pl-10 pr-3 py-2 bg-primary-bg border border-secondary-bg rounded-lg text-primary-text placeholder-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
+                                        placeholder="Your name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="phone" className="block text-secondary-text text-sm font-medium mb-2">Phone</label>
+                                <div className="relative">
+                                    <FontAwesomeIcon icon={faPhone} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text" />
+                                    <input
+                                        type="text"
+                                        id="phone"
+                                        className="w-full pl-10 pr-3 py-2 bg-primary-bg border border-secondary-bg rounded-lg text-primary-text placeholder-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
+                                        placeholder="09123456789"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+
                     <div>
                         <label htmlFor="email" className="block text-secondary-text text-sm font-medium mb-2">Email</label>
                         <div className="relative">
@@ -78,6 +117,7 @@ const LoginPage = () => {
                             />
                         </div>
                     </div>
+
                     <div>
                         <label htmlFor="password" className="block text-secondary-text text-sm font-medium mb-2">Password</label>
                         <div className="relative">
@@ -93,6 +133,7 @@ const LoginPage = () => {
                             />
                         </div>
                     </div>
+
                     <button
                         type="submit"
                         className="w-full bg-accent hover:bg-accent-alt text-primary-bg font-bold py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
@@ -100,6 +141,7 @@ const LoginPage = () => {
                         {isRegistering ? "Register" : "Login"}
                     </button>
                 </form>
+
                 <div className="mt-6 text-center">
                     <button
                         onClick={() => setIsRegistering(!isRegistering)}

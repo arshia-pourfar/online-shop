@@ -134,7 +134,7 @@ const Navbar = () => {
                     <li key={link.href}>
                         <Link
                             href={link.href}
-                            className={`group flex items-center p-3 ps-3.5 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
+                            className={`group flex items-center p-3 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
                                 ? "bg-accent text-primary-bg"
                                 : "text-secondary-text hover:bg-primary-bg hover:text-primary-text"
                                 }`}

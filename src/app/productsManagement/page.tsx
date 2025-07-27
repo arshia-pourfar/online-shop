@@ -10,7 +10,7 @@ import DeleteConfirmModal from "@/components/DeleteConfirmModal"; // Make sure t
 import SortableTH from "@/components/Sortable";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
-import { getStatuses } from "@/lib/api/statuses";
+import { getProductStatuses } from "@/lib/api/statuses";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faAngleDown,
@@ -18,7 +18,7 @@ import {
     faPlus,
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import StatusBadge from "@/components/StatusBadge";
+import ProductStatusBadge from "@/components/ProductStatusBadge";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -52,7 +52,7 @@ export default function ProductsPage() {
     useEffect(() => {
         getProducts().then(setProducts);
         getCategories().then(setCategories);
-        getStatuses().then(setStatuses);
+        getProductStatuses().then(setStatuses);
     }, []);
 
     // کمک‌گیرنده برای گرفتن شناسه دسته‌بندی از محصول
@@ -497,7 +497,7 @@ export default function ProductsPage() {
                                                 : categories.find((c) => c.id.toString() === p.category?.toString())?.name || p.category || ""}
                                         </td>
                                         <td className="px-2 py-2">
-                                            <StatusBadge status={p.status} />
+                                            <ProductStatusBadge status={p.status} />
                                         </td>
                                         <td className="px-2 h-20 flex items-center gap-2 justify-evenly">
                                             <button

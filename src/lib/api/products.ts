@@ -15,6 +15,34 @@ export async function getProductById(id: string): Promise<Product> {
     return res.json();
 }
 
+export async function saveProduct(product: Product) {
+    const payload = {
+        name: product.name,
+        price: Number(product.price),
+        description: product.description || "",
+        imageUrl: product.imageUrl,
+        categoryId: typeof product.category === "object" ? product.category.id : Number(product.category),
+    };
+
+    const method = product.id ? "PUT" : "POST";
+    const url = product.id ? `${API_BASE}/api/products/${product.id}` : `${API_BASE}/api/products`;
+
+    const res = await fetch(url, {
+        method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to save product: ${errorText}`);
+    }
+
+    return await res.json();
+}
+
 // Create a new product
 export async function createProduct(data: {
     name: string;

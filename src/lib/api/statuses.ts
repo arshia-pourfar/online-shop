@@ -1,8 +1,8 @@
 const API_BASE = 'http://localhost:5000';
 
-export async function getStatuses() {
+export async function getProductStatuses() {
     try {
-        const res = await fetch(`${API_BASE}/api/statuses`);
+        const res = await fetch(`${API_BASE}/api/statuses/productStatuses`);
         if (!res.ok) {
             throw new Error("Failed to fetch statuses");
         }
@@ -15,7 +15,7 @@ export async function getStatuses() {
 }
 export async function getCustomerStatuses() {
     try {
-        const res = await fetch(`${API_BASE}/api/statuses`);
+        const res = await fetch(`${API_BASE}/api/statuses/customerStatuses`);
         if (!res.ok) {
             throw new Error("Failed to fetch statuses");
         }

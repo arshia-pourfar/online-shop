@@ -2,88 +2,83 @@
 // import { PrismaClient } from '@prisma/client';
 // import 'dotenv/config';
 // const prisma = new PrismaClient();
+// import bcrypt from 'bcrypt';
 
 // async function main() {
 //     console.log('🚀 Starting seeding...');
 
-//     // 1. ایجاد کاربران
-//     // اضافه کردن فیلدهای phone و status
+
+//     const hashedAdminPassword = await bcrypt.hash('admin123', 10);
 //     const admin = await prisma.user.create({
 //         data: {
 //             name: 'Admin User',
 //             email: 'admin@test.com',
-//             password: 'admin123',
-//             phone: '+989121234567', // Fake phone number for admin
-//             status: 'ACTIVE', // Assigning a status
+//             password: hashedAdminPassword,
+//             phone: '+989121234567',
+//             status: 'ACTIVE',
 //             role: 'ADMIN',
 //         },
 //     });
-//     console.log(`Created user: ${admin.name} (${admin.role})`);
 
-
+//     const hashedPassword1 = await bcrypt.hash('ali123', 10);
 //     const user1 = await prisma.user.create({
 //         data: {
 //             name: 'Ali',
 //             email: 'ali@test.com',
-//             password: 'ali123',
-//             phone: '+989351112233', // Fake phone number
-//             status: 'ACTIVE', // Assigning a status
+//             password: hashedPassword1,
+//             phone: '+989351112233',
+//             status: 'ACTIVE',
 //             role: 'USER',
 //         },
 //     });
-//     console.log(`Created user: ${user1.name} (${user1.role})`);
 
-
+//     const hashedPassword2 = await bcrypt.hash('sara123', 10);
 //     const user2 = await prisma.user.create({
 //         data: {
 //             name: 'Sara Ahmadi',
 //             email: 'sara@test.com',
-//             password: 'sara123',
-//             phone: '+989194445566', // Fake phone number
-//             status: 'INACTIVE', // Assigning a different status
+//             password: hashedPassword2,
+//             phone: '+989194445566',
+//             status: 'INACTIVE',
 //             role: 'USER',
 //         },
 //     });
-//     console.log(`Created user: ${user2.name} (${user2.role})`);
 
-
+//     const hashedPassword3 = await bcrypt.hash('reza123', 10);
 //     const user3 = await prisma.user.create({
 //         data: {
 //             name: 'Reza Karimi',
 //             email: 'reza@test.com',
-//             password: 'reza123',
-//             phone: '+989107778899', // Fake phone number
-//             status: 'PENDING', // Assigning another status
+//             password: hashedPassword3,
+//             phone: '+989107778899',
+//             status: 'PENDING',
 //             role: 'USER',
 //         },
 //     });
-//     console.log(`Created user: ${user3.name} (${user3.role})`);
 
-
+//     const hashedPassword4 = await bcrypt.hash('maryam123', 10);
 //     const user4 = await prisma.user.create({
 //         data: {
 //             name: 'Maryam Najafi',
 //             email: 'maryam@test.com',
-//             password: 'maryam123',
-//             phone: '+989020001122', // Fake phone number
-//             status: 'ACTIVE', // Assigning a status
+//             password: hashedPassword4,
+//             phone: '+989020001122',
+//             status: 'ACTIVE',
 //             role: 'USER',
 //         },
 //     });
-//     console.log(`Created user: ${user4.name} (${user4.role})`);
 
-//     // Adding a user with 'SUSPENDED' status for testing
+//     const hashedPassword5 = await bcrypt.hash('suspended123', 10);
 //     const user5 = await prisma.user.create({
 //         data: {
 //             name: 'Suspended User',
 //             email: 'suspended@test.com',
-//             password: 'suspended123',
+//             password: hashedPassword5,
 //             phone: '+989019998877',
 //             status: 'SUSPENDED',
 //             role: 'USER',
 //         },
 //     });
-//     console.log(`Created user: ${user5.name} (${user5.role})`);
 
 
 //     // 2. دسته‌ها را ایجاد یا به‌روزرسانی کن

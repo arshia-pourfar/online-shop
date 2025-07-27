@@ -1,6 +1,4 @@
-// components/EditAddCustomerModal.tsx
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { User } from "../types/user";
 
@@ -21,55 +19,43 @@ export default function CustomerModal({
     onClose,
     allStatuses,
 }: CustomerModalProps) {
-    const [formData, setFormData] = useState<Partial<User>>(() => {
-        if (type === "edit" && customer) {
-            return { ...customer };
-        }
-        return {
-            id: String(Date.now()),
-            name: "",
-            email: "",
-            phone: "",
-            status: allStatuses[0] || "PENDING",
-            role: "USER",
-        };
+    const [formData, setFormData] = useState<Partial<User & { password?: string }>>({
+        id: String(Date.now()),
+        name: "",
+        email: "",
+        phone: "",
+        status: allStatuses[0] || "PENDING",
+        role: "USER",
+        password: "",
     });
 
-    const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [feedbackMessage, setFeedbackMessage] = useState("");
 
     useEffect(() => {
         if (type === "edit" && customer) {
-            setFormData({ ...customer });
-        } else if (type === "add") {
             setFormData({
+                id: customer.id,
+                name: customer.name,
+                email: customer.email,
+                phone: customer.phone,
+                status: customer.status,
+                role: customer.role,
+            });
+        } else if (type === "add") {
+            setFormData((prev) => ({
+                ...prev,
                 id: String(Date.now()),
-                name: "",
-                email: "",
-                phone: "",
                 status: allStatuses[0] || "PENDING",
                 role: "USER",
-            });
+                password: "",
+            }));
         }
-        setFeedbackMessage(null);
-    }, [customer, type, allStatuses]);
+    }, [type, customer, allStatuses]);
 
-    useEffect(() => {
-        const isValid =
-            formData.name?.trim() &&
-            formData.email?.trim() &&
-            formData.status?.trim() &&
-            formData.role?.trim();
-        setIsFormValid(!!isValid);
-    }, [formData]);
-
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setFeedbackMessage(null);
+        setFeedbackMessage("");
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -79,81 +65,79 @@ export default function CustomerModal({
             !formData.name?.trim() ||
             !formData.email?.trim() ||
             !formData.status?.trim() ||
-            !formData.role?.trim()
+            !formData.role?.trim() ||
+            (type === "add" && !formData.password?.trim())
         ) {
             setFeedbackMessage(
-                "Please fill in all required fields (Name, Email, Status, Role)."
+                "Please fill in all required fields (Name, Email, Status, Role" +
+                (type === "add" ? ", Password" : "") +
+                ")."
             );
             return;
         }
 
-        setIsLoading(true);
-        setFeedbackMessage(null);
-
         try {
-            const payload = {
-                name: formData.name?.trim(),
-                email: formData.email?.trim(),
-                phone: formData.phone?.trim() || null,
-                status: formData.status?.trim(),
-                role: formData.role?.trim(),
+            const payload: Partial<User & { password?: string }> = {
+                name: formData.name.trim(),
+                email: formData.email.trim(),
+                phone: formData.phone?.trim() || undefined,
+                status: formData.status.trim(),
+                role: formData.role.trim(),
             };
 
-            let res;
             if (type === "add") {
-                res = await fetch("http://localhost:5000/api/users", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                });
-            } else {
-                if (!customer?.id) {
-                    throw new Error("Customer ID is missing for edit operation.");
-                }
-                res = await fetch(`http://localhost:5000/api/users/${customer.id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                });
+                payload.password = formData.password?.trim();
             }
+
+            const API_BASE = "http://localhost:5000";
+            const method = type === "add" ? "POST" : "PUT";
+            const url =
+                type === "add"
+                    ? `${API_BASE}/api/users`
+                    : `${API_BASE}/api/users/${formData.id}`;
+
+            const res = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.error || "Failed to save customer.");
+                const text = await res.text();
+                try {
+                    const errData = JSON.parse(text);
+                    throw new Error(errData.error || `HTTP error! status: ${res.status}`);
+                } catch {
+                    throw new Error(`HTTP error! status: ${res.status}. Response: ${text}`);
+                }
             }
 
-            const savedUser: User = await res.json();
-            onSave(savedUser);
-            setFeedbackMessage(
-                type === "add"
-                    ? "Customer added successfully!"
-                    : "Customer updated successfully!"
-            );
-            setTimeout(() => {
-                onClose();
-            }, 1000);
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                console.error("[getUserById]", err.message);
-                setFeedbackMessage(err.message);
+            const savedCustomer = await res.json();
+            setFeedbackMessage(type === "add" ? "Customer created!" : "Customer updated!");
+            onSave(savedCustomer);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Error:", error.message);
+                setFeedbackMessage(error.message);
+            } else {
+                console.error("Unknown error:", error);
+                setFeedbackMessage("An error occurred. Please try again.");
             }
-        } finally {
-            setIsLoading(false);
         }
     };
 
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-            <div className="bg-primary-bg p-10 rounded-3xl shadow-2xl w-full max-w-xl border border-gray-700 max-h-[90vh] overflow-auto relative">
-                <h2 className="text-4xl font-extrabold text-accent mb-10 text-center tracking-wide">
-                    {type === "add" ? "Add New Customer" : "Edit Customer"}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-3">
+            <div className="bg-secondary-bg rounded-xl p-8 w-full h-full overflow-y-auto max-w-lg shadow-xl">
+                <h2 className="text-2xl font-bold text-accent mb-6">
+                    {type === "add" ? "Add Customer" : "Edit Customer"}
                 </h2>
-                <form onSubmit={handleSubmit} className="space-y-8">
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Name */}
                     <div>
-                        <label
-                            htmlFor="name"
-                            className="block text-sm font-semibold text-secondary-text mb-3"
-                        >
+                        <label htmlFor="name" className="block text-sm font-semibold text-secondary-text mb-2">
                             Name
                         </label>
                         <input
@@ -162,22 +146,18 @@ export default function CustomerModal({
                             name="name"
                             value={formData.name || ""}
                             onChange={handleChange}
-                            className={`w-full p-4 rounded-xl border ${!formData.name?.trim() && feedbackMessage
-                                    ? "border-red-500"
-                                    : "border-gray-600"
+                            className={`w-full p-4 rounded-xl border ${!formData.name?.trim() && feedbackMessage ? "border-red-500" : "border-gray-600"
                                 } bg-secondary-bg text-primary-text placeholder-gray-400 
               focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out`}
-                            placeholder="Enter customer name"
+                            placeholder="Enter name"
+                            autoComplete="name"
                             required
-                            autoComplete="off"
                         />
                     </div>
 
+                    {/* Email */}
                     <div>
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-semibold text-secondary-text mb-3"
-                        >
+                        <label htmlFor="email" className="block text-sm font-semibold text-secondary-text mb-2">
                             Email
                         </label>
                         <input
@@ -186,23 +166,44 @@ export default function CustomerModal({
                             name="email"
                             value={formData.email || ""}
                             onChange={handleChange}
-                            className={`w-full p-4 rounded-xl border ${!formData.email?.trim() && feedbackMessage
-                                    ? "border-red-500"
-                                    : "border-gray-600"
-                                } bg-secondary-bg text-primary-text placeholder-gray-400
+                            className={`w-full p-4 rounded-xl border ${!formData.email?.trim() && feedbackMessage ? "border-red-500" : "border-gray-600"
+                                } bg-secondary-bg text-primary-text placeholder-gray-400 
               focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out`}
-                            placeholder="Enter customer email"
+                            placeholder="Enter email"
+                            autoComplete="email"
                             required
-                            autoComplete="off"
                         />
                     </div>
 
+                    {/* Password only for add */}
+                    {type === "add" && (
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-semibold text-secondary-text mb-2"
+                            >
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password || ""}
+                                onChange={handleChange}
+                                className={`w-full p-4 rounded-xl border ${!formData.password?.trim() && feedbackMessage ? "border-red-500" : "border-gray-600"
+                                    } bg-secondary-bg text-primary-text placeholder-gray-400 
+                focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out`}
+                                placeholder="Enter password"
+                                autoComplete="new-password"
+                                required={type === "add"}
+                            />
+                        </div>
+                    )}
+
+                    {/* Phone */}
                     <div>
-                        <label
-                            htmlFor="phone"
-                            className="block text-sm font-semibold text-secondary-text mb-3"
-                        >
-                            Phone (Optional)
+                        <label htmlFor="phone" className="block text-sm font-semibold text-secondary-text mb-2">
+                            Phone
                         </label>
                         <input
                             type="text"
@@ -210,18 +211,15 @@ export default function CustomerModal({
                             name="phone"
                             value={formData.phone || ""}
                             onChange={handleChange}
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400
-              focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                            placeholder="+98 912 345 6789"
-                            autoComplete="off"
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                            placeholder="Enter phone number"
+                            autoComplete="tel"
                         />
                     </div>
 
+                    {/* Status */}
                     <div>
-                        <label
-                            htmlFor="status"
-                            className="block text-sm font-semibold text-secondary-text mb-3"
-                        >
+                        <label htmlFor="status" className="block text-sm font-semibold text-secondary-text mb-2">
                             Status
                         </label>
                         <select
@@ -229,11 +227,7 @@ export default function CustomerModal({
                             name="status"
                             value={formData.status || ""}
                             onChange={handleChange}
-                            className={`w-full p-4 rounded-xl border ${!formData.status?.trim() && feedbackMessage
-                                    ? "border-red-500"
-                                    : "border-gray-600"
-                                } bg-secondary-bg text-primary-text
-              focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out`}
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
                             required
                         >
                             {allStatuses.map((status) => (
@@ -244,11 +238,9 @@ export default function CustomerModal({
                         </select>
                     </div>
 
+                    {/* Role */}
                     <div>
-                        <label
-                            htmlFor="role"
-                            className="block text-sm font-semibold text-secondary-text mb-3"
-                        >
+                        <label htmlFor="role" className="block text-sm font-semibold text-secondary-text mb-2">
                             Role
                         </label>
                         <select
@@ -256,16 +248,9 @@ export default function CustomerModal({
                             name="role"
                             value={formData.role || ""}
                             onChange={handleChange}
-                            className={`w-full p-4 rounded-xl border ${!formData.role?.trim() && feedbackMessage
-                                    ? "border-red-500"
-                                    : "border-gray-600"
-                                } bg-secondary-bg text-primary-text
-              focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out`}
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
                             required
                         >
-                            <option value="" disabled>
-                                Select Role
-                            </option>
                             {USER_ROLES.map((role) => (
                                 <option key={role} value={role}>
                                     {role}
@@ -274,35 +259,25 @@ export default function CustomerModal({
                         </select>
                     </div>
 
+                    {/* Feedback */}
                     {feedbackMessage && (
-                        <div
-                            className={`p-4 rounded-lg text-center text-sm font-semibold shadow-md ${feedbackMessage.includes("successfully")
-                                    ? "bg-green-600 text-white"
-                                    : "bg-red-600 text-white"
-                                }`}
-                        >
-                            {feedbackMessage}
-                        </div>
+                        <p className="text-red-500 text-sm font-medium mt-2">{feedbackMessage}</p>
                     )}
 
-                    <div className="flex justify-end gap-5 mt-10">
+                    {/* Buttons */}
+                    <div className="flex justify-end gap-4 pt-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            disabled={isLoading}
-                            className="px-8 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 transition duration-300 ease-in-out shadow-lg transform hover:scale-105"
+                            className="px-5 py-3 rounded-xl bg-gray-600 hover:bg-gray-700 text-white transition duration-300 ease-in-out"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            disabled={!isFormValid || isLoading}
-                            className={`px-8 py-3 rounded-3xl text-white font-semibold shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${isFormValid && !isLoading
-                                    ? "bg-accent hover:bg-accent/90"
-                                    : "bg-gray-600 cursor-not-allowed opacity-70"
-                                }`}
+                            className="px-5 py-3 rounded-xl bg-accent hover:bg-accent-dark text-white transition duration-300 ease-in-out"
                         >
-                            {isLoading ? "Saving..." : "Save Customer"}
+                            {type === "add" ? "Create Customer" : "Save Change"}
                         </button>
                     </div>
                 </form>

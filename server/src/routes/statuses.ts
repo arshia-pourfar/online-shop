@@ -1,9 +1,10 @@
 // routes/api.ts یا هرجایی که روت‌ها را می‌نویسی
 import express from "express";
-import { getProductStatuses } from "../controllers/statusController";
+import { getCustomerStatuses, getProductStatuses } from "../controllers/statusController";
 
 const router = express.Router();
 
-router.get("/", getProductStatuses);
+router.get("/productStatuses", getProductStatuses);
+router.get("/customerStatuses", getCustomerStatuses);
 
 export default router;

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../../prisma/prisma';
+import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (_: Request, res: Response) => {
     try {
@@ -30,6 +31,8 @@ export const getUserById = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
     // Ensure all fields sent from the frontend are destructured
     const { name, email, password, phone, status, role } = req.body;
+    // هش کردن پسورد قبل از ذخیره
+    const hashedPassword = await bcrypt.hash(password, 10);
     try {
         // In a real application, you would hash the password here before saving.
         // For seeding or simple cases, it might be plain, but for production, hash it!
@@ -37,10 +40,10 @@ export const createUser = async (req: Request, res: Response) => {
             data: {
                 name,
                 email,
-                password, // Consider hashing this password before storing in production
-                phone,    // Now accepting phone
-                status,   // Now accepting status
-                role,     // Now accepting role
+                password: hashedPassword,
+                phone,
+                status,
+                role,
             },
         });
         res.status(201).json(newUser);

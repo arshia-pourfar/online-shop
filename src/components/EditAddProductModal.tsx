@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Product } from "types/product";
 import { getCategories } from "@/lib/api/categories";
-import { getStatuses } from "@/lib/api/statuses";
+import { getProductStatuses } from "@/lib/api/statuses";
 
 interface FormState {
     id: number;
@@ -47,7 +47,7 @@ export default function ProductModal({
 
     useEffect(() => {
         getCategories().then(setCategories);
-        getStatuses().then(setStatuses);
+        getProductStatuses().then(setStatuses);
     }, []);
 
     useEffect(() => {
@@ -129,187 +129,187 @@ export default function ProductModal({
             }
         }
     };
-
-    return (
-        <>
-            <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50"></div>
+    {/* <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50"></div>
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-                <div className="bg-primary-bg rounded-3xl p-10 max-w-xl w-full shadow-2xl border border-gray-700 max-h-[90vh] overflow-auto">
-                    <h2 className="text-3xl font-extrabold text-accent mb-8 text-center tracking-wide">
-                        {type === "add" ? "Add New Product" : "Edit Product"}
-                    </h2>
-                    <div className="space-y-6">
-                        {/* Name */}
-                        <div>
+             */}
+    return (
+        < div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-3" >
+            <div className="bg-secondary-bg rounded-xl p-8 w-full h-full overflow-y-auto max-w-lg shadow-xl">
+                <h2 className="text-3xl font-extrabold text-accent mb-8 tracking-wide">
+                    {type === "add" ? "Add New Product" : "Edit Product"}
+                </h2>
+                <div className="space-y-6">
+                    {/* Name */}
+                    <div>
+                        <label
+                            htmlFor="name"
+                            className="block text-sm font-medium text-secondary-text mb-1"
+                        >
+                            Product Name
+                        </label>
+                        <input
+                            id="name"
+                            type="text"
+                            className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                            placeholder="Product Name"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label
+                            htmlFor="description"
+                            className="block text-sm font-medium text-secondary-text mb-1"
+                        >
+                            Description
+                        </label>
+                        <textarea
+                            id="description"
+                            rows={3}
+                            className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out resize-none"
+                            placeholder="Description"
+                            value={form.description ?? ""}
+                            onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Price & Stock */}
+                    <div className="flex gap-4">
+                        <div className="flex-1">
                             <label
-                                htmlFor="name"
+                                htmlFor="price"
                                 className="block text-sm font-medium text-secondary-text mb-1"
                             >
-                                Product Name
+                                Price
                             </label>
                             <input
-                                id="name"
-                                type="text"
+                                id="price"
+                                type="number"
+                                min={0}
                                 className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                placeholder="Product Name"
-                                value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                placeholder="Price"
+                                value={form.price}
+                                onChange={(e) =>
+                                    setForm({ ...form, price: Number(e.target.value) })
+                                }
                             />
                         </div>
-
-                        {/* Description */}
-                        <div>
+                        <div className="flex-1">
                             <label
-                                htmlFor="description"
+                                htmlFor="stock"
                                 className="block text-sm font-medium text-secondary-text mb-1"
                             >
-                                Description
-                            </label>
-                            <textarea
-                                id="description"
-                                rows={3}
-                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out resize-none"
-                                placeholder="Description"
-                                value={form.description ?? ""}
-                                onChange={(e) => setForm({ ...form, description: e.target.value })}
-                            />
-                        </div>
-
-                        {/* Price & Stock */}
-                        <div className="flex gap-4">
-                            <div className="flex-1">
-                                <label
-                                    htmlFor="price"
-                                    className="block text-sm font-medium text-secondary-text mb-1"
-                                >
-                                    Price
-                                </label>
-                                <input
-                                    id="price"
-                                    type="number"
-                                    min={0}
-                                    className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                    placeholder="Price"
-                                    value={form.price}
-                                    onChange={(e) =>
-                                        setForm({ ...form, price: Number(e.target.value) })
-                                    }
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <label
-                                    htmlFor="stock"
-                                    className="block text-sm font-medium text-secondary-text mb-1"
-                                >
-                                    Stock
-                                </label>
-                                <input
-                                    id="stock"
-                                    type="number"
-                                    min={0}
-                                    className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                    placeholder="Stock"
-                                    value={form.stock}
-                                    onChange={(e) =>
-                                        setForm({ ...form, stock: Number(e.target.value) })
-                                    }
-                                />
-                            </div>
-                        </div>
-
-                        {/* Category */}
-                        <div>
-                            <label
-                                htmlFor="category"
-                                className="block text-sm font-medium text-secondary-text mb-1"
-                            >
-                                Category
-                            </label>
-                            <select
-                                id="category"
-                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                value={form.category}
-                                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                            >
-                                <option value="">Choose Category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.name}>
-                                        {cat.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Status */}
-                        <div>
-                            <label
-                                htmlFor="status"
-                                className="block text-sm font-medium text-secondary-text mb-1"
-                            >
-                                Status
-                            </label>
-                            <select
-                                id="status"
-                                className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                value={form.status}
-                                onChange={(e) => setForm({ ...form, status: e.target.value })}
-                            >
-                                <option value="">Choose Status</option>
-                                {statuses.map((status) => (
-                                    <option key={status} value={status}>
-                                        {status}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Image URL */}
-                        <div>
-                            <label
-                                htmlFor="imageUrl"
-                                className="block text-sm font-medium text-secondary-text mb-1"
-                            >
-                                Image URL
+                                Stock
                             </label>
                             <input
-                                id="imageUrl"
-                                type="text"
+                                id="stock"
+                                type="number"
+                                min={0}
                                 className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
-                                placeholder="Image URL"
-                                value={form.imageUrl}
-                                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                                placeholder="Stock"
+                                value={form.stock}
+                                onChange={(e) =>
+                                    setForm({ ...form, stock: Number(e.target.value) })
+                                }
                             />
-                            {form.imageUrl && (
-                                <Image
-                                    src={`/products/${form.imageUrl}`}
-                                    width={128}
-                                    height={128}
-                                    alt="Preview"
-                                    className="w-32 h-32 object-contain mt-3 rounded-2xl"
-                                />
-                            )}
                         </div>
                     </div>
-                    <div className="flex justify-end gap-6 mt-10">
-                        <button
-                            className="px-6 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-                            onClick={onClose}
+
+                    {/* Category */}
+                    <div>
+                        <label
+                            htmlFor="category"
+                            className="block text-sm font-medium text-secondary-text mb-1"
                         >
-                            Cancel
-                        </button>
-                        <button
-                            className={`px-6 py-3 rounded-3xl font-semibold text-white shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${form.name.trim()
-                                    ? "bg-accent hover:bg-accent/90 cursor-pointer"
-                                    : "bg-gray-600 opacity-70 cursor-not-allowed"
-                                }`}
-                            onClick={handleSubmit}
-                            disabled={!form.name.trim()}
+                            Category
+                        </label>
+                        <select
+                            id="category"
+                            className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                            value={form.category}
+                            onChange={(e) => setForm({ ...form, category: e.target.value })}
                         >
-                            Save Product
-                        </button>
+                            <option value="">Choose Category</option>
+                            {categories.map((cat) => (
+                                <option key={cat.id} value={cat.name}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Status */}
+                    <div>
+                        <label
+                            htmlFor="status"
+                            className="block text-sm font-medium text-secondary-text mb-1"
+                        >
+                            Status
+                        </label>
+                        <select
+                            id="status"
+                            className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                            value={form.status}
+                            onChange={(e) => setForm({ ...form, status: e.target.value })}
+                        >
+                            <option value="">Choose Status</option>
+                            {statuses.map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Image URL */}
+                    <div>
+                        <label
+                            htmlFor="imageUrl"
+                            className="block text-sm font-medium text-secondary-text mb-1"
+                        >
+                            Image URL
+                        </label>
+                        <input
+                            id="imageUrl"
+                            type="text"
+                            className="w-full rounded-xl border border-gray-600 bg-secondary-bg text-primary-text px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300 ease-in-out"
+                            placeholder="Image URL"
+                            value={form.imageUrl}
+                            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                        />
+                        {form.imageUrl && (
+                            <Image
+                                src={`/products/${form.imageUrl}`}
+                                width={128}
+                                height={128}
+                                alt="Preview"
+                                className="w-32 h-32 object-contain mt-3 rounded-2xl"
+                            />
+                        )}
                     </div>
                 </div>
+                <div className="flex justify-end gap-6 mt-10">
+                    <button
+                        className="px-6 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                        onClick={onClose}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className={`px-6 py-3 rounded-3xl font-semibold text-white shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${form.name.trim()
+                            ? "bg-accent hover:bg-accent/90 cursor-pointer"
+                            : "bg-gray-600 opacity-70 cursor-not-allowed"
+                            }`}
+                        onClick={handleSubmit}
+                        disabled={!form.name.trim()}
+                    >
+                        Save Product
+                    </button>
+                </div>
             </div>
-        </>
+        </div>
+        // </div>
     );
 }

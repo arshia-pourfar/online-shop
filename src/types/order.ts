@@ -23,4 +23,5 @@ export type Order = {
     shippingAddress: string;
 };
 
-export type SortableField = keyof Order | "email";
+export type OrderField = keyof Order; // کلیدهای مستقیم Order
+export type SortableField = keyof Order | "user.email" | "user.phone";

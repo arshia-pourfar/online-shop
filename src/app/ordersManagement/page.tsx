@@ -49,23 +49,42 @@ const OrdersPage: React.FC = () => {
     // const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
     // const cancelledOrders = orders.filter((o) => o.status === "CANCELLED").length;
 
-    const sortedOrders = [...orders].sort((a, b) => {
-        if (!sortField) return 0;
-
-        if (sortField === "email") {
-            return a.user?.email?.localeCompare(b.user?.email ?? "") ?? 0;
+    function isNestedField(field: SortableField): field is "user.email" | "user.phone" {
+        return field === "user.email" || field === "user.phone";
+    }
+    function getSortableValue(order: Order, field: SortableField): string | number {
+        if (isNestedField(field)) {
+            switch (field) {
+                case "user.email":
+                    return order.user?.email ?? "";
+                case "user.phone":
+                    return order.user?.phone ?? "";
+            }
         }
 
-        const aValue = a[sortField];
-        const bValue = b[sortField];
+        return order[field] as string | number;
+    }
 
-        if (typeof aValue === "string" && typeof bValue === "string") {
-            return aValue.localeCompare(bValue);
-        }
+    function sortOrders(orders: Order[], field: SortableField, asc: boolean): Order[] {
+        return [...orders].sort((a, b) => {
+            const valA = getSortableValue(a, field);
+            const valB = getSortableValue(b, field);
 
-        return (aValue ?? 0) > (bValue ?? 0) ? 1 : -1;
-    });
+            if (field === "orderDate") {
+                const dateA = new Date(valA as string).getTime();
+                const dateB = new Date(valB as string).getTime();
+                return asc ? dateA - dateB : dateB - dateA;
+            }
 
+            if (typeof valA === "number" && typeof valB === "number") {
+                return asc ? valA - valB : valB - valA;
+            }
+
+            const strA = String(valA).toLowerCase();
+            const strB = String(valB).toLowerCase();
+            return asc ? strA.localeCompare(strB) : strB.localeCompare(strA);
+        });
+    }
     let filteredOrders = orders.filter((order) => {
         const q = search.trim().toLowerCase();
         const matchesSearch =
@@ -77,28 +96,41 @@ const OrdersPage: React.FC = () => {
     });
 
     if (sortField) {
-        filteredOrders = filteredOrders.sort((a, b) => {
-            let valA = a[sortField];
-            let valB = b[sortField];
-
-            if (valA === null || valA === undefined) valA = "";
-            if (valB === null || valB === undefined) valB = "";
-
-            if (sortField === "orderDate") {
-                const dateA = new Date(valA as string).getTime();
-                const dateB = new Date(valB as string).getTime();
-                return sortAsc ? dateA - dateB : dateB - dateA;
-            }
-
-            if (typeof valA === "number" && typeof valB === "number") {
-                return sortAsc ? valA - valB : valB - valA;
-            }
-
-            const strA = String(valA).toLowerCase();
-            const strB = String(valB).toLowerCase();
-            return sortAsc ? strA.localeCompare(strB) : strB.localeCompare(strA);
-        });
+        filteredOrders = sortOrders(filteredOrders, sortField, sortAsc);
     }
+    // let filteredOrders = orders.filter((order) => {
+    //     const q = search.trim().toLowerCase();
+    //     const matchesSearch =
+    //         !q || order.id.toLowerCase().includes(q) || order.customerName.toLowerCase().includes(q);
+    //     const matchesStatus = !filterStatus || order.status === filterStatus;
+    //     const matchesMinAmount =
+    //         filterMinTotalAmount === "" || order.totalAmount >= filterMinTotalAmount;
+    //     return matchesSearch && matchesStatus && matchesMinAmount;
+    // });
+
+    // if (sortField) {
+    //     filteredOrders = filteredOrders.sort((a, b) => {
+    //         let valA = a[sortField];
+    //         let valB = b[sortField];
+
+    //         if (valA === null || valA === undefined) valA = "";
+    //         if (valB === null || valB === undefined) valB = "";
+
+    //         if (sortField === "orderDate") {
+    //             const dateA = new Date(valA as string).getTime();
+    //             const dateB = new Date(valB as string).getTime();
+    //             return sortAsc ? dateA - dateB : dateB - dateA;
+    //         }
+
+    //         if (typeof valA === "number" && typeof valB === "number") {
+    //             return sortAsc ? valA - valB : valB - valA;
+    //         }
+
+    //         const strA = String(valA).toLowerCase();
+    //         const strB = String(valB).toLowerCase();
+    //         return sortAsc ? strA.localeCompare(strB) : strB.localeCompare(strA);
+    //     });
+    // }
 
     const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
     const paginatedOrders = filteredOrders.slice(
@@ -188,7 +220,7 @@ const OrdersPage: React.FC = () => {
         setFeedbackType("success");
     };
 
-    const onSortClick = (field: keyof Order) => {
+    const onSortClick = (field: SortableField) => {
         if (sortField === field) {
             setSortAsc(!sortAsc);
         } else {
@@ -313,18 +345,18 @@ const OrdersPage: React.FC = () => {
                                 />
                                 <SortableTH
                                     title="Email"
-                                    onClick={() => onSortClick("email")}
+                                    onClick={() => onSortClick("user.email")}
                                     sortable={true}
                                     sortAsc={sortAsc}
-                                    isActive={sortField === "email"}
+                                    isActive={sortField === "user.email"}
                                     width="w-64"
                                 />
                                 <SortableTH
                                     title="Phone"
-                                    onClick={() => onSortClick("status")}
+                                    onClick={() => onSortClick("user.phone")}
                                     sortable={true}
                                     sortAsc={sortAsc}
-                                    isActive={sortField === "status"}
+                                    isActive={sortField === "user.phone"}
                                     width="w-36"
                                 />
                                 <SortableTH

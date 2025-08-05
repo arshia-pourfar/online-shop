@@ -106,8 +106,8 @@ export default function ReportsPage() {
                 valA = a.author?.name || '';
                 valB = b.author?.name || '';
             } else {
-                valA = a[sortField];
-                valB = b[sortField];
+                valA = a[sortField] as string | number | undefined;
+                valB = b[sortField] as string | number | undefined;
             }
 
             if (typeof valA === 'string' && typeof valB === 'string') {

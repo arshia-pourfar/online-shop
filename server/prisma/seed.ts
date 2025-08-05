@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */ // This can be removed after confirming no unused vars
 import { PrismaClient, ProductStatus, OrderStatus, ReportStatus, Role, UserStatus } from '@prisma/client'; // Import enums
 import 'dotenv/config';
 import bcrypt from 'bcrypt';

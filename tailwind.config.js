@@ -17,7 +17,7 @@ module.exports = {
         'status-positive': '#00C853',
         'status-negative': '#FF5252',
         'status-neutral': '#FFD600',
-        'status-hidden': '#757575',
+        'status-hidden': '#757575', 
       },
     },
   },

@@ -1,5 +1,15 @@
 import { faSort, faSortDown, faSortUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+
+interface SortableTHProps {
+    title: string;
+    onClick: () => void;
+    sortable: boolean;
+    sortAsc?: boolean;
+    isActive?: boolean;
+    width?: string;
+}
 
 export default function SortableTH({
     title,
@@ -8,14 +18,7 @@ export default function SortableTH({
     sortAsc,
     isActive,
     width,
-}: {
-    title: string;
-    onClick: () => void;
-    sortable: boolean;
-    sortAsc?: boolean;
-    isActive?: boolean;
-    width?: string;
-}) {
+}: SortableTHProps) {
     return (
         <th
             className={`${width || "w-auto"} px-2 py-3 cursor-pointer select-none user-select-none`}

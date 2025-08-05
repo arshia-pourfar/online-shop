@@ -42,6 +42,7 @@ const OrdersPage: React.FC = () => {
         getOrderStatuses().then(setOrderStatuses);
     }, []);
 
+    // add this section ////////////////////////////////////////////////////////////////////////
     // const totalOrders = orders.length;
     // const pendingOrders = orders.filter((o) => o.status === "PENDING").length;
     // const processingOrders = orders.filter((o) => o.status === "PROCESSING").length;
@@ -52,6 +53,7 @@ const OrdersPage: React.FC = () => {
     function isNestedField(field: SortableField): field is "user.email" | "user.phone" {
         return field === "user.email" || field === "user.phone";
     }
+
     function getSortableValue(order: Order, field: SortableField): string | number {
         if (isNestedField(field)) {
             switch (field) {
@@ -85,6 +87,7 @@ const OrdersPage: React.FC = () => {
             return asc ? strA.localeCompare(strB) : strB.localeCompare(strA);
         });
     }
+
     let filteredOrders = orders.filter((order) => {
         const q = search.trim().toLowerCase();
         const matchesSearch =
@@ -98,39 +101,6 @@ const OrdersPage: React.FC = () => {
     if (sortField) {
         filteredOrders = sortOrders(filteredOrders, sortField, sortAsc);
     }
-    // let filteredOrders = orders.filter((order) => {
-    //     const q = search.trim().toLowerCase();
-    //     const matchesSearch =
-    //         !q || order.id.toLowerCase().includes(q) || order.customerName.toLowerCase().includes(q);
-    //     const matchesStatus = !filterStatus || order.status === filterStatus;
-    //     const matchesMinAmount =
-    //         filterMinTotalAmount === "" || order.totalAmount >= filterMinTotalAmount;
-    //     return matchesSearch && matchesStatus && matchesMinAmount;
-    // });
-
-    // if (sortField) {
-    //     filteredOrders = filteredOrders.sort((a, b) => {
-    //         let valA = a[sortField];
-    //         let valB = b[sortField];
-
-    //         if (valA === null || valA === undefined) valA = "";
-    //         if (valB === null || valB === undefined) valB = "";
-
-    //         if (sortField === "orderDate") {
-    //             const dateA = new Date(valA as string).getTime();
-    //             const dateB = new Date(valB as string).getTime();
-    //             return sortAsc ? dateA - dateB : dateB - dateA;
-    //         }
-
-    //         if (typeof valA === "number" && typeof valB === "number") {
-    //             return sortAsc ? valA - valB : valB - valA;
-    //         }
-
-    //         const strA = String(valA).toLowerCase();
-    //         const strB = String(valB).toLowerCase();
-    //         return sortAsc ? strA.localeCompare(strB) : strB.localeCompare(strA);
-    //     });
-    // }
 
     const pageCount = Math.ceil(filteredOrders.length / itemsPerPage);
     const paginatedOrders = filteredOrders.slice(
@@ -389,12 +359,27 @@ const OrdersPage: React.FC = () => {
                                 paginatedOrders.map((order) => (
                                     <tr key={order.id} className="border-b last:border-none hover:bg-primary-bg/50 transition">
                                         <td className="px-2 py-2 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedIds.includes(order.id)}
-                                                onChange={() => toggleSelectId(order.id)}
-                                                className="w-4 h-4 accent-primary"
-                                            />
+                                            <label className="gap-2 select-none inline-flex items-center cursor-pointer group">
+                                                <div className="w-5 h-5 rounded-md border-2 border-gray-400 group-hover:border-primary flex items-center justify-center transition-all duration-200 peer-checked:border-primary peer-checked:bg-primary">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.includes(order.id)}
+                                                        onChange={() => toggleSelectId(order.id)}
+                                                        className="peer sr-only"
+                                                    />
+                                                    <svg
+                                                        className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <polyline points="20 6 9 17 4 12" />
+                                                    </svg>
+                                                </div>
+                                            </label>
                                         </td>
                                         <td className="px-2 py-2 font-semibold">{order.customerName}</td>
                                         <td className="px-2 py-2">{order.user ? order.user.email : "not found"}</td>

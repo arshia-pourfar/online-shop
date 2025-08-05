@@ -14,33 +14,34 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
+  id        String       @id @default(cuid())
+  email     String       @unique
   name      String?
   password  String
   phone     String?
-  status    UserStatus @default(ACTIVE)
-  role      Role       @default(USER)
+  status    UserStatus   @default(ACTIVE)
+  role      Role         @default(USER)
   orders    Order[]
-  createdAt DateTime   @default(now())
+  reports   Report[]
+  createdAt DateTime     @default(now())
 }
 
 model Category {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  slug    String    @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
   products Product[]
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   price       Float
-  stock       Int         @default(10)
+  stock       Int           @default(10)
   status      ProductStatus @default(AVAILABLE)
   imageUrl    String
   description String?
-  category    Category    @relation(fields: [categoryId], references: [id])
+  category    Category      @relation(fields: [categoryId], references: [id])
   categoryId  Int
   orderItems  OrderItem[]
 }
@@ -75,6 +76,21 @@ model SalesStats {
   createdAt DateTime @default(now())
 }
 
+// New model for reports
+model Report {
+  id          String      @id @default(cuid())
+  title       String
+  type        String
+  reportDate  DateTime
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    String
+  status      ReportStatus @default(GENERATED)
+  fileUrl     String?
+  createdAt   DateTime    @default(now())
+}
+
+// --- Enums ---
+
 enum Role {
   USER
   ADMIN
@@ -82,10 +98,10 @@ enum Role {
 
 enum OrderStatus {
   PENDING
-  PROCESSING // Added: To match frontend status
+  PROCESSING
   SHIPPED
   DELIVERED
-  CANCELLED  // Corrected spelling from CANCELED
+  CANCELLED
 }
 
 enum ProductStatus {
@@ -101,4 +117,14 @@ enum UserStatus {
   INACTIVE
   PENDING
   SUSPENDED
+}
+
+// New enum for report statuses
+enum ReportStatus {
+  GENERATED
+  FAILED
+  IN_PROGRESS
+  BLOCKED
+  HIDDEN
+  ANSWERED
 }

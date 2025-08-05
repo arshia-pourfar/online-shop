@@ -31,7 +31,7 @@ const adminNavLinks = [
     { href: "/ordersManagement", icon: faClipboardList, text: "Orders" },
     { href: "/productsManagement", icon: faBox, text: "Products" },
     { href: "/customersManagement", icon: faUsers, text: "Customers" },
-    { href: "/reports", icon: faChartLine, text: "Reports" },
+    { href: "/reportsManagement", icon: faChartLine, text: "Reports" },
 ];
 
 // Navigation links for regular users

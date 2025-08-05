@@ -11,6 +11,7 @@ import salestateRoutes from './routes/salestats';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/categories';
 import statusRoutes from './routes/statuses';
+import reportsRouter from './routes/reports';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ app.use('/api/salestats', salestateRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/statuses', statusRoutes);
+app.use('/api/reports', reportsRouter);
 
 app.get('/', (_, res) => {
   res.send('✅ Server is running');
@@ -32,5 +34,5 @@ app.get('/', (_, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log('JWT_SECRET is:', process.env.JWT_SECRET); // برای تست مقدار JWT_SECRET
+  console.log('JWT_SECRET is:', process.env.JWT_SECRET);
 });

@@ -2,8 +2,8 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faCircleUser,
-    faShoppingCart,
+    faCartShopping,
+    faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
@@ -21,7 +21,7 @@ const Header = () => {
     const pageName = getPageName(pathname);
 
     return (
-        <header className="h-16 w-full px-6 py-8 bg-secondary-bg flex justify-between items-center shadow-sm">
+        <header className="h-16 w-full px-6 py-8 bg-secondary-bg text-primary-text flex justify-between items-center shadow-sm">
             <div className="text-2xl sm:text-3xl font-bold text-primary-text">
                 <h2 className="flex items-center gap-8">
                     E-commerce
@@ -31,11 +31,13 @@ const Header = () => {
                 </h2>
             </div>
 
-            <div className="flex items-center justify-between gap-8">
-                <FontAwesomeIcon icon={faShoppingCart} className="text-primary-text text-xl" />
-                <a href={user ? './setting' : './login'} className="flex items-center gap-3 line-clamp-1">
-                    {user ? user.name : ""}
-                    <FontAwesomeIcon icon={faCircleUser} className="size-10" />
+            <div className="flex items-center justify-between gap-4 text-2xl">
+                <a href="./shop" className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
+                    <FontAwesomeIcon icon={faCartShopping} />
+                </a>
+                <a href={user ? './setting' : './login'} className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
+                    {/* {user ? user.name : ""} */}
+                    <FontAwesomeIcon icon={faUser} className='text-3xl' />
                 </a>
             </div>
         </header>

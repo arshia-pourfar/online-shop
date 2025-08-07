@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
+import { useRouter } from 'next/navigation';
 // Auth context for managing user authentication state
 // Provides login, logout, and user info to the app
 type User = {
@@ -23,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // State for the current user
     const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         // On page load, if user was already in localStorage, restore it
@@ -43,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        router.push('/login');
     };
 
     return (

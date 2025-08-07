@@ -1,30 +1,6 @@
 "use client";
-// import { useEffect, useState } from 'react';
-// import { User } from '../../types/user';
-// import { Order } from '../../types/order';
-// import { Product } from '../../types/product';
-// import { getUsers } from '@/lib/api/users';
-// import { getOrders } from '@/lib/api/orders';
-// import { getProducts } from '@/lib/api/products';
-
-// const [users, setUsers] = useState<User[]>([]);
-// const [orders, setOrders] = useState<Order[]>([]);
-// const [products, setProducts] = useState<Product[]>([]);
-// const [loading, setLoading] = useState(true);
-
-// useEffect(() => {
-//   Promise.all([
-//     getUsers().then(setUsers),
-//     getOrders().then(setOrders),
-//     getProducts().then(setProducts),
-//   ]).finally(() => setLoading(false));
-// }, []);
-
-// if (loading) return <p>Loading...</p>;
-
 import React, { useEffect, useState } from 'react';
-import { LineChart, BarChart, AreaChart, Card, Title, Text, Button } from '@tremor/react'; // Ensure @tremor/react is installed: npm install @tremor/react
-// import { ChevronDown, User, ShoppingBag, PieChart, BarChart2, Settings, Mail, Bell } from 'lucide-react'; // Ensure lucide-react is installed: npm install lucide-react
+import { LineChart, BarChart, AreaChart, Card, Title, Text, Button } from '@tremor/react';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -39,7 +15,7 @@ import {
 import Header from '@/components/Header';
 import { SaleStats } from 'types/salestats';
 import { getSaleStats } from '@/lib/api/salestats';
-// Mock Data for Charts (simplified for demonstration)
+
 const salesData = [
   { date: 'Jan', Sales: 500, Clicks: 500, Photo: 400 },
   { date: 'Feb', Sales: 550, Clicks: 550, Photo: 450 },
@@ -71,12 +47,12 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text font-inter">
+    <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text">
       <Header />
 
       <div className="flex-1 flex flex-col">
 
-        <main className="p-8 flex-1 overflow-y-auto">
+        <main className="p-8 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
               <div className="flex justify-between items-center mb-4">

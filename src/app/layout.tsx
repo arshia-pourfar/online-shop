@@ -16,30 +16,34 @@ export const metadata = {
   description: 'A dashboard for managing orders',
 };
 export default function RootLayout({
-  // Main layout component
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    // HTML and body structure, applies theme and context
     <html lang="en">
-      <body className={`${inter.className} flex bg-primary-bg text-primary-text overflow-hidden`}>
+      <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden`}>
         <AuthProvider>
-          <div className="flex bg-primary-bg text-primary-text">
+          {/* Layout container: sidebar + content */}
+          <div className="flex h-screen w-screen overflow-hidden">
+
+            {/* Sidebar */}
             <Navbar />
-            {/* <Header /> */}
+            <div className="ps-20"></div>
             {/* Main content area */}
-            <main className="flex-grow flex w-screen h-screen overflow-y-auto">
-              <div className="ps-20"></div>
+            <main
+              className="flex-1 h-full overflow-y-auto overflow-x-hidden"
+              style={{ width: 'calc(100vw - 80px)' }} // ⬅️ دقیقاً عرض صفحه منهای Navbar
+            >
               {children}
             </main>
           </div>
         </AuthProvider>
       </body>
-    </html >
+    </html>
   );
 }
+
 
 
 

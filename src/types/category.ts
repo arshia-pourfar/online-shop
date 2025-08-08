@@ -1,5 +1,6 @@
 export type Category = {
     id: number;
     name: string;
-    slug: string;
+    slug?: string;
+    imageSrc?: string;
 };

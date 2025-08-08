@@ -14,22 +14,30 @@ import ProductCardSkeleton from "@/components/Skeletons/Home/ProductCardSkeleton
 import PosterSkeleton from "@/components/Skeletons/Home/PosterSkeleton";
 import { NavigationOptions } from "swiper/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faArrowRotateLeft, faTruck } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons/faInstagram";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons/faTwitter";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons/faFacebook";
+import { useAuth } from "@/lib/context/authContext";
+import { getCategories } from "@/lib/api/categories";
+import { Category } from "types/category";
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-
+  const { user } = useAuth();
   useEffect(() => {
     setIsClient(true);
     getProducts().then((data) => {
       setProducts(data);
+      setIsLoading(false);
+    });
+    getCategories().then((category) => {
+      setCategories(category);
       setIsLoading(false);
     });
   }, []);
@@ -55,7 +63,7 @@ const Home = () => {
     <div className="flex flex-col min-h-screen w-full bg-primary-bg text-primary-text">
       <Header />
       <div className="flex-1 flex flex-col">
-        <main className="p-4 md:p-8 flex-1 space-y-12">
+        <main className="p-4 md:p-8 flex-1 space-y-16">
 
           {/* Poster / Banner Section */}
           <section className="w-full">
@@ -129,6 +137,43 @@ const Home = () => {
             </div>
           </section>
 
+          {/* Categories Section */}
+          <section className="w-full">
+            <h2 className="text-2xl font-bold mb-4 text-blue-400">Shop by Category</h2>
+
+            {isLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-secondary-bg h-32 rounded-xl animate-pulse"
+                  ></div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                {categories.map((category) => (
+                  <a
+                    key={category.id}
+                    href={`/categories/${category.slug || category.id}`}
+                    className="group flex flex-col items-center justify-center bg-secondary-bg p-4 rounded-xl shadow hover:shadow-lg transition hover:scale-105"
+                  >
+                    <div className="relative size-24 mb-3">
+                      <Image
+                        src={`/categories/${category.imageSrc || "default.png"}`}
+                        alt={category.name}
+                        fill
+                        className="object-contain rounded-full"
+                      />
+                    </div>
+                    <span className="font-semibold text-center group-hover:text-accent">
+                      {category.name}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </section>
 
           {/* Featured Products Section */}
           <section className="w-full relative">
@@ -146,6 +191,7 @@ const Home = () => {
                 </button>
               </div>
             </div>
+
 
             {!isClient || products.length === 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -214,16 +260,35 @@ const Home = () => {
           </section>
 
           <div className="flex gap-4">
-            <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-bold text-lg">Get 10% Off Your First Order!</h2>
-                <p className="text-sm">Sign up for our newsletter to receive exclusive deals and updates.</p>
+            {user ? (
+              <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
+                <div className="flex items-center justify-between gap-5">
+                  <FontAwesomeIcon icon={faTruck} className="text-4xl text-accent" />
+                  <div className="flex flex-col gap-1">
+                    <h2 className="font-bold text-lg">Free Shiping</h2>
+                    <p className="text-sm">On all orders over $50.</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-5">
+                  <FontAwesomeIcon icon={faArrowRotateLeft} className="text-4xl text-accent" />
+                  <div className="flex flex-col gap-1">
+                    <h2 className="font-bold text-lg">Easy Returns</h2>
+                    <p className="text-sm">30-day money-back guarantee.</p>
+                  </div>
+                </div>
               </div>
-              <a href="./login" className="bg-accent font-semibold rounded-lg px-4 py-2">Sign Up</a>
-            </div>
+            ) : (
+              <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
+                <div className="flex flex-col gap-1">
+                  <h2 className="font-bold text-lg">Get 10% Off Your First Order!</h2>
+                  <p className="text-sm">Sign up for our newsletter to receive exclusive deals and updates.</p>
+                </div>
+                <a href="./login" className="bg-accent font-semibold rounded-lg px-4 py-2">Sign Up</a>
+              </div>
+            )}
 
             <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-4 py-8">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 <h2 className="font-bold text-lg">Stay Connected</h2>
                 <p className="text-sm">Follow us on social media for the latest updates and products.</p>
               </div>

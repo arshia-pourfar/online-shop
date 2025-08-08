@@ -1,47 +1,70 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
-import express from 'express';
-import cors from 'cors';
-import serverless from 'serverless-http';
+(async () => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    console.log('✅ Connected to DB');
+  } catch (err) {
+    console.error('❌ DB connection failed:', err);
+  }
+})();
 
-import userRoutes from './routes/users';
-import productRoutes from './routes/products';
-import orderRoutes from './routes/orders';
-import salestateRoutes from './routes/salestats';
-import authRoutes from './routes/auth';
-import categoryRoutes from './routes/categories';
-import statusRoutes from './routes/statuses';
-import reportsRouter from './routes/reports';
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-const app = express();
+// import express from 'express';
+// import cors from 'cors';
+// import serverless from 'serverless-http';
 
-app.use(cors());
-app.use(express.json());
+// import userRoutes from './routes/users';
+// import productRoutes from './routes/products';
+// import orderRoutes from './routes/orders';
+// import salestateRoutes from './routes/salestats';
+// import authRoutes from './routes/auth';
+// import categoryRoutes from './routes/categories';
+// import statusRoutes from './routes/statuses';
+// import reportsRouter from './routes/reports';
 
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/salestats', salestateRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/statuses', statusRoutes);
-app.use('/api/reports', reportsRouter);
+// const app = express();
 
-app.get('/', (_, res) => {
-  res.send('✅ Server is running');
-});
+// app.use(cors());
+// app.use(express.json());
 
-// برای اجرای لوکال (اختیاری)
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  });
-}
+// app.use('/api/users', userRoutes);
+// app.use('/api/products', productRoutes);
+// app.use('/api/orders', orderRoutes);
+// app.use('/api/salestats', salestateRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/categories', categoryRoutes);
+// app.use('/api/statuses', statusRoutes);
+// app.use('/api/reports', reportsRouter);
 
-// اکسپورت handler برای Vercel
-export const handler = serverless(app);
+// app.get('/favicon.ico', (_, res) => {
+//   res.status(204).end(); // No Content
+// });
+// app.get('/health', (_, res) => {
+//   res.send('✅ Server is healthy');
+// });
+// app.get('/', (_, res) => {
+//   res.send('✅ Server is running');
+// });
+
+// // فقط برای لوکال
+// if (process.env.NODE_ENV !== 'production') {
+//   const PORT = process.env.PORT || 5000;
+//   app.listen(PORT, () => {
+//     console.log(`🚀 Server running at http://localhost:${PORT}`);
+//   });
+// }
+
+// // این مهمه 👇
+// export default serverless(app);
+
+
+
+
+
 
 
 // import dotenv from 'dotenv';

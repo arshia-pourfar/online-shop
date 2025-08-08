@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import prisma from '../../prisma/prisma';
+import {prisma} from '../../prisma/prisma';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 

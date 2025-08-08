@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../../prisma/prisma';
+import {prisma} from '../../prisma/prisma';
 import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (_: Request, res: Response) => {

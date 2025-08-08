@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../../prisma/prisma'; // مسیر درست به فایل prisma.ts
+import {prisma} from '../../prisma/prisma'; // مسیر درست به فایل prisma.ts
 
 // گرفتن تمام محصولات با اطلاعات دسته‌بندی
 export const getAllProducts = async (_: Request, res: Response) => {

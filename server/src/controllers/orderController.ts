@@ -1,7 +1,7 @@
 // src/controllers/orderController.ts
 
 import { Request, Response } from 'express';
-import prisma from '../../prisma/prisma';
+import {prisma} from '../../prisma/prisma';
 
 // GET /orders - دریافت همه سفارش‌ها
 export const getAllOrders = async (_: Request, res: Response) => {

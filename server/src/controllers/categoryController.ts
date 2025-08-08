@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import prisma from '../../prisma/prisma';
+import { prisma } from '../../prisma/prisma';
 
 // گرفتن همه دسته‌بندی‌ها
 export const getCategories = async (req: Request, res: Response) => {
     try {
-        const categories = await prisma.category.findMany(); 
+        const categories = await prisma.category.findMany();
         res.json(categories);
     } catch (err: unknown) {
         if (err instanceof Error) {

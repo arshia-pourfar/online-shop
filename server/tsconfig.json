@@ -5,7 +5,13 @@
     "target": "es2019",
     "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@prisma": [
+        "server/prisma/prisma"
+      ]
+    }
   },
   "include": [
     "src"

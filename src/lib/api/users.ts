@@ -1,5 +1,5 @@
 import { User } from '../../types/user';
-const API_BASE = 'https://order-dashboard-backend.vercel.app';
+const API_BASE = 'http://localhost:5000';
 
 export async function getUsers(): Promise<User[]> {
   const res = await fetch(`${API_BASE}/api/users`);

@@ -1,5 +1,5 @@
 import { Report } from '../../types/report';
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://order-dashboard-backend.vercel.app';
 
 /**
  * Fetches all reports from the backend API, including author name.

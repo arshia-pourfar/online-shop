@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://order-dashboard-backend.vercel.app';
 export async function getCategories() {
     try {
         const res = await fetch(`${API_BASE}/api/categories`);

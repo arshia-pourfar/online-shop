@@ -1,5 +1,5 @@
 import { Product } from '../../types/product';
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://order-dashboard-backend.vercel.app';
 
 // Fetch all products
 export async function getProducts(): Promise<Product[]> {

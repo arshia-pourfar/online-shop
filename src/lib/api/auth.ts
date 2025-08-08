@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://order-dashboard-backend.vercel.app';
 
 export const saveToken = (token: string) => {
     localStorage.setItem('token', token);

@@ -1,8 +1,9 @@
 // lib/api/orders.ts (New API Service File)
 import { Order } from "../../types/order";
+const API_BASE = 'https://order-dashboard-backend.vercel.app';
 
 export async function getOrders(): Promise<Order[]> {
-  const res = await fetch("http://localhost:5000/api/orders");
+  const res = await fetch(`${API_BASE}/api/orders`);
   if (!res.ok) {
     throw new Error("Failed to fetch orders");
   }
@@ -10,7 +11,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function addOrder(order: Partial<Order>): Promise<Order> {
-  const res = await fetch("http://localhost:5000/api/orders", {
+  const res = await fetch(`${API_BASE}/api/orders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(order),
@@ -22,7 +23,7 @@ export async function addOrder(order: Partial<Order>): Promise<Order> {
 }
 
 export async function updateOrder(id: number, order: Partial<Order>): Promise<Order> {
-  const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+  const res = await fetch(`${API_BASE}/api/orders/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(order),
@@ -34,7 +35,7 @@ export async function updateOrder(id: number, order: Partial<Order>): Promise<Or
 }
 
 export async function deleteOrder(id: number): Promise<void> {
-  const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+  const res = await fetch(`${API_BASE}/api/orders/${id}`, {
     method: "DELETE",
   });
   if (!res.ok) {

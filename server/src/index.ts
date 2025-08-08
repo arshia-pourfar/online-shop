@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
   } catch (err) {
     console.error('❌ DB connection failed:', err);
   }
+  
 })();
 
 // import dotenv from 'dotenv';

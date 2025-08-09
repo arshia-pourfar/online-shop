@@ -17,7 +17,7 @@ import {
     faThLarge,
     faHeart,
     faShoppingCart,
-    faUser,
+    // faUser,
     faHeadset,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
@@ -42,7 +42,7 @@ const userNavLinks = [
     { href: "/wishlist", icon: faHeart, text: "Wishlist" },
     { href: "/cart", icon: faShoppingCart, text: "Cart" },
     { href: "/my-orders", icon: faClipboardList, text: "My Orders" },
-    { href: "/profile", icon: faUser, text: "My Account" },
+    // { href: "/profile", icon: faUser, text: "My Account" },
     { href: "/contact", icon: faHeadset, text: "Contact Us" },
 ];
 
@@ -84,10 +84,10 @@ const Navbar = () => {
             {/* Header section with logo and title */}
             <div className="flex items-center justify-between mb-8">
                 <div
-                    className={`text-accent ps-3 text-2xl font-bold flex items-center transition-all duration-300 space-x-2 ${isHovered ? "" : "w-full"
+                    className={`text-accent ps-3 text-2xl w-10 font-bold flex items-center transition-all duration-300 space-x-2 ${isHovered ? "" : "w-full"
                         }`}
                 >
-                    <FontAwesomeIcon icon={faChartPie} className="text-2xl" />
+                    <FontAwesomeIcon icon={faChartPie} className="text-2xl flex items-center justify-center" />
                     {/* Always render text, control visibility with opacity */}
                     <h2
                         className={`text-lg transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"

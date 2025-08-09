@@ -1,5 +1,6 @@
 import { Report } from '../../types/report';
-const API_BASE = 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+
 
 /**
  * Fetches all reports from the backend API, including author name.

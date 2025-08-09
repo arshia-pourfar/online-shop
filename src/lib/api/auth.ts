@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+
 
 export const saveToken = (token: string) => {
     localStorage.setItem('token', token);

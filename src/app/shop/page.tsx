@@ -3,15 +3,21 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faCartShopping, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { getProducts } from "@/lib/api/products";
 import { Product } from "../../types/product";
 import Image from "next/image";
 import ProductCardSkeleton from "@/components/Skeletons/Home/ProductCardSkeleton";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const Shop = () => {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const categoryFromUrl = searchParams.get("category");
+
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +27,17 @@ const Shop = () => {
     const [filterMinPrice, setFilterMinPrice] = useState<number | "">("");
     const [filterMaxPrice, setFilterMaxPrice] = useState<number | "">("");
 
+    // وقتی URL تغییر کرد، selectedCategory رو آپدیت کن
+    useEffect(() => {
+        if (categoryFromUrl) {
+            setSelectedCategory(categoryFromUrl);
+            setIsSidebarOpen(true); // اگر خواستی فیلتر باز باشه
+        } else {
+            setSelectedCategory(null);
+        }
+    }, [categoryFromUrl]);
+
+    // بارگذاری محصولات و دسته‌ها
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -40,14 +57,35 @@ const Shop = () => {
         fetchData();
     }, []);
 
+    // تغییر دسته‌بندی (از سایدبار یا هر جای دیگه)
     const handleCategoryChange = (categoryId: string | null) => {
         setSelectedCategory(categoryId);
+
+        // بروزرسانی URL بدون رفرش صفحه
+        const query = new URLSearchParams(window.location.search);
+        if (categoryId) {
+            query.set("category", categoryId);
+        } else {
+            query.delete("category");
+        }
+
+        // به آدرس shop با پارامتر جدید برو
+        router.push(`/shop?${query.toString()}`, { scroll: false });
     };
 
+    // شمارش تعداد محصولات هر دسته
+    const categoryCounts = categories.reduce<Record<number, number>>((acc, category) => {
+        acc[category.id] = products.filter(
+            (p) => typeof p.category !== "string" && p.category.id === category.id
+        ).length;
+        return acc;
+    }, {});
+
+    // فیلتر محصولات بر اساس دسته، جستجو و قیمت
     const filteredProducts = products.filter((product) => {
         const matchesCategory =
             selectedCategory === null ||
-            (typeof product.category !== 'string' &&
+            (typeof product.category !== "string" &&
                 product.category.id === Number(selectedCategory));
         const matchesSearchTerm = product.name
             .toLowerCase()
@@ -65,7 +103,18 @@ const Shop = () => {
                 {/* Shop Header and Controls */}
                 <section className="flex items-center justify-between gap-6">
                     <h1 className="text-4xl font-bold text-blue-400">Shop All Products</h1>
-                    <div className="flex items-stretch basis-1/2 gap-4 w-full sm:w-auto">
+
+                    <div className="flex items-center gap-4 w-full sm:w-auto lg:w-1/2">
+                        {/* دکمه باز/بسته کردن فیلترها فقط زیر xl */}
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="xl:hidden bg-accent text-white p-3 rounded-full shadow hover:bg-blue-600 transition"
+                            aria-label="Toggle Filters"
+                            title="Filters"
+                        >
+                            <FontAwesomeIcon icon={faFilter} />
+                        </button>
+
                         <div className="relative flex-grow">
                             <input
                                 type="text"
@@ -78,24 +127,18 @@ const Shop = () => {
                                 <FontAwesomeIcon icon={faSearch} />
                             </div>
                         </div>
-                        {/* <button
-                            className="flex items-center justify-center gap-2 bg-secondary-bg text-primary-text py-3 px-6 rounded-full shadow border border-gray-600 hover:bg-gray-700 transition-colors"
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        >
-                            <FontAwesomeIcon icon={faSliders} />
-                            <span className="font-semibold hidden sm:inline">Filters</span>
-                        </button> */}
                     </div>
                 </section>
 
                 {/* Main Shop Content */}
-                <section className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <section className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Sidebar */}
                     <aside
-                        className={`fixed inset-y-0 right-0 w-64 p-6 transform transition-transform duration-300 ease-in-out lg:static lg:block lg:transform-none lg:bg-transparent lg:p-0 lg:col-span-1 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
-                            }`}
+                        className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 h-full bg-secondary-bg p-6 rounded-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out z-10
+              ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+              xl:translate-x-0`}
                     >
-                        <div className="w-full space-y-8 lg:bg-secondary-bg lg:rounded-xl lg:shadow-lg lg:border lg:border-gray-700 lg:p-6">
+                        <div className="w-full space-y-8">
                             {/* Price Range Filter */}
                             <div className="space-y-4">
                                 <h3 className="text-xl font-bold border-b border-gray-600 pb-3 text-blue-400">
@@ -133,11 +176,13 @@ const Shop = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-between items-center mb-4 lg:hidden">
+                            {/* دکمه بستن سایدبار در موبایل */}
+                            <div className="flex justify-between items-center mb-4 xl:hidden">
                                 <h3 className="text-xl font-bold text-blue-400">Filters</h3>
                                 <button
                                     onClick={() => setIsSidebarOpen(false)}
                                     className="text-2xl font-bold text-primary-text"
+                                    aria-label="Close Filters"
                                 >
                                     &times;
                                 </button>
@@ -151,53 +196,53 @@ const Shop = () => {
                                     </h3>
                                     <ul className="space-y-2">
                                         <li key="all-products">
-                                            <a
-                                                href="#"
+                                            <button
                                                 onClick={() => handleCategoryChange(null)}
-                                                className={`text-primary-text hover:text-accent transition-colors block px-2 py-1 rounded-md ${selectedCategory === null && "bg-gray-700"
+                                                className={`w-full flex justify-between items-center text-left px-3 py-2 rounded-md transition-colors ${selectedCategory === null
+                                                        ? "bg-gray-700 text-white"
+                                                        : "text-primary-text hover:text-accent hover:bg-gray-700"
                                                     }`}
                                             >
-                                                All Products
-                                            </a>
+                                                <span>All Products</span>
+                                                <span className="text-gray-400 text-sm font-semibold">{products.length}</span>
+                                            </button>
                                         </li>
-                                        {isLoading ? (
-                                            Array.from({ length: 8 }).map((_, i) => (
-                                                <li
-                                                    key={i}
-                                                    className="animate-pulse h-6 bg-gray-700 rounded"
-                                                ></li>
+                                        {isLoading
+                                            ? Array.from({ length: 8 }).map((_, i) => (
+                                                <li key={i} className="animate-pulse h-6 bg-gray-700 rounded"></li>
                                             ))
-                                        ) : (
-                                            categories.map((category) => (
+                                            : categories.map((category) => (
                                                 <li key={category.id}>
-                                                    <a
-                                                        href="#"
+                                                    <button
                                                         onClick={() => handleCategoryChange(String(category.id))}
-                                                        className={`text-primary-text hover:text-accent transition-colors block px-2 py-1 rounded-md ${selectedCategory === String(category.id) && "bg-gray-700"}`}
+                                                        className={`w-full flex justify-between items-center text-left px-3 py-2 rounded-md transition-colors ${selectedCategory === String(category.id)
+                                                                ? "bg-gray-700 text-white"
+                                                                : "text-primary-text hover:text-accent hover:bg-gray-700"
+                                                            }`}
                                                     >
-                                                        {category.name}
-                                                    </a>
+                                                        <span>{category.name}</span>
+                                                        <span className="text-gray-400 text-sm font-semibold">
+                                                            {categoryCounts[category.id] ?? 0}
+                                                        </span>
+                                                    </button>
                                                 </li>
-                                            ))
-                                        )}
+                                            ))}
                                     </ul>
                                 </div>
-
-
                             </div>
                         </div>
                     </aside>
 
                     {/* Product Grid */}
-                    <div className="lg:col-span-4">
+                    <div className="xl:col-span-4">
                         {isLoading ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                                 {Array.from({ length: 12 }).map((_, i) => (
                                     <ProductCardSkeleton key={i} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                                 {filteredProducts.length > 0 ? (
                                     filteredProducts.map((product) => (
                                         <div
@@ -210,21 +255,14 @@ const Shop = () => {
                                                     alt={product.name}
                                                     fill
                                                     className="object-contain"
-                                                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
                                                 />
                                             </div>
                                             <div className="flex-1 space-y-2">
-                                                <h3 className="text-lg font-semibold truncate">
-                                                    {product.name}
-                                                </h3>
-                                                <p className="text-sm text-gray-400 line-clamp-2">
-                                                    {product.description}
-                                                </p>
+                                                <h3 className="text-lg font-semibold truncate">{product.name}</h3>
+                                                <p className="text-sm text-gray-400 line-clamp-2">{product.description}</p>
                                             </div>
                                             <div className="flex justify-between items-center pt-2">
-                                                <span className="text-base font-bold text-blue-400">
-                                                    $ {product.price}
-                                                </span>
+                                                <span className="text-base font-bold text-blue-400">${product.price}</span>
                                                 <button className="bg-accent text-white font-medium flex items-center gap-2 py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors shadow-md">
                                                     <FontAwesomeIcon icon={faCartShopping} />
                                                     <span>Add</span>
@@ -233,7 +271,7 @@ const Shop = () => {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="lg:col-span-4 flex justify-center items-center h-full">
+                                    <div className="flex justify-center items-center h-full py-20">
                                         <p className="text-xl text-gray-400">No products found matching your filters.</p>
                                     </div>
                                 )}

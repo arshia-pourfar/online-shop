@@ -14,7 +14,7 @@ import {
     faTachometerAlt,
     faClipboardList,
     faStore,
-    faThLarge,
+    // faThLarge,
     faHeart,
     faShoppingCart,
     // faUser,
@@ -38,7 +38,7 @@ const adminNavLinks = [
 const userNavLinks = [
     { href: "/", icon: faHome, text: "Home" },
     { href: "/shop", icon: faStore, text: "Shop" },
-    { href: "/categories", icon: faThLarge, text: "Categories" },
+    // { href: "/categories", icon: faThLarge, text: "Categories" },
     { href: "/wishlist", icon: faHeart, text: "Wishlist" },
     { href: "/cart", icon: faShoppingCart, text: "Cart" },
     { href: "/my-orders", icon: faClipboardList, text: "My Orders" },

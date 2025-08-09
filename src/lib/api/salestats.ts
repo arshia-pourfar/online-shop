@@ -1,6 +1,7 @@
 // src/api/salestats.ts
 import { SaleStats } from '../../types/salestats';
-const API_BASE = 'http://localhost:5000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+
 
 export async function getSaleStats(): Promise<SaleStats[]> {
     const res = await fetch(`${API_BASE}/api/salestats`);

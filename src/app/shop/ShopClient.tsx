@@ -134,9 +134,12 @@ const ShopClient = () => {
                 <section className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Sidebar */}
                     <aside
-                        className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 h-full bg-secondary-bg p-6 xl:rounded-xl rounded-s-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out md:z-10 z-50
-              ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
-              xl:translate-x-0`}
+                        className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 max-h-screen h-full bg-secondary-bg p-6 xl:rounded-xl rounded-s-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out md:z-10 z-50
+                                    ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
+                                    xl:translate-x-0
+                                    overflow-y-auto
+                                    scrollbar-thin scrollbar-thumb-accent scrollbar-track-secondary-bg
+                                `}
                     >
                         <div className="w-full space-y-8">
                             {/* دکمه بستن سایدبار در موبایل */}

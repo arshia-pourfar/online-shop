@@ -255,7 +255,7 @@ const Home = () => {
 
             {isLoading ? (
               <div
-                className="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto pb-2 px-2
+                className="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto pb-2 px-2 overflow-hidden
                  lg:grid-flow-row lg:grid-cols-6 lg:overflow-x-hidden lg:pb-0"
               >
                 {Array.from({ length: 12 }).map((_, i) => (
@@ -267,8 +267,8 @@ const Home = () => {
               </div>
             ) : (
               <div
-                className="grid grid-flow-col grid-rows-2 md:gap-4 gap-2 overflow-x-auto pb-2 px-2
-                 lg:grid-flow-row lg:grid-cols-6 lg:overflow-x-hidden lg:pb-0"
+                className="grid grid-flow-col grid-rows-2 md:gap-4 gap-2 overflow-x-auto py-2 px-2
+                 lg:grid-flow-row lg:grid-cols-6 lg:overflow-x-hidden "
               >
                 {categories.map((category) => (
                   <a
@@ -411,7 +411,7 @@ const Home = () => {
                 </div>
               </div>
             ) : (
-              <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
+              <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg sm:px-2 sm:py-10 py-5 sm:space-y-0 space-y-5">
                 <div className="flex flex-col gap-1">
                   <h2 className="font-bold text-lg">
                     Get 10% Off Your First Order!
@@ -423,7 +423,7 @@ const Home = () => {
                 </div>
                 <a
                   href="./login"
-                  className="bg-accent font-semibold rounded-lg px-4 py-2"
+                  className="bg-accent font-semibold rounded-lg px-4 py-2 min-w-fit"
                 >
                   Sign Up
                 </a>

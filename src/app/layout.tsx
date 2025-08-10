@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden`}>
+      <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden pb-[env(safe-area-inset-bottom)]`}>
         <AuthProvider>
           {/* Layout container: sidebar + content */}
           <div className="flex h-screen w-screen overflow-hidden ">

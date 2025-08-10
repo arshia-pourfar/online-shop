@@ -21,11 +21,11 @@ const Header = () => {
     const pageName = getPageName(pathname);
 
     return (
-        <header className="h-16 w-full px-6 py-8 bg-secondary-bg text-primary-text flex justify-between items-center shadow-sm">
-            <div className="text-2xl sm:text-3xl font-bold text-primary-text">
+        <header className="h-16 w-full py-8 bg-secondary-bg text-primary-text flex justify-between items-center shadow-sm md:px-6 ps-16 md:z-10 z-40 md:static fixed top-0">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-text">
                 <h2 className="flex items-center gap-8">
                     E-commerce
-                    <span className=" text-base font-normal text-secondary-text">
+                    <span className="sm:inline-block hidden text-base font-normal text-secondary-text">
                         /{pageName}
                     </span>
                 </h2>

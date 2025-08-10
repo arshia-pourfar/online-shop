@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faCartShopping, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faCartShopping, faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { getProducts } from "@/lib/api/products";
 import { Product } from "../../types/product";
 import Image from "next/image";
@@ -101,10 +101,10 @@ const ShopClient = () => {
             <Header />
             <main className="p-4 md:p-8 space-y-12">
                 {/* Shop Header and Controls */}
-                <section className="flex items-center justify-between gap-6">
+                <section className="flex lg:items-center justify-between gap-6 lg:flex-row flex-col">
                     <h1 className="text-4xl font-bold text-blue-400">Shop All Products</h1>
 
-                    <div className="flex items-center gap-4 w-full sm:w-auto lg:w-1/2">
+                    <div className="flex items-center gap-4 w-full lg:flex-row flex-row-reverse  md:w-2/3 lg:w-1/2">
                         {/* دکمه باز/بسته کردن فیلترها فقط زیر xl */}
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -134,11 +134,26 @@ const ShopClient = () => {
                 <section className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Sidebar */}
                     <aside
-                        className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 h-full bg-secondary-bg p-6 rounded-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out z-10
+                        className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 h-full bg-secondary-bg p-6 xl:rounded-xl rounded-s-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out md:z-10 z-50
               ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
               xl:translate-x-0`}
                     >
                         <div className="w-full space-y-8">
+                            {/* دکمه بستن سایدبار در موبایل */}
+                            <div className="flex justify-between items-center border-b-2 pb-5 mb-5 xl:mb-0 xl:hidden">
+                                <h3 className="text-xl font-bold text-blue-400">Filters</h3>
+                                <button
+                                    onClick={() => setIsSidebarOpen(false)}
+                                    className="text-2xl font-bold text-primary-text"
+                                    aria-label="Close Filters"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faTimes}
+                                        className="text-xl cursor-pointer"
+                                    />
+                                </button>
+                            </div>
+
                             {/* Price Range Filter */}
                             <div className="space-y-4">
                                 <h3 className="text-xl font-bold border-b border-gray-600 pb-3 text-blue-400">
@@ -174,18 +189,6 @@ const ShopClient = () => {
                                         />
                                     </div>
                                 </div>
-                            </div>
-
-                            {/* دکمه بستن سایدبار در موبایل */}
-                            <div className="flex justify-between items-center mb-4 xl:hidden">
-                                <h3 className="text-xl font-bold text-blue-400">Filters</h3>
-                                <button
-                                    onClick={() => setIsSidebarOpen(false)}
-                                    className="text-2xl font-bold text-primary-text"
-                                    aria-label="Close Filters"
-                                >
-                                    &times;
-                                </button>
                             </div>
 
                             <div className="space-y-6">
@@ -242,7 +245,7 @@ const ShopClient = () => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                                 {filteredProducts.length > 0 ? (
                                     filteredProducts.map((product) => (
                                         <div

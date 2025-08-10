@@ -92,23 +92,24 @@ const Home = () => {
       <Header />
       <div className="flex-1 flex flex-col">
         <main className="p-4 md:p-8 flex-1 space-y-16">
+
           {/* Poster / Banner Section */}
           <section className="w-full">
-            <div className="flex flex-col lg:flex-row gap-4 md:gap-6 h-[500px] relative">
+            <div className="flex flex-col lg:flex-row gap-4 md:gap-6 md:h-[500px] sm:h-[300px] h-[30vh] relative">
               {/* Left large slider */}
               <div className="group w-full lg:w-2/3 h-full relative rounded-2xl overflow-hidden shadow-lg bg-secondary-bg">
-                <div className="w-full h-full absolute right-0 z-20 px-3 flex justify-between items-center gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:bg-black/15">
+                <div className="w-full h-full absolute right-0 z-20 px-3 flex justify-between items-center gap-3 transition-all duration-300 lg:opacity-0 lg:group-hover:opacity-100 opacity-100 lg:group-hover:bg-black/15">
                   <button
                     ref={prevLargePosterRef}
-                    className="z-10 bg-secondary-bg text-primary-text text-3xl rounded-full size-14 shadow flex justify-center items-center"
+                    className="z-10 bg-accent lg:bg-secondary-bg text-primary-text lg:text-3xl md:text-2xl text-xl rounded-full lg:size-14 md:size-12 size-10 shadow flex justify-center items-center"
                   >
-                    <FontAwesomeIcon icon={faAngleLeft} className="text-3xl" />
+                    <FontAwesomeIcon icon={faAngleLeft} />
                   </button>
                   <button
                     ref={nextLargePosterRef}
-                    className="z-10 bg-secondary-bg text-primary-text text-3xl rounded-full size-14 shadow flex justify-center items-center"
+                    className="z-10 bg-accent lg:bg-secondary-bg text-primary-text lg:text-3xl md:text-2xl text-xl rounded-full lg:size-14 md:size-12 size-10 shadow flex justify-center items-center"
                   >
-                    <FontAwesomeIcon icon={faAngleRight} className="text-3xl" />
+                    <FontAwesomeIcon icon={faAngleRight} />
                   </button>
                 </div>
                 {isLoading ? (
@@ -135,7 +136,7 @@ const Home = () => {
                             src={`/posters/${slide.imageSrc}`}
                             alt={`Main Slide`}
                             fill
-                            className="object-cover"
+                            className="lg:object-cover object-contain"
                           />
                         </div>
                       </SwiperSlide>
@@ -144,8 +145,8 @@ const Home = () => {
                 )}
               </div>
 
-              {/* Right small sliders */}
-              <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6 h-full ">
+              {/* Right small sliders - فقط در lg به بالا نمایش */}
+              <div className="w-full lg:w-1/3 flex-col gap-4 md:gap-6 h-full hidden lg:flex">
                 <div className="group flex-1 rounded-2xl overflow-hidden shadow-md relative bg-secondary-bg">
                   <div className="w-full h-full absolute right-0 z-20 px-3 flex justify-between items-center gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:bg-black/15">
                     <button
@@ -247,27 +248,36 @@ const Home = () => {
             </div>
           </section>
 
-          {/* Categories Section */}
           <section className="w-full">
-            <h2 className="text-2xl font-bold mb-4 text-blue-400">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-blue-400">
               Shop by Category
             </h2>
 
             {isLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div
+                className="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto pb-2 px-2
+                 lg:grid-flow-row lg:grid-cols-6 lg:overflow-x-hidden lg:pb-0"
+              >
                 {Array.from({ length: 12 }).map((_, i) => (
-                  <CategorySkeleton key={i} />
+                  <CategorySkeleton
+                    key={i}
+                    className="min-w-[140px] lg:min-w-0 flex-shrink-0"
+                  />
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div
+                className="grid grid-flow-col grid-rows-2 md:gap-4 gap-2 overflow-x-auto pb-2 px-2
+                 lg:grid-flow-row lg:grid-cols-6 lg:overflow-x-hidden lg:pb-0"
+              >
                 {categories.map((category) => (
                   <a
                     key={category.id}
                     href={`/shop?category=${category.id}`}
-                    className="group flex flex-col items-center justify-center bg-secondary-bg p-4 rounded-xl shadow hover:shadow-lg transition hover:scale-105"
+                    className="group flex flex-col items-center justify-center bg-secondary-bg md:p-4 p-2 rounded-xl shadow hover:shadow-lg transition hover:scale-105 
+                     min-w-[140px] lg:min-w-0 flex-shrink-0"
                   >
-                    <div className="relative size-24 mb-3">
+                    <div className="relative md:size-24 size-20 mb-3">
                       <Image
                         src={`/categories/${category.imageSrc || "default.png"}`}
                         alt={category.name}
@@ -275,7 +285,7 @@ const Home = () => {
                         className="object-contain rounded-full"
                       />
                     </div>
-                    <span className="font-semibold text-center group-hover:text-accent">
+                    <span className="md:text-base text-sm font-semibold text-center group-hover:text-accent">
                       {category.name}
                     </span>
                   </a>
@@ -287,22 +297,22 @@ const Home = () => {
           {/* Featured Products Section */}
           <section className="w-full relative">
             <div className="flex justify-between items-center">
-              <h2 className="text-3xl font-bold text-blue-400 mb-6 text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-blue-400 mb-6 text-center">
                 Featured Products
-                <a href="./shop" className="underline text-sm ms-4">
+                <a href="./shop" className="underline text-xs sm:text-sm ms-4">
                   See More
                 </a>
               </h2>
-              <div className="absolute right-0 top-0 flex justify-between items-center gap-3">
+              <div className="sm:absolute sm:right-0 sm:top-0 flex justify-between items-center gap-3">
                 <button
                   ref={prevProductRef}
-                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow"
+                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow sm:static absolute left-0 top-1/2"
                 >
                   <FontAwesomeIcon icon={faAngleLeft} className="text-2xl" />
                 </button>
                 <button
                   ref={nextProductRef}
-                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow"
+                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow sm:static absolute right-0 top-1/2"
                 >
                   <FontAwesomeIcon icon={faAngleRight} className="text-2xl" />
                 </button>
@@ -335,13 +345,13 @@ const Home = () => {
                 breakpoints={{
                   640: { slidesPerView: 3 },
                   1024: { slidesPerView: 4 },
-                  1280: { slidesPerView: 5 },
+                  1440: { slidesPerView: 5 },
                 }}
               >
                 {products.map((product) => (
                   <SwiperSlide key={product.id}>
-                    <div className="bg-secondary-bg rounded-xl h-80 shadow-md flex flex-col px-2 py-4 space-y-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
-                      <div className="w-full h-32 relative">
+                    <div className="bg-secondary-bg rounded-xl h-72 md:h-80 shadow-md flex flex-col px-2 py-4 space-y-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                      <div className="w-full md:h-32 h-32 relative">
                         <Image
                           src={`/products/${product.imageUrl}`}
                           alt={product.name}
@@ -351,21 +361,22 @@ const Home = () => {
                       </div>
 
                       <div className="flex-1 space-y-1">
-                        <h3 className="text-lg font-semibold truncate">
+                        <h3 className="text-base sm:text-lg font-semibold truncate">
                           {product.name}
                         </h3>
-                        <p className="text-sm text-gray-400 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 md:line-clamp-2">
                           {product.description}
                         </p>
                       </div>
 
-                      <div className="flex justify-between items-center px-1">
-                        <span className="text-base font-bold text-blue-400">
+                      <div className="flex justify-between items-center md:px-1">
+                        <span className="text-sm sm:text-base font-bold text-blue-400">
                           $ {product.price}
                         </span>
-                        <button className="bg-accent text-white font-medium flex items-center py-2 px-4 rounded-lg hover:scale-105 transition-transform shadow-md gap-2">
-                          <FontAwesomeIcon icon={faCartShopping} />
-                          <span>Add to Cart</span>
+                        <button className="bg-accent text-white font-medium flex items-center sm:py-2 sm:px-4 p-2 rounded-lg hover:scale-105 transition-transform shadow-md gap-2">
+                          <FontAwesomeIcon icon={faCartShopping} className="text-sm" />
+                          <span className="xl:inline-block hidden">Add to Cart</span>
+                          <span className="inline-block xl:hidden text-xs">Add</span>
                         </button>
                       </div>
                     </div>
@@ -375,9 +386,9 @@ const Home = () => {
             )}
           </section>
 
-          <div className="flex gap-4">
+          <div className="flex lg:flex-row flex-col gap-4">
             {user ? (
-              <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
+              <div className="sm:basis-1/2 flex sm:flex-row flex-col sm:items-center justify-around items-center bg-secondary-bg rounded-lg sm:px-2 sm:py-10 py-5 sm:space-y-0 space-y-5">
                 <div className="flex items-center justify-between gap-5">
                   <FontAwesomeIcon
                     icon={faTruck}
@@ -400,7 +411,7 @@ const Home = () => {
                 </div>
               </div>
             ) : (
-              <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
+              <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg px-2 py-10">
                 <div className="flex flex-col gap-1">
                   <h2 className="font-bold text-lg">
                     Get 10% Off Your First Order!
@@ -419,7 +430,7 @@ const Home = () => {
               </div>
             )}
 
-            <div className="basis-1/2 flex items-center justify-around bg-secondary-bg rounded-lg px-4 py-8">
+            <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg px-4 sm:py-8 py-5 sm:space-y-0 space-y-5">
               <div className="flex flex-col gap-1">
                 <h2 className="font-bold text-lg">Stay Connected</h2>
                 <p className="text-sm">

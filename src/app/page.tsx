@@ -388,7 +388,7 @@ const Home = () => {
 
           <div className="flex lg:flex-row flex-col gap-4">
             {user ? (
-              <div className="sm:basis-1/2 flex sm:flex-row flex-col sm:items-center justify-around items-center bg-secondary-bg rounded-lg sm:px-2 sm:py-10 py-5 sm:space-y-0 space-y-5">
+              <div className="sm:basis-1/2 flex sm:flex-row flex-col sm:items-center justify-around items-center bg-secondary-bg rounded-lg px-4 sm:py-8 py-5 sm:space-y-0 space-y-5">
                 <div className="flex items-center justify-between gap-5">
                   <FontAwesomeIcon
                     icon={faTruck}
@@ -411,7 +411,7 @@ const Home = () => {
                 </div>
               </div>
             ) : (
-              <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg sm:px-2 sm:py-10 py-5 sm:space-y-0 space-y-5">
+              <div className="sm:basis-1/2 sm:flex-row flex-col flex items-center justify-around bg-secondary-bg rounded-lg px-4 sm:py-8 py-5 sm:space-y-0 space-y-5">
                 <div className="flex flex-col gap-1">
                   <h2 className="font-bold text-lg">
                     Get 10% Off Your First Order!

@@ -137,11 +137,11 @@ const ShopClient = () => {
                         className={`xl:col-span-1 w-full max-w-xs xl:max-w-full xl:static fixed top-0 right-0 max-h-screen h-full bg-secondary-bg p-6 xl:rounded-xl rounded-s-xl shadow-lg border border-gray-700 transition-transform duration-300 ease-in-out md:z-10 z-50
                                     ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
                                     xl:translate-x-0
-                                    overflow-y-auto
+                                    xl:overflow-hidden overflow-y-auto
                                     scrollbar-thin scrollbar-thumb-accent scrollbar-track-secondary-bg
                                 `}
                     >
-                        <div className="w-full space-y-8">
+                        <div className="w-full ">
                             {/* دکمه بستن سایدبار در موبایل */}
                             <div className="flex justify-between items-center border-b-2 pb-5 mb-5 xl:mb-0 xl:hidden">
                                 <h3 className="text-xl font-bold text-blue-400">Filters</h3>
@@ -194,7 +194,7 @@ const ShopClient = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-6 mt-6">
                                 {/* Categories Filter */}
                                 <div>
                                     <h3 className="text-xl font-bold mb-4 border-b border-gray-600 pb-3 text-blue-400">

@@ -90,7 +90,7 @@ const Navbar = () => {
             {/* Sidebar */}
             <aside
                 className={`${isMobile ? "w-64" : isHovered ? "w-64" : "w-20"} 
-                            bg-secondary-bg p-4 shadow-xl flex flex-col min-h-screen border-r border-gray-700/30 
+                            bg-secondary-bg p-4 shadow-xl flex flex-col min-h-[100dvh] border-r border-gray-700/30 
                             transition-all duration-300 ease-in-out absolute z-50 overflow-hidden top-0
                             ${isMobile ? (isOpen ? "left-0" : "-left-64") : "left-0"}`}
                 onMouseEnter={() => !isMobile && setIsHovered(true)}

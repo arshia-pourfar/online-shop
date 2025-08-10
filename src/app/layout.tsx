@@ -22,18 +22,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden pb-[env(safe-area-inset-bottom)]`}>
+      <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden`}>
         <AuthProvider>
           {/* Layout container: sidebar + content */}
-          <div className="flex h-screen w-screen overflow-hidden ">
+          <div className="flex h-[100dvh] w-screen overflow-y-auto overflow-x-hidden ">
 
             {/* Sidebar */}
             <Navbar />
-            <div className="md:ps-20 "></div>
+            <div className="md:ps-20"></div>
             {/* Main content area */}
             <main
               className="flex-1 h-full overflow-y-auto overflow-x-hidden md:pt-0 pt-20"
-              style={{ width: 'calc(100vw - 80px)' }} // ⬅️ دقیقاً عرض صفحه منهای Navbar
+              style={{
+                height: '100dvh',
+                paddingBottom: 'env(safe-area-inset-bottom)',
+                width: 'calc(100vw - 80px)',
+              }}
             >
               {children}
             </main>

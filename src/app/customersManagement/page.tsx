@@ -152,6 +152,7 @@ export default function CustomersPage() {
             console.error("executeDelete called with null deleteTargetId.");
             return;
         }
+        const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
 
         try {
             let successMessage = "";
@@ -159,7 +160,7 @@ export default function CustomersPage() {
                 console.log("Attempting bulk delete for customer IDs:", selectedIds);
                 const deleteRequests = selectedIds.map((id) => {
                     console.log(`Sending DELETE request for customer ID: ${id}`);
-                    return fetch(`http://localhost:5000/api/users/${id}`, {
+                    return fetch(`${API_BASE}/api/users/${id}`, {
                         method: "DELETE",
                     });
                 });
@@ -187,7 +188,7 @@ export default function CustomersPage() {
             } else {
                 // Individual delete
                 console.log(`Attempting individual delete for customer ID: ${deleteTargetId}`);
-                const res = await fetch(`http://localhost:5000/api/users/${deleteTargetId}`, { // Adjust API endpoint for users
+                const res = await fetch(`${API_BASE}/api/users/${deleteTargetId}`, { // Adjust API endpoint for users
                     method: "DELETE",
                 });
 

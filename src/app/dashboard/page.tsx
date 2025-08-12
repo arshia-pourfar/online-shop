@@ -52,27 +52,8 @@ export default function DashboardPage() {
 
       <div className="flex-1 flex flex-col">
 
-        <main className="p-8 flex-1">
+        <main className="md:p-8 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-primary-text">Sales</h3>
-                <span className="text-sm text-accent cursor-pointer">Detail</span>
-              </div>
-              <div className="text-4xl font-bold text-primary-text mb-2">$578%</div>
-              <div className="flex-grow">
-                <LineChart
-                  data={salesData}
-                  index="date"
-                  categories={['Sales']}
-                  colors={['accent']}
-                  showXAxis={true}
-                  showYAxis={true}
-                  showLegend={false}
-                  className="h-24"
-                />
-              </div>
-            </div>
 
             {/* Orofit Profit Card */}
             <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
@@ -102,12 +83,33 @@ export default function DashboardPage() {
                 <span className="text-secondary-text text-sm">75%</span>
               </div>
             </div>
+
+            <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-primary-text">Sales</h3>
+                <span className="text-sm text-accent cursor-pointer">Detail</span>
+              </div>
+              <div className="text-4xl font-bold text-primary-text mb-2">$578%</div>
+              <div className="flex-grow">
+                <LineChart
+                  data={salesData}
+                  index="date"
+                  categories={['Sales']}
+                  colors={['accent']}
+                  showXAxis={true}
+                  showYAxis={true}
+                  showLegend={false}
+                  className="h-24"
+                />
+              </div>
+            </div>
+
           </div>
 
-          <div className="flex my-6 space-x-6">
+          <div className="flex lg:flex-row flex-col my-6 lg:space-x-6 lg:space-y-0 space-y-6">
             {/* Analytics Card */}
 
-            <Card className="text-white bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col text-left basis-2/3">
+            <Card className="text-white bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col text-left md:basis-2/3 basis-full">
               <div className='flex-grow'>
                 <Title className="text-lg font-semibold text-primary-text">Analytics</Title>
                 <Text className="text-gray-400 mb-6">Monthly sales trend for the past year.</Text>
@@ -127,7 +129,7 @@ export default function DashboardPage() {
 
 
             {/* Orders Card */}
-            <Card className="flex flex-col justify-between basis-1/3 p-0">
+            <Card className="flex flex-col justify-between md:basis-1/3 basis-full p-0 gap-6">
               <div className='bg-secondary-bg p-6 py-8 rounded-xl shadow-lg flex flex-col'>
                 <div className="flex justify-between items-center mb-4">
                   <Title className="text-lg font-semibold text-primary-text">Orders</Title>
@@ -154,7 +156,7 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          <div className="flex my-6 space-x-6">
+          <div className="xl:flex-row flex-col flex my-6 xl:space-x-6 xl:space-y-0 space-y-6">
             {/* Customics Card */}
             <Card className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-4/6">
               <Title className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
@@ -239,22 +241,22 @@ export default function DashboardPage() {
               {/* Masteicontod & Mawelo Card */}
               <div className="bg-secondary-bg p-6 rounded-xl shadow-lg flex flex-col basis-2/6 justify-center">
                 <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-accent mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">$35%</span>
                 </div>
                 <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-accent mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Mawelo</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">435%</span>
                 </div>
                 <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-accent mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Masteicontod</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">$22%</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="w-3 h-3 rounded-full bg-accent mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-accent mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Mawelo</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">$450%</span>
                 </div>
@@ -267,12 +269,12 @@ export default function DashboardPage() {
                   <span className="text-sm text-accent cursor-pointer">Dotaaa</span>
                 </div>
                 <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-status-positive mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Powelore</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">$88%</span>
                 </div>
                 <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 rounded-full bg-status-positive mr-3"></span>
+                  <span className="w-3 h-3 rounded-full bg-status-positive mr-2"></span>
                   <span className="text-primary-text text-lg font-semibold">Glonstant</span>
                   <span className="ml-auto text-primary-text text-lg font-bold">1.98</span>
                 </div>

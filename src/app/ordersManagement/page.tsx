@@ -72,7 +72,7 @@ const OrdersPage: React.FC = () => {
             const valA = getSortableValue(a, field);
             const valB = getSortableValue(b, field);
 
-            if (field === "orderDate") {
+            if (field === "createdAt") {
                 const dateA = new Date(valA as string).getTime();
                 const dateB = new Date(valB as string).getTime();
                 return asc ? dateA - dateB : dateB - dateA;
@@ -94,7 +94,7 @@ const OrdersPage: React.FC = () => {
             !q || order.id.toLowerCase().includes(q) || order.customerName.toLowerCase().includes(q);
         const matchesStatus = !filterStatus || order.status === filterStatus;
         const matchesMinAmount =
-            filterMinTotalAmount === "" || order.totalAmount >= filterMinTotalAmount;
+            filterMinTotalAmount === "" || order.total >= filterMinTotalAmount;
         return matchesSearch && matchesStatus && matchesMinAmount;
     });
 
@@ -339,10 +339,10 @@ const OrdersPage: React.FC = () => {
                                 />
                                 <SortableTH
                                     title="Total"
-                                    onClick={() => onSortClick("totalAmount")}
+                                    onClick={() => onSortClick("total")}
                                     sortable={true}
                                     sortAsc={sortAsc}
-                                    isActive={sortField === "totalAmount"}
+                                    isActive={sortField === "total"}
                                     width="w-28"
                                 />
                                 <th className="px-2 py-3 w-40">Actions</th>
@@ -388,8 +388,8 @@ const OrdersPage: React.FC = () => {
                                             <OrderStatusBadge status={order.status || "UNKNOWN"} />
                                         </td>
                                         <td className="px-2 py-2 font-bold text-primary-text">
-                                            {typeof order.totalAmount === "number"
-                                                ? `$${order.totalAmount.toFixed(2)}`
+                                            {typeof order.total === "number"
+                                                ? `$${order.total.toFixed(2)}`
                                                 : "N/A"}
                                         </td>
                                         <td className="px-2 h-20 flex items-center gap-2 justify-evenly">

@@ -32,7 +32,7 @@ const Header = () => {
             </div>
 
             <div className="flex items-center justify-between md:gap-4 md:text-2xl text-xl">
-                <a href="./shop" className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
+                <a href={user ? './cart' : './login'} className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </a>
                 <a href={user ? './setting' : './login'} className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">

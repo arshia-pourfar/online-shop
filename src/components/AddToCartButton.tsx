@@ -161,7 +161,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                     className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
                 >
                     <FontAwesomeIcon icon={faCartShopping} />
-                    <span>Add to Cart</span>
+                    <span>Add</span>
                 </button>
             )}
         </div>

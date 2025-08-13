@@ -62,7 +62,7 @@ export default function CartPage() {
         <div className="min-h-screen w-full bg-primary-bg text-primary-text">
             <Header />
 
-            <main className="p-4 md:p-8 space-y-12">
+            <main className="p-4 md:p-8 space-y-8">
                 <section className="flex items-center justify-between gap-6 flex-wrap">
                     <h1 className="text-4xl font-bold text-blue-400">Cart</h1>
                 </section>
@@ -73,7 +73,7 @@ export default function CartPage() {
                             cartItems.map((item) => (
                                 <div
                                     key={item.id}
-                                    className="bg-secondary-bg rounded-xl shadow-md p-4 flex gap-4 items-center hover:shadow-lg transition"
+                                    className="bg-secondary-bg rounded-xl shadow-md p-4 flex sm:flex-row flex-col gap-4 items-center hover:shadow-lg transition"
                                 >
                                     <div className="w-28 h-28 relative flex-shrink-0">
                                         <Image

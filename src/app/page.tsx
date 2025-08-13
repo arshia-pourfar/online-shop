@@ -28,6 +28,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "types/category";
 import CategorySkeleton from "@/components/Skeletons/Home/categorySkeleton";
+import { useCart } from "@/lib/context/cartContext";
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -47,6 +48,7 @@ const Home = () => {
   const nextProductRef = useRef(null);
 
   const { user } = useAuth();
+  const { addToCartAndSave } = useCart();
 
   useEffect(() => {
     setIsClient(true);
@@ -373,7 +375,42 @@ const Home = () => {
                         <span className="text-sm sm:text-base font-bold text-blue-400">
                           $ {product.price}
                         </span>
-                        <button className="bg-accent text-white font-medium flex items-center sm:py-2 sm:px-4 p-2 rounded-lg hover:scale-105 transition-transform shadow-md gap-2">
+                        <button
+                          className="bg-accent text-white font-medium flex items-center sm:py-2 sm:px-4 p-2 rounded-lg hover:scale-105 transition-transform shadow-md gap-2"
+                          onClick={async () => {
+                            if (!user) return;
+
+                            const payload = {
+                              userId: user.id,
+                              customerName: user.name || "Arshia",
+                              shippingAddress: "Tehran",
+                              total: product.price,
+                              status: "PENDING",
+                              items: [
+                                {
+                                  productId: Number(product.id),
+                                  quantity: 1,
+                                },
+                              ],
+                            };
+
+                            try {
+                              const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(payload),
+                              });
+
+                              if (!res.ok) throw new Error("Failed to save order");
+
+                              const data = await res.json();
+                              console.log("Order saved:", data);
+                            } catch (err) {
+                              console.error("Error saving order:", err);
+                            }
+                          }}
+
+                        >
                           <FontAwesomeIcon icon={faCartShopping} className="text-sm" />
                           <span className="xl:inline-block hidden">Add to Cart</span>
                           <span className="inline-block xl:hidden text-xs">Add</span>

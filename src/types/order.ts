@@ -1,23 +1,30 @@
 import { User } from './user';
 
 export type OrderItem = {
-    id: string;
+    id: number;
     productId: number;
     productName: string;
     quantity: number;
     price: number;
 };
 
+export interface CartItem {
+    id: string; // اگر Product.id رو به UUID تغییر بدی، این درست می‌مونه
+    name: string;
+    imageUrl: string | null;
+    description?: string | null;
+    price: number;
+    quantity: number;
+    orderId?: string;
+}
+
 export type Order = {
     id: string;
     userId: string;
     total: number;
-    createdAt: string; // or Date
+    createdAt: string;
     user?: User;
-    customerId: number | string;
     customerName: string;
-    orderDate: string; // ISO string format for easy sorting and display
-    totalAmount: number;
     status: string;
     items: OrderItem[];
     shippingAddress: string;

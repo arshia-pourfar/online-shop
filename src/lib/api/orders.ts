@@ -1,12 +1,21 @@
 // lib/api/orders.ts (New API Service File)
 import { Order } from "../../types/order";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+// const API_BASE = 'http://localhost:5000';
 
 
 export async function getOrders(): Promise<Order[]> {
   const res = await fetch(`${API_BASE}/api/orders`);
   if (!res.ok) {
     throw new Error("Failed to fetch orders");
+  }
+  return res.json();
+}
+
+export async function getCartByUserId(userId: string) {
+  const res = await fetch(`${API_BASE}/api/orders/user/${userId}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch user's orders");
   }
   return res.json();
 }

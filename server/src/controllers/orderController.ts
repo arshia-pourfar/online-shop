@@ -1,7 +1,7 @@
 // src/controllers/orderController.ts
 
 import { Request, Response } from 'express';
-import {prisma} from '../../prisma/prisma';
+import { prisma } from '../../prisma/prisma';
 
 // GET /orders - دریافت همه سفارش‌ها
 export const getAllOrders = async (_: Request, res: Response) => {
@@ -55,14 +55,16 @@ export const getOrderById = async (req: Request, res: Response) => {
 
 // POST /orders - ساخت سفارش جدید
 export const createOrder = async (req: Request, res: Response) => {
-    const { userId, items, total, status, customerName, shippingAddress } = req.body;
-
-    if (!userId || !customerName || !shippingAddress || !Array.isArray(items) || items.length === 0) {
-        return res.status(400).json({ error: "Missing required fields" });
-    }
-
     try {
-        const newOrder = await prisma.order.create({
+        const { userId, items, total, status, customerName, shippingAddress } = req.body;
+
+        console.log("Incoming payload:", req.body);
+
+        if (!userId || !customerName || !shippingAddress || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const order = await prisma.order.create({
             data: {
                 userId,
                 customerName,
@@ -73,32 +75,25 @@ export const createOrder = async (req: Request, res: Response) => {
                     create: items.map((item: { productId: number; quantity: number }) => ({
                         quantity: item.quantity,
                         product: {
-                            connect: {
-                                id: item.productId,
-                            },
+                            connect: { id: item.productId },
                         },
                     })),
                 },
             },
             include: {
-                items: {
-                    include: {
-                        product: true,
-                    },
-                },
+                items: { include: { product: true } },
                 user: true,
             },
         });
 
-        res.status(201).json(newOrder);
+        res.status(201).json(order);
     } catch (err: unknown) {
         if (err instanceof Error) {
-            console.error("[createOrder]", err.message);
+            console.error('[deleteOrder]', err.message);
         }
-        res.status(500).json({ error: "Failed to create order" });
+        res.status(500).json({ error: 'Failed to delete order' });
     }
 };
-
 
 // DELETE /orders/:id - حذف سفارش
 export const deleteOrder = async (req: Request, res: Response) => {

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../prisma/prisma';
-import { getOrderStatuses, OrderStatusType } from '../utils/status.utils'; // مسیر رو با توجه به ساختار پروژه تنظیم کن
+import { OrderStatus } from '@prisma/client';
 
 // GET /orders - دریافت همه سفارش‌ها
 export const getAllOrders = async (_: Request, res: Response) => {
@@ -150,28 +150,21 @@ export const getPendingOrderByUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const rawStatus = req.query.status as string;
 
-    // remove for vercel
-    // const status = Object.values(OrderStatus).includes(rawStatus as OrderStatus)
-    //     ? (rawStatus as OrderStatus)
-    //     : OrderStatus.PENDING;
-
-    const validStatuses = getOrderStatuses();
-    const status: OrderStatusType = validStatuses.includes(rawStatus as OrderStatusType)
-        ? (rawStatus as OrderStatusType)
-        : "PENDING";
+    const status = Object.values(OrderStatus).includes(rawStatus as OrderStatus)
+        ? (rawStatus as OrderStatus)
+        : OrderStatus.PENDING;
 
     try {
         const order = await prisma.order.findFirst({
             where: {
                 userId,
-                status: status, // اینجا فقط رشته می‌فرستی، نه enum
+                status,
             },
             include: {
                 items: { include: { product: true } },
                 user: true,
             },
         });
-
 
         if (!order) return res.status(200).json(null);
         res.json(order);

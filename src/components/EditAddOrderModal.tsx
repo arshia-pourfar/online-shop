@@ -20,8 +20,8 @@ export default function OrderModal(
     }: OrderModalProps) {
     const [formData, setFormData] = useState<Partial<Order>>({
         customerName: "",
-        orderDate: new Date().toISOString().split("T")[0],
-        totalAmount: 0,
+        createdAt: new Date().toISOString().split("T")[0],
+        total: 0,
         status: "PENDING",
         shippingAddress: "",
         items: [],
@@ -34,8 +34,8 @@ export default function OrderModal(
         if (type === "edit" && order) {
             setFormData({
                 customerName: order.customerName,
-                orderDate: order.orderDate.split("T")[0],
-                totalAmount: order.totalAmount,
+                createdAt: order.createdAt.split("T")[0],
+                total: order.total,
                 status: order.status,
                 shippingAddress: order.shippingAddress,
                 items: order.items || [],
@@ -43,8 +43,8 @@ export default function OrderModal(
         } else if (type === "add") {
             setFormData({
                 customerName: "",
-                orderDate: new Date().toISOString().split("T")[0],
-                totalAmount: 0,
+                createdAt: new Date().toISOString().split("T")[0],
+                total: 0,
                 status: allStatuses[0] || "PENDING",
                 shippingAddress: "",
                 items: [],
@@ -86,7 +86,7 @@ export default function OrderModal(
         e.preventDefault();
 
         // اعتبارسنجی ساده
-        if (!formData.customerName?.trim() || !formData.orderDate || !formData.status) {
+        if (!formData.customerName?.trim() || !formData.createdAt || !formData.status) {
             setFeedbackMessage("Please fill in all required fields.");
             return;
         }
@@ -101,12 +101,12 @@ export default function OrderModal(
             const savedOrder: Order = {
                 id: order?.id || Date.now().toString(),
                 userId: order?.userId || "",  // مقدار مناسب یا خالی
-                customerId: order?.customerId || "", // مقدار مناسب یا خالی
-                total: formData.totalAmount ?? 0, // ممکنه totalAmount همون total باشه
+                // customerId: order?.userId || "", // مقدار مناسب یا خالی
+                total: formData.total ?? 0, // ممکنه totalAmount همون total باشه
                 createdAt: order?.createdAt || new Date().toISOString(),
                 customerName: formData.customerName.trim(),
-                orderDate: formData.orderDate,
-                totalAmount: formData.totalAmount || 0,
+                // orderDate: formData.orderDate,
+                // totalAmount: formData.totalAmount || 0,
                 status: formData.status,
                 shippingAddress: formData.shippingAddress || "",
                 items: formData.items || [],
@@ -160,7 +160,7 @@ export default function OrderModal(
                             type="date"
                             id="orderDate"
                             name="orderDate"
-                            value={formData.orderDate || ""}
+                            value={formData.createdAt || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
@@ -178,7 +178,7 @@ export default function OrderModal(
                             type="number"
                             id="totalAmount"
                             name="totalAmount"
-                            value={formData.totalAmount || 0}
+                            value={formData.total || 0}
                             onChange={handleChange}
                             min={0}
                             step={0.01}

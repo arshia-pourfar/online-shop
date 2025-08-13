@@ -1,7 +1,6 @@
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from '@/lib/context/authContext';
-import { CartProvider } from '@/lib/context/cartContext';
 
 import { Inter } from "next/font/google";
 
@@ -21,7 +20,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-primary-bg text-primary-text overflow-hidden`}>
         <AuthProvider>
-          <CartProvider>
             <div className="flex h-[100dvh] w-screen overflow-y-auto overflow-x-hidden">
               {/* Sidebar */}
               <Navbar />
@@ -38,7 +36,6 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
-          </CartProvider>
         </AuthProvider>
       </body>
     </html>

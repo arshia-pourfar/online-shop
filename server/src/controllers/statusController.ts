@@ -1,3 +1,4 @@
+// server/src/controller/statusController.ts
 import { Request, Response } from "express";
 
 export const getProductStatuses = (req: Request, res: Response) => {

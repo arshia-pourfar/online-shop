@@ -8,15 +8,17 @@ export type OrderItem = {
     price: number;
 };
 
-export interface CartItem {
-    id: string; // اگر Product.id رو به UUID تغییر بدی، این درست می‌مونه
-    name: string;
-    imageUrl: string | null;
-    description?: string | null;
-    price: number;
+export type CartItem = {
+    id: number;
     quantity: number;
-    orderId?: string;
-}
+    product: {
+        id: number;
+        name: string;
+        price: number;
+        imageUrl: string;
+        description: string;
+    };
+};
 
 export type Order = {
     id: string;

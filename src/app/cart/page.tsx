@@ -4,32 +4,59 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import Header from "@/components/Header";
 import { useAuth } from "@/lib/context/authContext";
-import { useCart } from "../../../lib/context/cartContext";
+import AddToCartButton from "@/components/AddToCartButton";
+import { CartItem } from "types/order";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 export default function CartPage() {
     const { user } = useAuth();
-    const { cart, removeFromCart, clearCart, saveCartToDB } = useCart();
     const router = useRouter();
 
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [orderId, setOrderId] = useState("");
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchCart = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
+                const order = await res.json();
+
+                if (order && order.items) {
+                    setCartItems(order.items);
+                    setOrderId(order.id);
+                }
+            } catch (err) {
+                console.error("خطا در گرفتن سفارش:", err);
+            }
+        };
+
+        fetchCart();
+    }, [user]);
+
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
 
     const handleCheckout = async () => {
-        if (!user) return;
+        if (!user || cartItems.length === 0 || !orderId) return;
+
         try {
-            const order = await saveCartToDB(
-                user.id,
-                user.name || "Arshia",
-                "Tehran"
-            );
-            clearCart();
-            router.push(`/order-confirmation/${order.id}`);
+            await fetch(`${API_BASE}/api/orders/${orderId}/confirm`, {
+                method: "PATCH",
+            });
+
+            setCartItems([]);
+            router.push(`/order-confirmation/${orderId}`);
         } catch (err) {
-            console.error("Failed to save order:", err);
+            console.error("خطا در تأیید سفارش:", err);
         }
     };
+
 
     return (
         <div className="min-h-screen w-full bg-primary-bg text-primary-text">
@@ -42,40 +69,30 @@ export default function CartPage() {
 
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-4">
-                        {cart.length > 0 ? (
-                            cart.map((item) => (
+                        {cartItems.length > 0 ? (
+                            cartItems.map((item) => (
                                 <div
                                     key={item.id}
                                     className="bg-secondary-bg rounded-xl shadow-md p-4 flex gap-4 items-center hover:shadow-lg transition"
                                 >
                                     <div className="w-28 h-28 relative flex-shrink-0">
                                         <Image
-                                            src={`/products/${item.imageUrl}`}
-                                            alt={item.name}
+                                            src={`/products/${item.product.imageUrl}`}
+                                            alt={item.product.name}
                                             fill
                                             className="object-contain rounded-lg"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                                        <p className="text-sm text-gray-400">{item.description}</p>
-                                        <p className="text-blue-400 font-bold mt-1">${item.price}</p>
+                                        <h3 className="text-lg font-semibold">{item.product.name}</h3>
+                                        <p className="text-sm text-gray-400">{item.product.description}</p>
+                                        <p className="text-blue-400 font-bold mt-1">${item.product.price}</p>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <span className="px-4 py-1 font-medium">{item.quantity}</span>
-                                        <button
-                                            onClick={() => removeFromCart(item.id)}
-                                            className="text-red-400 hover:text-red-300 transition"
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </div>
+                                    <AddToCartButton product={item.product} />
                                 </div>
                             ))
                         ) : (
-                            <div className="text-center text-gray-400 py-20">
-                                Your cart is empty.
-                            </div>
+                            <div className="text-center text-gray-400 py-20">Your cart is empty.</div>
                         )}
                     </div>
 

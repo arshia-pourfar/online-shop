@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faCartShopping, faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { getProducts } from "@/lib/api/products";
 import { Product } from "../../types/product";
-import Image from "next/image";
 import ProductCardSkeleton from "@/components/Skeletons/Home/ProductCardSkeleton";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
 import { useSearchParams, useRouter } from "next/navigation";
+import ProductCard from "@/components/ProductCard";
 
 const ShopClient = () => {
     const searchParams = useSearchParams();
@@ -251,30 +251,7 @@ const ShopClient = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                                 {filteredProducts.length > 0 ? (
                                     filteredProducts.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            className="bg-secondary-bg rounded-xl shadow-md p-4 space-y-4 flex flex-col h-full hover:shadow-xl hover:scale-105 transition-all duration-300"
-                                        >
-                                            <div className="w-full h-40 relative">
-                                                <Image
-                                                    src={`/products/${product.imageUrl}`}
-                                                    alt={product.name}
-                                                    fill
-                                                    className="object-contain"
-                                                />
-                                            </div>
-                                            <div className="flex-1 space-y-2">
-                                                <h3 className="text-lg font-semibold truncate">{product.name}</h3>
-                                                <p className="text-sm text-gray-400 line-clamp-2">{product.description}</p>
-                                            </div>
-                                            <div className="flex justify-between items-center pt-2">
-                                                <span className="text-base font-bold text-blue-400">${product.price}</span>
-                                                <button className="bg-accent text-white font-medium flex items-center gap-2 py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors shadow-md">
-                                                    <FontAwesomeIcon icon={faCartShopping} />
-                                                    <span>Add</span>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <ProductCard key={product.id} product={product} />
                                     ))
                                 ) : (
                                     <div className="flex justify-center items-center h-full py-20">

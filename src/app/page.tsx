@@ -18,7 +18,6 @@ import {
   faAngleLeft,
   faAngleRight,
   faArrowRotateLeft,
-  faCartShopping,
   faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons/faInstagram";
@@ -28,7 +27,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "types/category";
 import CategorySkeleton from "@/components/Skeletons/Home/categorySkeleton";
-import { useCart } from "@/lib/context/cartContext";
+import ProductCard from "@/components/ProductCard";
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -48,7 +47,6 @@ const Home = () => {
   const nextProductRef = useRef(null);
 
   const { user } = useAuth();
-  const { addToCartAndSave } = useCart();
 
   useEffect(() => {
     setIsClient(true);
@@ -352,71 +350,7 @@ const Home = () => {
               >
                 {products.map((product) => (
                   <SwiperSlide key={product.id}>
-                    <div className="bg-secondary-bg rounded-xl h-72 md:h-80 shadow-md flex flex-col px-2 py-4 space-y-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
-                      <div className="w-full md:h-32 h-32 relative">
-                        <Image
-                          src={`/products/${product.imageUrl}`}
-                          alt={product.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-
-                      <div className="flex-1 space-y-1">
-                        <h3 className="text-base sm:text-lg font-semibold truncate">
-                          {product.name}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 md:line-clamp-2">
-                          {product.description}
-                        </p>
-                      </div>
-
-                      <div className="flex justify-between items-center md:px-1">
-                        <span className="text-sm sm:text-base font-bold text-blue-400">
-                          $ {product.price}
-                        </span>
-                        <button
-                          className="bg-accent text-white font-medium flex items-center sm:py-2 sm:px-4 p-2 rounded-lg hover:scale-105 transition-transform shadow-md gap-2"
-                          onClick={async () => {
-                            if (!user) return;
-
-                            const payload = {
-                              userId: user.id,
-                              customerName: user.name || "Arshia",
-                              shippingAddress: "Tehran",
-                              total: product.price,
-                              status: "PENDING",
-                              items: [
-                                {
-                                  productId: Number(product.id),
-                                  quantity: 1,
-                                },
-                              ],
-                            };
-
-                            try {
-                              const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify(payload),
-                              });
-
-                              if (!res.ok) throw new Error("Failed to save order");
-
-                              const data = await res.json();
-                              console.log("Order saved:", data);
-                            } catch (err) {
-                              console.error("Error saving order:", err);
-                            }
-                          }}
-
-                        >
-                          <FontAwesomeIcon icon={faCartShopping} className="text-sm" />
-                          <span className="xl:inline-block hidden">Add to Cart</span>
-                          <span className="inline-block xl:hidden text-xs">Add</span>
-                        </button>
-                      </div>
-                    </div>
+                    <ProductCard product={product} />
                   </SwiperSlide>
                 ))}
               </Swiper>

@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import Pagination from "@/components/Pagination"; // Using the user's provided Pagination component
 import React, { useState, useEffect } from "react";
 import { getUsers } from "@/lib/api/users"; // API call to fetch users (customers)
-import CustomerModal from "@/components/EditAddCustomerModal"; // Custom modal for adding/editing customers
-import DeleteConfirmModal from "@/components/DeleteConfirmModal"; // Confirmation for deletion
-import SortableTH from "@/components/Sortable";
+import CustomerModal from "@/components/AdminDashboard/EditAddCustomerModal"; // Custom modal for adding/editing customers
+import DeleteConfirmModal from "@/components/AdminDashboard/DeleteConfirmModal"; // Confirmation for deletion
+import SortableTH from "@/components/AdminDashboard/Sortable";
 import { getCustomerStatuses } from "@/lib/api/statuses"; // Now needed again for user statuses
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,7 +16,7 @@ import {
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/user"; // Import the User type
-import CustomerStatusBadge from "@/components/CustomerStatusBadge";
+import CustomerStatusBadge from "@/components/AdminDashboard/CustomerStatusBadge";
 
 export default function CustomersPage() {
     const [customers, setCustomers] = useState<User[]>([]);

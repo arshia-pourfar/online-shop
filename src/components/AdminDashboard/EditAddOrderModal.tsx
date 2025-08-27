@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Order, OrderItem } from "../types/order";
+import { Order, OrderItem } from "../../types/order";
 
 interface OrderModalProps {
     type: "add" | "edit" | "view";

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import Header from "@/components/Header";
 import { useAuth } from "@/lib/context/authContext";
-import AddToCartButton from "@/components/AddToCartButton";
+import AddToCartButton from "@/components/ProductsCard/AddToCartButton";
 import { CartItem } from "types/order";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
@@ -64,7 +64,7 @@ export default function CartPage() {
 
             <main className="p-4 md:p-8 space-y-8">
                 <section className="flex items-center justify-between gap-6 flex-wrap">
-                    <h1 className="text-4xl font-bold text-blue-400">Cart</h1>
+                    <h1 className="text-4xl font-bold text-accent">Cart</h1>
                 </section>
 
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -83,36 +83,36 @@ export default function CartPage() {
                                             className="object-contain rounded-lg"
                                         />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="flex-1 ml-4">
                                         <h3 className="text-lg font-semibold">{item.product.name}</h3>
-                                        <p className="text-sm text-gray-400">{item.product.description}</p>
-                                        <p className="text-blue-400 font-bold mt-1">${item.product.price}</p>
+                                        <p className="text-sm text-secondary-text line-clamp-2">{item.product.description}</p>
+                                        <p className="text-accent font-bold mt-2">${item.product.price}</p>
                                     </div>
                                     <AddToCartButton product={item.product} />
                                 </div>
                             ))
                         ) : (
-                            <div className="text-center text-gray-400 py-20">Your cart is empty.</div>
+                            <div className="text-center text-secondary-text py-20">Your cart is empty.</div>
                         )}
                     </div>
 
                     <div className="bg-secondary-bg rounded-xl shadow-md p-6 space-y-6 h-fit">
-                        <h2 className="text-2xl font-bold text-blue-400">Order Summary</h2>
+                        <h2 className="text-2xl font-bold text-accent">Order Summary</h2>
                         <div className="flex justify-between">
                             <span>Subtotal</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                             <span>Shipping</span>
-                            <span className="text-green-400">Free</span>
+                            <span className="text-status-positive">Free</span>
                         </div>
-                        <div className="border-t border-gray-600 pt-4 flex justify-between font-bold text-lg">
+                        <div className="border-t border-secondary-text pt-4 flex justify-between font-bold text-lg">
                             <span>Total</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </div>
                         <button
                             onClick={handleCheckout}
-                            className="w-full bg-accent text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:bg-blue-600 transition"
+                            className="cursor-pointer w-full bg-accent text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:bg-accent/80 transition"
                         >
                             <FontAwesomeIcon icon={faCreditCard} />
                             Checkout

@@ -27,7 +27,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "types/category";
 import CategorySkeleton from "@/components/Skeletons/Home/categorySkeleton";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/ProductsCard/ProductCard";
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -249,7 +249,7 @@ const Home = () => {
           </section>
 
           <section className="w-full">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-blue-400">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-accent">
               Shop by Category
             </h2>
 
@@ -297,7 +297,7 @@ const Home = () => {
           {/* Featured Products Section */}
           <section className="w-full relative">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-blue-400 mb-6 text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-accent mb-6 text-center">
                 Featured Products
                 <a href="./shop" className="underline text-xs sm:text-sm ms-4">
                   See More
@@ -394,7 +394,7 @@ const Home = () => {
                 </div>
                 <a
                   href="./login"
-                  className="bg-accent font-semibold rounded-lg px-4 py-2 min-w-fit"
+                  className="bg-accent-alt text-white font-semibold rounded-lg px-4 py-2 min-w-fit"
                 >
                   Sign Up
                 </a>

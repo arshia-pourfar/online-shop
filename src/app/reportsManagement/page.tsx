@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import Pagination from "@/components/Pagination";
 import React, { useState, useEffect } from "react";
-import SortableTH from "@/components/Sortable";
+import SortableTH from "@/components/AdminDashboard/Sortable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faAngleDown,
@@ -13,9 +13,9 @@ import {
     faEyeSlash,
     faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import BlockConfirmModal from "@/components/BlockConfirmModal";
-import ReportStatusBadge, { ReportStatus } from "@/components/ReportStatusBadge";
+import DeleteConfirmModal from "@/components/AdminDashboard/DeleteConfirmModal";
+import BlockConfirmModal from "@/components/AdminDashboard/BlockConfirmModal";
+import ReportStatusBadge, { ReportStatus } from "@/components/AdminDashboard/ReportStatusBadge";
 import AnswerReportsModal from "@/components/AnswerReportsModal";
 import { getReports, deleteReport, saveReport } from '@/lib/api/reports';
 import { Report } from "../../types/report";

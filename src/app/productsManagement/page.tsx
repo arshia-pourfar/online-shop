@@ -5,9 +5,9 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Product } from "../../types/product";
 import { getProducts } from "@/lib/api/products";
-import ProductModal from "@/components/EditAddProductModal";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal"; // Make sure this import is correct
-import SortableTH from "@/components/Sortable";
+import ProductModal from "@/components/AdminDashboard/EditAddProductModal";
+import DeleteConfirmModal from "@/components/AdminDashboard/DeleteConfirmModal"; // Make sure this import is correct
+import SortableTH from "@/components/AdminDashboard/Sortable";
 import { getCategories } from "@/lib/api/categories";
 import { Category } from "../../types/category";
 import { getProductStatuses } from "@/lib/api/statuses";
@@ -18,7 +18,7 @@ import {
     faPlus,
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import ProductStatusBadge from "@/components/ProductStatusBadge";
+import ProductStatusBadge from "@/components/AdminDashboard/ProductStatusBadge";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);

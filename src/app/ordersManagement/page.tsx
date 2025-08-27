@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from "react";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import OrderModal from "@/components/EditAddOrderModal";
+import DeleteConfirmModal from "@/components/AdminDashboard/DeleteConfirmModal";
+import OrderModal from "@/components/AdminDashboard/EditAddOrderModal";
 import Header from "@/components/Header";
 import Pagination from "@/components/Pagination";
-import SortableTH from "@/components/Sortable";
-import OrderStatusBadge from "@/components/ProductStatusBadge";
+import SortableTH from "@/components/AdminDashboard/Sortable";
+import OrderStatusBadge from "@/components/AdminDashboard/ProductStatusBadge";
 import { getOrders } from "@/lib/api/orders";
 import { getOrderStatuses } from "@/lib/api/statuses";
 import { Order, SortableField } from "types/order";

@@ -126,30 +126,30 @@ export default function AddToCartButton({ product }: { product: Product }) {
     };
 
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
             {cartItem ? (
-                <div className="flex items-center gap-2 bg-primary-bg p-2 rounded-lg ">
+                <div className="flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg">
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => handleQuantityChange(cartItem.quantity - 1)}
-                            className="text-base size-6 bg-gray-700 text-white rounded hover:bg-gray-600"
+                            className="sm:text-base sm:size-6 text-lg size-8 dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer"
                             disabled={cartItem.quantity <= 1}
                         >
                             <FontAwesomeIcon icon={faMinus} />
                         </button>
-                        <span className="text-base size-6 font-medium flex justify-center">
+                        <span className="sm:text-base sm:size-6 text-lg size-8 font-medium flex items-center justify-center">
                             {cartItem.quantity}
                         </span>
                         <button
                             onClick={() => handleQuantityChange(cartItem.quantity + 1)}
-                            className="text-base size-6 bg-gray-700 text-white rounded hover:bg-gray-600"
+                            className="sm:text-base sm:size-6 text-lg size-8 bg-secondary-bg text-primary-text rounded hover:bg-secondary-bg/80 cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
                     <button
                         onClick={handleRemove}
-                        className="text-red-400 hover:text-red-300 transition text-lg"
+                        className="text-accent hover:text-accent/70 cursor-pointer transition sm:text-lg text-xl sm:mx-1 ml-6 mr-2 flex items-center"
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
@@ -158,7 +158,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={loading}
-                    className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
+                    className="bg-accent text-white sm:px-4 sm:py-2 sm:gap-2 px-6 py-3 rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center "
                 >
                     <FontAwesomeIcon icon={faCartShopping} />
                     <span>Add</span>

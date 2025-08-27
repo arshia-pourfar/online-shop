@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
     const pathname = usePathname();
@@ -21,7 +22,7 @@ const Header = () => {
     const pageName = getPageName(pathname);
 
     return (
-        <header className="h-16 w-full py-8 bg-secondary-bg text-primary-text flex justify-between items-center shadow-sm md:ps-6 ps-16 md:pe-5 pe-2 md:z-10 z-40 md:static fixed top-0">
+        <header className="h-16 w-full py-8 bg-secondary-bg text-primary-text flex justify-between items-center shadow-sm md:pl-6 pl-16 md:pr-5 pr-2 md:z-10 z-40 md:static fixed top-0">
             <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-text">
                 <h2 className="flex items-center gap-8">
                     E-commerce
@@ -31,11 +32,15 @@ const Header = () => {
                 </h2>
             </div>
 
-            <div className="flex items-center justify-between md:gap-4 md:text-2xl text-xl">
-                <a href={user ? './cart' : './login'} className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
+            <div className="flex items-center justify-between md:gap-3 md:text-2xl text-xl">
+                <div className='flex'>
+                    <ThemeToggle />
+                </div>
+                <a href={user ? './cart' : './login'} className="dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </a>
-                <a href={user ? './setting' : './login'} className="hover:bg-primary-bg transition-all duration-500 flex items-center justify-center size-12 rounded-full">
+                <div className='border-l-2 border-secondary-text h-12'></div>
+                <a href={user ? './setting' : './login'} className=" dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
                     {/* {user ? user.name : ""} */}
                     <FontAwesomeIcon icon={faUser} className='md:text-3xl text-2xl' />
                 </a>

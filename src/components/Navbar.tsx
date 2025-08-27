@@ -90,7 +90,7 @@ const Navbar = () => {
             {/* Sidebar */}
             <aside
                 className={`${isMobile ? "w-64" : isHovered ? "w-64" : "w-20"} 
-                            bg-secondary-bg p-4 shadow-xl flex flex-col min-h-[100dvh] border-r border-gray-700/30 
+                            bg-secondary-bg p-4 shadow-xl flex flex-col min-h-[100dvh] border-r border-secondary-text
                             transition-all duration-300 ease-in-out absolute z-50 overflow-hidden top-0
                             ${isMobile ? (isOpen ? "left-0" : "-left-64") : "left-0"}`}
                 onMouseEnter={() => !isMobile && setIsHovered(true)}
@@ -111,7 +111,7 @@ const Navbar = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4 md:mb-8">
                     <div
-                        className={`text-accent ps-3 text-2xl w-10 font-bold flex items-center transition-all duration-300 space-x-2 ${isMobile ? "w-full" : isHovered ? "" : "w-full"
+                        className={`text-accent pl-3 text-2xl w-10 font-bold flex items-center transition-all duration-300 space-x-2 ${isMobile ? "w-full" : isHovered ? "" : "w-full"
                             }`}
                     >
                         <FontAwesomeIcon
@@ -135,8 +135,8 @@ const Navbar = () => {
                                 <Link
                                     href={link.href}
                                     className={`group flex items-center p-3 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
-                                        ? "bg-primary-bg text-primary-text"
-                                        : "text-secondary-text hover:bg-primary-bg hover:text-primary-text"
+                                        ? "dark:bg-primary-bg bg-secondary-text dark:text-primary-text text-primary-bg"
+                                        : "text-secondary-text dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-primary-bg"
                                         }`}
                                 >
                                     <FontAwesomeIcon
@@ -164,7 +164,7 @@ const Navbar = () => {
                                 href={link.href}
                                 className={`group flex items-center p-3 rounded-xl text-base relative transition-all duration-300 ease-in-out ${isActive(link.href)
                                     ? "bg-accent text-primary-bg"
-                                    : "text-secondary-text hover:bg-primary-bg hover:text-primary-text"
+                                    : "text-secondary-text dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-primary-bg"
                                     }`}
                             >
                                 <FontAwesomeIcon

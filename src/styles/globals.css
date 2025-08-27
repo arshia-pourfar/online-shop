@@ -1,9 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Custom CSS Variables for the theme */
-:root {
+/* طرح رنگی برای سایت فروشگاهی (حالت روشن) */
+@theme {
+  /* پس‌زمینه‌ها: پس‌زمینه تمیز و مینیمال برای برجسته کردن محصولات */
+  --color-primary-bg: #FFFFFF;
+  /* پس‌زمینه اصلی: سفید خالص برای وضوح بیشتر */
+  --color-secondary-bg: #F8F9FA;
+  /* پس‌زمینه ثانویه: خاکستری بسیار روشن برای جدا کردن بخش‌ها */
+
+  /* متن: کنتراست بالا برای خوانایی آسان */
+  --color-primary-text: #212529;
+  /* رنگ اصلی متن: خاکستری تیره برای خوانایی بهتر */
+  --color-secondary-text: #6C757D;
+  /* رنگ متن ثانویه: خاکستری متوسط برای جزئیات و توضیحات */
+
+  /* رنگ‌های تاکیدی (Accent): جلب توجه کاربر و هدایت او */
+  /* --color-accent: #007BFF; */
+  /* آبی شاداب و حرفه‌ای برای دکمه‌های اصلی و لینک‌ها */
+  --color-accent: #FF5722;
+  /* نارنجی پررنگ برای فروش ویژه، تخفیف‌ها و پیشنهادهای محدود */
+
+  /* رنگ‌های وضعیت: انتقال پیام‌های واضح به کاربر */
+  --color-status-positive: #28A745;
+  /* سبز برای موفقیت (مانند تأیید خرید) */
+  --color-status-negative: #DC3545;
+  /* قرمز برای خطا یا هشدار (مانند موجودی کم) */
+  --color-status-neutral: #FFC107;
+  /* زرد برای اطلاع‌رسانی (مانند در حال ارسال) */
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* دارک مود */
+html.dark {
   --color-primary-bg: #1A1A2E;
   --color-secondary-bg: #24263B;
   --color-primary-text: #E0E0E0;

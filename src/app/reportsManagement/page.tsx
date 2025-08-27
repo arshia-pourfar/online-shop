@@ -16,7 +16,7 @@ import {
 import DeleteConfirmModal from "@/components/AdminDashboard/DeleteConfirmModal";
 import BlockConfirmModal from "@/components/AdminDashboard/BlockConfirmModal";
 import ReportStatusBadge, { ReportStatus } from "@/components/AdminDashboard/ReportStatusBadge";
-import AnswerReportsModal from "@/components/AnswerReportsModal";
+import AnswerReportsModal from "@/components/AdminDashboard/AnswerReportsModal";
 import { getReports, deleteReport, saveReport } from '@/lib/api/reports';
 import { Report } from "../../types/report";
 import { useDebounce } from 'use-debounce';

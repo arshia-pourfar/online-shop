@@ -35,17 +35,17 @@ export default function ThemeToggle() {
         <button
             onClick={toggle}
             aria-label="Toggle theme"
-            className="relative w-16 h-7 cursor-pointer rounded-full text-base border border-border bg-primary-bg transition-all duration-300 ease-in-out flex items-center justify-center px-1 overflow-hidden"
+            className="relative w-16 h-8 cursor-pointer rounded-full text-base border border-border bg-primary-bg transition-all duration-300 ease-in-out flex items-center justify-center px-1 overflow-hidden"
         >
             {/* آیکون خورشید سمت چپ */}
-            <FontAwesomeIcon icon={faSun} className="size-1 text-text" />
+            <FontAwesomeIcon icon={faSun} className="size-2 text-text" />
 
             {/* آیکون ماه سمت راست */}
-            <FontAwesomeIcon icon={faMoon} className="size-1 text-text ml-auto" />
+            <FontAwesomeIcon icon={faMoon} className="size-2 text-text ml-auto" />
 
             {/* دایره متحرک */}
             <div
-                className={`absolute top-1/2 -translate-y-1/2 bg-accent size-5 text-sm rounded-full flex items-center justify-center shadow-inner z-10 transition-all duration-300 ${isDark ? "left-[calc(100%-1.5rem)]" : "left-1"
+                className={`absolute top-1/2 -translate-y-1/2 bg-accent size-6 text-base rounded-full flex items-center justify-center shadow-inner z-10 transition-all duration-300 ${isDark ? "left-[calc(100%-1.75rem)]" : "left-1"
                     }`}
             >
                 <FontAwesomeIcon icon={isDark ? faMoon : faSun} className="size-4 text-white" />

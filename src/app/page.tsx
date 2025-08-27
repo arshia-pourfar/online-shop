@@ -338,14 +338,15 @@ const Home = () => {
                   navigation.nextEl = nextProductRef.current;
                 }}
                 spaceBetween={14}
-                slidesPerView={2}
+                slidesPerView={1}
                 observeParents
                 observer
-                style={{ padding: "10px 0px 10px 10px" }}
+                style={{ padding: "10px 0px 20px 10px" }}
                 breakpoints={{
+                  550: { slidesPerView: 2 },
                   640: { slidesPerView: 3 },
-                  1024: { slidesPerView: 4 },
-                  1440: { slidesPerView: 5 },
+                  1440: { slidesPerView: 4 },
+                  1640: { slidesPerView: 5 },
                 }}
               >
                 {products.map((product) => (
@@ -394,7 +395,7 @@ const Home = () => {
                 </div>
                 <a
                   href="./login"
-                  className="bg-accent-alt text-white font-semibold rounded-lg px-4 py-2 min-w-fit"
+                  className="bg-accent text-white font-semibold rounded-lg px-4 py-2 min-w-fit"
                 >
                   Sign Up
                 </a>

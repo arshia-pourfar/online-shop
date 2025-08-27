@@ -66,7 +66,7 @@ const LoginPage = () => {
                     </h2>
 
                     {message && (
-                        <div className={`p-3 mb-4 rounded-lg text-sm ${messageType === "error" ? "bg-status-negative text-primary-text" : "bg-status-positive text-primary-text"}`}>
+                        <div className={`p-3 mb-4 rounded-lg text-sm px-4 py-2 text-center font-medium shadow ${messageType === "error" ? "text-status-negative bg-status-negative/10 border border-status-negative/40" : "text-status-positive bg-status-positive/10 border border-status-positive/40"}`}>
                             {message}
                         </div>
                     )}
@@ -140,16 +140,16 @@ const LoginPage = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-accent hover:bg-accent-alt text-primary-bg font-bold py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+                            className="mt-4 w-full bg-gradient-to-r from-accent to-accent/70 hover:to-accent text-primary-bg font-bold py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg cursor-pointer"
                         >
                             {isRegistering ? "Register" : "Login"}
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center">
+                    <div className="mt-8 text-center">
                         <button
                             onClick={() => setIsRegistering(!isRegistering)}
-                            className="text-accent hover:text-accent-alt text-sm transition-colors duration-200"
+                            className="text-accent hover:text-accent-alt text-base font-medium transition-colors duration-200 cursor-pointer"
                         >
                             {isRegistering ? "Already have an account? Login" : "Need an account? Register"}
                         </button>

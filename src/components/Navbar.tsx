@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
 import { useState, useEffect } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const adminNavLinks = [
     { href: "/dashboard", icon: faTachometerAlt, text: "Dashboard" },
@@ -99,12 +100,15 @@ const Navbar = () => {
 
                 {/* Mobile Close Button */}
                 {isMobile && (
-                    <div className="flex justify-start items-center pb-7 mt-3 mb-10 border-b-2">
+                    <div className="flex justify-between items-center pb-7 mt-3 mb-10 border-b-2">
                         <FontAwesomeIcon
                             icon={faTimes}
                             className="text-xl cursor-pointer"
                             onClick={() => setIsOpen(false)}
                         />
+                        <div className='sm:hidden flex'>
+                            <ThemeToggle />
+                        </div>
                     </div>
                 )}
 

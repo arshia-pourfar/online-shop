@@ -141,7 +141,7 @@ const ProfileTab = ({ user }: { user: { name: string; role: string } }) => {
             <button
                 type="button"
                 onClick={handleSave}
-                className="bg-gradient-to-r from-accent to-[#5548e0] hover:brightness-110 px-6 py-3 rounded-md text-white font-bold transition-all duration-200 shadow focus:outline-none focus:ring-2 focus:ring-accent"
+                className="bg-gradient-to-r from-accent to-accent/65 hover:brightness-110 px-6 py-3 rounded-md text-white font-bold transition-all duration-200 shadow focus:outline-none focus:ring-2 focus:ring-accent"
             >
                 Save Changes
             </button>

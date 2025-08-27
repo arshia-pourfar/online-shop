@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
-import { Report } from "../types/report";
+import { Report } from "../../types/report";
 
 interface AnswerReportsModalProps {
     show: boolean;

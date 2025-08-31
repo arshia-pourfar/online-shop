@@ -5,6 +5,7 @@ export type OrderItem = {
     productId: number;
     productName: string;
     quantity: number;
+    price: number;
     product?: {
         imageUrl: string;
         price: number;

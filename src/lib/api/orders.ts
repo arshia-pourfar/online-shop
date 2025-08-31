@@ -12,6 +12,14 @@ export async function getOrders(): Promise<Order[]> {
   return res.json();
 }
 
+export async function getAllOrdersByUser(userId: string): Promise<Order[]> {
+  const res = await fetch(`${API_BASE}/api/orders/user/${userId}/all`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch user's full order history");
+  }
+  return res.json();
+}
+
 export async function getCartByUserId(userId: string) {
   const res = await fetch(`${API_BASE}/api/orders/user/${userId}`);
   if (!res.ok) {

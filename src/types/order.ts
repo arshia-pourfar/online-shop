@@ -5,7 +5,12 @@ export type OrderItem = {
     productId: number;
     productName: string;
     quantity: number;
-    price: number;
+    product?: {
+        imageUrl: string;
+        price: number;
+        name: string;
+        description: string;
+    };
 };
 
 export type CartItem = {

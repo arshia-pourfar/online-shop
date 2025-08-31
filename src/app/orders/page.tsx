@@ -1,0 +1,194 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Header from "@/components/Header";
+import { useAuth } from "@/lib/context/authContext";
+import { getAllOrdersByUser } from "@/lib/api/orders";
+import { Order, OrderItem } from "types/order";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+
+
+export default function OrdersByUserPage() {
+    const { user } = useAuth();
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [expanded, setExpanded] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchData = async () => {
+            try {
+                const data = await getAllOrdersByUser(user?.id);
+                setOrders(data);
+            } catch (error) {
+                console.error("Error fetching user orders:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [user]);
+
+    const calcOrderTotal = (items: OrderItem[]) => {
+        return items.reduce(
+            (sum, item) => sum + (item.product?.price ?? 0) * (item.quantity ?? 1),
+            0
+        );
+    };
+
+    return (
+        <div className="min-h-screen w-full bg-primary-bg text-primary-text">
+            <Header />
+
+            <main className="p-4 md:p-10 mx-auto space-y-10">
+                <h1 className="text-3xl md:text-4xl font-extrabold text-accent">
+                    My Orders
+                </h1>
+
+                {isLoading ? (
+                    <div className="text-center text-secondary-text py-20 animate-pulse">
+                        Loading your orders...
+                    </div>
+                ) : orders.length > 0 ? (
+                    <div className="space-y-6">
+                        {orders.map((order) => {
+                            const isOpen = expanded === order.id;
+                            return (
+                                <div
+                                    key={order.id}
+                                    className="bg-secondary-bg rounded-2xl shadow-md p-5 space-y-4 transition"
+                                >
+                                    {/* Order summary */}
+                                    <div className="flex flex-col gap-4">
+                                        <div className="flex flex-wrap justify-between items-center gap-4">
+                                            <div>
+                                                <h2 className="text-lg font-bold">
+                                                    Order #{order.id.slice(0, 8)}...
+                                                </h2>
+                                                <p className="text-sm text-secondary-text">
+                                                    {new Date(order.createdAt).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        }
+                                                    )}
+                                                </p>
+                                                <p className="text-sm">
+                                                    Status:{" "}
+                                                    <span
+                                                        className={`font-semibold ${order.status === "Delivered"
+                                                            ? "text-status-positive"
+                                                            : order.status === "Pending"
+                                                                ? "text-status-neutral"
+                                                                : "text-status-negative"
+                                                            }`}
+                                                    >
+                                                        {order.status}
+                                                    </span>
+                                                </p>
+                                                {/* Shipping address همیشه دیده بشه */}
+                                                <p className="text-sm text-secondary-text">
+                                                    Shipping: {order.shippingAddress}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                {/* Thumbnails */}
+                                                <div className="flex -space-x-2 hover:space-x-2 transition-all">
+                                                    {order.items.slice(0, 4).map((item, index) => (
+                                                        <div
+                                                            key={item.id}
+                                                            className="relative size-14 rounded-md overflow-hidden bg-primary-bg border border-secondary-text -ml-2 transition-all duration-300 group-hover:ml-2 group-hover:scale-105"
+                                                            style={{ zIndex: 10 - index }} // جلوتر بودن عکس‌ها
+                                                        >
+                                                            <Image
+                                                                src={`/products/${item.product?.imageUrl}`}
+                                                                alt={item.product?.name || item.productName}
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                    {order.items.length > 3 && (
+                                                        <div className="size-14 flex items-center justify-center rounded-md bg-primary-bg text-sm font-medium border border-secondary-text">
+                                                            +{order.items.length - 4}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="text-xl font-bold text-accent">
+                                                    ${calcOrderTotal(order.items).toFixed(2)}
+                                                </div>
+
+                                                <button
+                                                    onClick={() =>
+                                                        setExpanded(isOpen ? null : order.id)
+                                                    }
+                                                    className="p-2 rounded-lg bg-primary-bg border hover:bg-accent hover:text-white transition"
+                                                >
+                                                    {isOpen ? (
+                                                        <FontAwesomeIcon icon={faAngleUp} className="w-5 h-5" />
+                                                    ) : (
+                                                        <FontAwesomeIcon icon={faAngleDown} className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Order details */}
+                                    {isOpen && (
+                                        <div className="space-y-3 border-t border-secondary-text pt-4 animate-fadeIn">
+                                            {order.items.map((item: OrderItem) => (
+                                                <div
+                                                    key={item.id}
+                                                    className="flex items-center gap-4 bg-primary-bg rounded-xl p-3 shadow-md hover:scale-102 transition-all"
+                                                >
+                                                    <div className="relative size-20 flex-shrink-0 rounded-lg overflow-hidden border">
+                                                        <Image
+                                                            src={`/products/${item.product?.imageUrl}`}
+                                                            alt={item.product?.name || item.productName}
+                                                            fill
+                                                            className="object-contain"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="font-medium text-primary-text">
+                                                            {item.product?.name || item.productName}
+                                                        </p>
+                                                        <p className="text-sm text-secondary-text">
+                                                            Qty: {item.quantity} × $
+                                                            {(item.product?.price ?? 0).toFixed(2)}
+                                                        </p>
+                                                    </div>
+                                                    <div className="font-semibold text-primary-text">
+                                                        $
+                                                        {(
+                                                            (item.product?.price ?? 0) *
+                                                            (item.quantity ?? 1)
+                                                        ).toFixed(2)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="text-center text-secondary-text py-20">
+                        <p className="text-lg">🛒 You don’t have any orders yet.</p>
+                        <p className="text-sm mt-2">Start shopping to see them here!</p>
+                    </div>
+                )}
+            </main>
+        </div>
+    );
+}

@@ -37,7 +37,7 @@ const userNavLinks = [
     { href: "/shop", icon: faStore, text: "Shop" },
     { href: "/wishlist", icon: faHeart, text: "Wishlist" },
     { href: "/cart", icon: faShoppingCart, text: "Cart" },
-    { href: "/my-orders", icon: faClipboardList, text: "My Orders" },
+    { href: "/orders", icon: faClipboardList, text: "My Orders" },
     { href: "/contact", icon: faHeadset, text: "Contact Us" },
 ];
 

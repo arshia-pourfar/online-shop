@@ -30,6 +30,36 @@ export const getAllOrders = async (_: Request, res: Response) => {
     }
 };
 
+// GET /orders/user/:userId/all
+export const getAllOrdersByUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    try {
+        const orders = await prisma.order.findMany({
+            where: { userId },
+            include: {
+                items: {
+                    include: { product: true },
+                },
+                user: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        res.json(orders);
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('[getAllOrdersByUser] Full error:', err.message);
+            res.status(500).json({ error: err.message });
+        } else {
+            console.error('[getAllOrdersByUser] Unknown error:', err);
+            res.status(500).json({ error: 'Unexpected error occurred' });
+        }
+    }
+};
+
 // GET /orders/:id - دریافت سفارش خاص
 export const getOrderById = async (req: Request, res: Response) => {
     const { id } = req.params;

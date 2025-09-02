@@ -158,10 +158,16 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={loading}
-                    className="bg-accent text-white sm:px-4 sm:py-2 sm:gap-2 px-6 py-3 rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center "
+                    className="bg-accent text-white sm:px-4 sm:py-2 sm:gap-2 px-6 py-3 rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2"
                 >
-                    <FontAwesomeIcon icon={faCartShopping} />
-                    <span>Add</span>
+                    {loading ? (
+                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white border-opacity-70"></div>
+                    ) : (
+                        <>
+                            <FontAwesomeIcon icon={faCartShopping} />
+                            <span>Add</span>
+                        </>
+                    )}
                 </button>
             )}
         </div>

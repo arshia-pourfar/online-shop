@@ -1,37 +1,20 @@
 @import "tailwindcss";
 
-/* طرح رنگی برای سایت فروشگاهی (حالت روشن) */
+/* 🌞 Light Theme */
 @theme {
-  /* پس‌زمینه‌ها: پس‌زمینه تمیز و مینیمال برای برجسته کردن محصولات */
   --color-primary-bg: #FFFFFF;
-  /* پس‌زمینه اصلی: سفید خالص برای وضوح بیشتر */
   --color-secondary-bg: #F8F9FA;
-  /* پس‌زمینه ثانویه: خاکستری بسیار روشن برای جدا کردن بخش‌ها */
-
-  /* متن: کنتراست بالا برای خوانایی آسان */
   --color-primary-text: #212529;
-  /* رنگ اصلی متن: خاکستری تیره برای خوانایی بهتر */
   --color-secondary-text: #6C757D;
-  /* رنگ متن ثانویه: خاکستری متوسط برای جزئیات و توضیحات */
-
-  /* رنگ‌های تاکیدی (Accent): جلب توجه کاربر و هدایت او */
-  /* --color-accent: #007BFF; */
-  /* آبی شاداب و حرفه‌ای برای دکمه‌های اصلی و لینک‌ها */
   --color-accent: #FF5722;
-  /* نارنجی پررنگ برای فروش ویژه، تخفیف‌ها و پیشنهادهای محدود */
-
-  /* رنگ‌های وضعیت: انتقال پیام‌های واضح به کاربر */
   --color-status-positive: #28A745;
-  /* سبز برای موفقیت (مانند تأیید خرید) */
   --color-status-negative: #DC3545;
-  /* قرمز برای خطا یا هشدار (مانند موجودی کم) */
   --color-status-neutral: #FFC107;
-  /* زرد برای اطلاع‌رسانی (مانند در حال ارسال) */
 }
 
+/* 🌙 Dark Theme */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* دارک مود */
 html.dark {
   --color-primary-bg: #1A1A2E;
   --color-secondary-bg: #24263B;
@@ -44,18 +27,19 @@ html.dark {
   --color-status-neutral: #FFD600;
 }
 
+/* 🧱 Base Styles */
 body {
   background: var(--color-primary-bg);
   color: var(--color-primary-text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
-
+/* 📊 Chart Legend Spacing */
 .recharts-wrapper .tremor-Legend-root li {
   margin-right: 15px;
 }
 
-/* حذف دکمه های spinner برای input number */
+/* 🔢 Remove Spinner from Number Inputs */
 .no-spinner::-webkit-inner-spin-button,
 .no-spinner::-webkit-outer-spin-button {
   -webkit-appearance: none;

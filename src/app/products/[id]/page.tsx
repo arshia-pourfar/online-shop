@@ -1,9 +1,14 @@
+"use client"; // مهم: این خط صفحه را به Client Component تبدیل می‌کند
+
 import Header from "@/components/Header";
 import AddToCartButton from "@/components/ProductsCard/AddToCartButton";
 import { getProductById } from "@/lib/api/products";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Product } from "types/product";
 
 type CustomStyle = {
     main: string;
@@ -11,12 +16,29 @@ type CustomStyle = {
     text: string;
 };
 
-type Params = {
-    id: string;
-};
 
-export default async function ProductPage({ params }: { params: Params }) {
-    const product = await getProductById(params.id);
+export default function ProductPage() {
+    const params = useParams();
+    const [product, setProduct] = useState<Product | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchProduct() {
+            if (!params?.id) return;
+
+            // اطمینان از اینکه id یک رشته است
+            const productId = Array.isArray(params.id) ? params.id[0] : params.id;
+
+            const data = await getProductById(productId);
+            setProduct(data);
+            setLoading(false);
+        }
+        fetchProduct();
+    }, [params?.id]);
+
+    if (loading) {
+        return <div className="p-10 text-center">Loading...</div>;
+    }
 
     if (!product) {
         return (
@@ -53,26 +75,20 @@ export default async function ProductPage({ params }: { params: Params }) {
                     {/* Product Info */}
                     <div className="flex flex-col justify-between h-full py-1 gap-8">
                         <div className="space-y-4">
-                            <h1 className="text-4xl font-extrabold leading-tight">
-                                {product.name}
-                            </h1>
+                            <h1 className="text-4xl font-extrabold leading-tight">{product.name}</h1>
                             <p className="text-lg text-secondary-text leading-relaxed">
-                                {product.description}
+                                {product.description || "No description available"}
                             </p>
                         </div>
 
                         <div className="space-y-2">
                             <div className="flex items-center gap-4">
-                                <span className="text-4xl font-bold text-accent">
-                                    ${product.price}
-                                </span>
+                                <span className="text-4xl font-bold text-accent">${product.price}</span>
                                 <span className="bg-accent text-white text-sm px-3 py-1 rounded-lg shadow">
                                     50% OFF
                                 </span>
                             </div>
-                            <span className="line-through text-secondary-text text-base">
-                                $250.00
-                            </span>
+                            <span className="line-through text-secondary-text text-base">$250.00</span>
                         </div>
 
                         <div>
@@ -82,7 +98,12 @@ export default async function ProductPage({ params }: { params: Params }) {
                         <div className="border-t border-secondary-text pt-6 space-y-4">
                             <h2 className="text-xl font-semibold">Why shop with us?</h2>
                             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-secondary-text">
-                                {["7-Day Return Guarantee", "Free Shipping over $100", "100% Authentic Products", "Cash on Delivery"].map((item) => (
+                                {[
+                                    "7-Day Return Guarantee",
+                                    "Free Shipping over $100",
+                                    "100% Authentic Products",
+                                    "Cash on Delivery",
+                                ].map((item) => (
                                     <li key={item} className="flex items-center gap-2">
                                         <FontAwesomeIcon icon={faCheck} className="text-green-500" />
                                         {item}

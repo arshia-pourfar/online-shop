@@ -10,13 +10,12 @@ type CustomStyle = {
     button: string;
     text: string;
 };
-type ProductPageProps = {
-    params: {
-        id: string;
-    };
+
+type Params = {
+    id: string;
 };
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params }: { params: Params }) {
     const product = await getProductById(params.id);
 
     if (!product) {
@@ -27,18 +26,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
         );
     }
 
-    // استایل سفارشی برای دکمه
     const mainStyle: CustomStyle = {
         main: "dark:bg-secondary-bg shadow-md p-4 gap-6 border border-secondary-text",
         button: "dark:bg-primary-bg dark:hover:bg-primary-bg/80 mx-4 text-2xl size-10",
         text: "text-2xl size-10",
     };
 
-
     return (
         <div className="min-h-screen w-full bg-primary-bg text-primary-text">
             <Header />
-
             <section className="max-w-7xl mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                     {/* Product Image */}
@@ -47,7 +43,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                             <Image
                                 src={`/products/${product.imageUrl}`}
                                 alt={product.name}
-                                autoFocus
                                 width={600}
                                 height={600}
                                 className="rounded-xl object-contain size-full"
@@ -57,7 +52,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
                     {/* Product Info */}
                     <div className="flex flex-col justify-between h-full py-1 gap-8">
-                        {/* Title + Description */}
                         <div className="space-y-4">
                             <h1 className="text-4xl font-extrabold leading-tight">
                                 {product.name}
@@ -67,7 +61,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                             </p>
                         </div>
 
-                        {/* Price + Discount */}
                         <div className="space-y-2">
                             <div className="flex items-center gap-4">
                                 <span className="text-4xl font-bold text-accent">
@@ -82,27 +75,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
                             </span>
                         </div>
 
-                        {/* Add to Cart */}
                         <div>
                             <AddToCartButton product={product} customStyle={mainStyle} />
                         </div>
 
-                        {/* ثابت: مزایای خرید */}
                         <div className="border-t border-secondary-text pt-6 space-y-4">
                             <h2 className="text-xl font-semibold">Why shop with us?</h2>
                             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-secondary-text">
-                                <li className="flex items-center gap-2 ">
-                                    <FontAwesomeIcon icon={faCheck} className="text-green-500"></FontAwesomeIcon> 7-Day Return Guarantee
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon={faCheck} className="text-green-500"></FontAwesomeIcon> Free Shipping over $100
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon={faCheck} className="text-green-500"></FontAwesomeIcon> 100% Authentic Products
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon={faCheck} className="text-green-500"></FontAwesomeIcon> Cash on Delivery
-                                </li>
+                                {["7-Day Return Guarantee", "Free Shipping over $100", "100% Authentic Products", "Cash on Delivery"].map((item) => (
+                                    <li key={item} className="flex items-center gap-2">
+                                        <FontAwesomeIcon icon={faCheck} className="text-green-500" />
+                                        {item}
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                     </div>

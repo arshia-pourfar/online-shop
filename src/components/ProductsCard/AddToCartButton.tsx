@@ -19,7 +19,13 @@ type CartItem = {
     product: Product;
 };
 
-export default function AddToCartButton({ product }: { product: Product }) {
+type CustomStyle = {
+    main: string;
+    button: string;
+    text: string;
+};
+
+export default function AddToCartButton({ product, customStyle }: { product: Product, customStyle?: CustomStyle; }) {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [orderId, setOrderId] = useState("");
@@ -128,28 +134,28 @@ export default function AddToCartButton({ product }: { product: Product }) {
     return (
         <div className="flex items-center">
             {cartItem ? (
-                <div className="flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg">
+                <div className={`${customStyle?.main} flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg`}>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => handleQuantityChange(cartItem.quantity - 1)}
-                            className="sm:text-base sm:size-6 text-lg size-8 dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer"
+                            className={`${customStyle?.button ? customStyle?.button : 'dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8'}   bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
                             disabled={cartItem.quantity <= 1}
                         >
                             <FontAwesomeIcon icon={faMinus} />
                         </button>
-                        <span className="sm:text-base sm:size-6 text-lg size-8 font-medium flex items-center justify-center">
+                        <span className={`${customStyle?.text ? customStyle?.text : 'sm:text-base sm:size-6 text-lg size-8'} font-medium flex items-center justify-center`}>
                             {cartItem.quantity}
                         </span>
                         <button
                             onClick={() => handleQuantityChange(cartItem.quantity + 1)}
-                            className="sm:text-base sm:size-6 text-lg size-8 bg-secondary-bg text-primary-text rounded hover:bg-secondary-bg/80 cursor-pointer"
+                            className={`${customStyle?.button ? customStyle?.button : 'dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8'}   bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
                         >
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
                     <button
                         onClick={handleRemove}
-                        className="text-accent hover:text-accent/70 cursor-pointer transition sm:text-lg text-xl sm:mx-1 ml-6 mr-2 flex items-center"
+                        className={`${customStyle?.text ? customStyle?.text : 'sm:text-lg text-xl'} text-accent hover:text-accent/70 cursor-pointer transition  sm:mx-1 ml-6 mr-2 flex items-center`}
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
@@ -158,10 +164,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={loading}
-                    className="bg-accent text-white sm:px-4 sm:py-2 sm:gap-2 px-6 py-3 rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2"
+                    className={`${customStyle ? 'py-5 px-10 text-2xl' : 'sm:px-4 sm:py-2 px-6 py-3'} bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}
                 >
                     {loading ? (
-                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white border-opacity-70"></div>
+                        <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div>
                     ) : (
                         <>
                             <FontAwesomeIcon icon={faCartShopping} />

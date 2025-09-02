@@ -150,14 +150,14 @@ export default function OrdersByUserPage() {
                                                     key={item.id}
                                                     className="flex items-center gap-4 bg-primary-bg rounded-xl p-3 shadow-md hover:scale-102 transition-all"
                                                 >
-                                                    <div className="relative size-20 flex-shrink-0 rounded-lg overflow-hidden border">
+                                                    <a href={`./products/${item.productId}`} className="relative size-20 flex-shrink-0 rounded-lg overflow-hidden border">
                                                         <Image
                                                             src={`/products/${item.product?.imageUrl}`}
                                                             alt={item.product?.name || item.productName}
                                                             fill
                                                             className="object-contain"
                                                         />
-                                                    </div>
+                                                    </a>
                                                     <div className="flex-1">
                                                         <p className="font-medium text-primary-text">
                                                             {item.product?.name || item.productName}

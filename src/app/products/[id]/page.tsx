@@ -10,8 +10,13 @@ type CustomStyle = {
     button: string;
     text: string;
 };
+type ProductPageProps = {
+    params: {
+        id: string;
+    };
+};
 
-export default async function ProductPage({ params }: { params: { id: string }; }) {
+export default async function ProductPage({ params }: ProductPageProps) {
     const product = await getProductById(params.id);
 
     if (!product) {

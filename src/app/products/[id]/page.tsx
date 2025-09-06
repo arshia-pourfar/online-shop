@@ -49,7 +49,7 @@ export default function ProductPage() {
     }
 
     const mainStyle: CustomStyle = {
-        main: "dark:bg-secondary-bg shadow-md p-4 gap-6 border border-secondary-text",
+        main: "dark:bg-secondary-bg shadow-md sm:p-4 px-2 py-4 sm:gap-6 gap-0 border border-secondary-text sm:shadow-lg sm:border-secondary-text/20 sm:mx-0 mx-auto",
         button: "dark:bg-primary-bg dark:hover:bg-primary-bg/80 mx-4 text-2xl size-10",
         text: "text-2xl size-10",
     };
@@ -57,11 +57,11 @@ export default function ProductPage() {
     return (
         <div className="min-h-screen w-full bg-primary-bg text-primary-text">
             <Header />
-            <section className="max-w-7xl mx-auto px-6 py-16">
+            <section className="max-w-7xl mx-auto sm:px-6 px-3 sm:py-16 py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                     {/* Product Image */}
                     <div className="flex justify-center">
-                        <div className="relative w-full max-w-lg aspect-square border border-secondary-text bg-secondary-bg rounded-2xl shadow-lg p-8">
+                        <div className="relative w-full max-w-lg aspect-square border border-secondary-text bg-secondary-bg rounded-2xl shadow-lg sm:p-8 p-4">
                             <Image
                                 src={`/products/${product.imageUrl}`}
                                 alt={product.name}

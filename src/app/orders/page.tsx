@@ -44,7 +44,7 @@ export default function OrdersByUserPage() {
         <div className="min-h-screen w-full bg-primary-bg text-primary-text">
             <Header />
 
-            <main className="p-4 md:p-10 mx-auto space-y-10">
+            <main className="p-3 md:p-10 mx-auto space-y-10">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-accent">
                     My Orders
                 </h1>
@@ -64,12 +64,12 @@ export default function OrdersByUserPage() {
                                 >
                                     {/* Order summary */}
                                     <div className="flex flex-col gap-4">
-                                        <div className="flex flex-wrap justify-between items-center gap-4">
-                                            <div>
-                                                <h2 className="text-lg font-bold">
-                                                    Order #{order.id.slice(0, 8)}...
+                                        <div className="flex lg:flex-row flex-col lg:justify-between lg:items-center gap-4">
+                                            <div className="flex flex-col gap-2">
+                                                <h2 className="sm:text-lg text-base font-bold">
+                                                    Order #{order.id}
                                                 </h2>
-                                                <p className="text-sm text-secondary-text">
+                                                <p className="sm:text-sm text-xs text-secondary-text">
                                                     {new Date(order.createdAt).toLocaleDateString(
                                                         "en-US",
                                                         {
@@ -79,7 +79,7 @@ export default function OrdersByUserPage() {
                                                         }
                                                     )}
                                                 </p>
-                                                <p className="text-sm">
+                                                <p className="sm:text-sm text-xs">
                                                     Status:{" "}
                                                     <span
                                                         className={`font-semibold ${order.status === "Delivered"
@@ -93,19 +93,19 @@ export default function OrdersByUserPage() {
                                                     </span>
                                                 </p>
                                                 {/* Shipping address همیشه دیده بشه */}
-                                                <p className="text-sm text-secondary-text">
+                                                <p className="sm:text-sm text-xs text-secondary-text">
                                                     Shipping: {order.shippingAddress}
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex flex-wrap items-center justify-between gap-6 lg:w-auto w-full">
                                                 {/* Thumbnails */}
-                                                <div className="flex -space-x-2 hover:space-x-2 transition-all">
+                                                <div className="flex -space-x-2 hover:space-x-2 transition-all group">
                                                     {order.items.slice(0, 4).map((item, index) => (
                                                         <div
                                                             key={item.id}
-                                                            className="relative size-14 rounded-md overflow-hidden bg-primary-bg border border-secondary-text -ml-2 transition-all duration-300 group-hover:ml-2 group-hover:scale-105"
-                                                            style={{ zIndex: 10 - index }} // جلوتر بودن عکس‌ها
+                                                            className="relative sm:size-14 size-11 rounded-md overflow-hidden bg-primary-bg border border-secondary-text -ml-2 transition-all duration-300 group-hover:ml-2 group-hover:scale-105"
+                                                            style={{ zIndex: 10 - index }}
                                                         >
                                                             <Image
                                                                 src={`/products/${item.product?.imageUrl}`}
@@ -115,29 +115,31 @@ export default function OrdersByUserPage() {
                                                             />
                                                         </div>
                                                     ))}
-                                                    {order.items.length > 3 && (
-                                                        <div className="size-14 flex items-center justify-center rounded-md bg-primary-bg text-sm font-medium border border-secondary-text">
+                                                    {order.items.length > 4 && (
+                                                        <div className="sm:size-14 size-11 flex items-center justify-center rounded-md bg-primary-bg text-sm font-medium border border-secondary-text">
                                                             +{order.items.length - 4}
                                                         </div>
                                                     )}
                                                 </div>
 
-                                                <div className="text-xl font-bold text-accent">
-                                                    ${calcOrderTotal(order.items).toFixed(2)}
-                                                </div>
+                                                <div className="flex gap-6 items-center">
+                                                    <div className="text-xl font-bold text-accent">
+                                                        ${calcOrderTotal(order.items).toFixed(2)}
+                                                    </div>
 
-                                                <button
-                                                    onClick={() =>
-                                                        setExpanded(isOpen ? null : order.id)
-                                                    }
-                                                    className="p-2 rounded-lg bg-primary-bg border hover:bg-accent hover:text-white transition"
-                                                >
-                                                    {isOpen ? (
-                                                        <FontAwesomeIcon icon={faAngleUp} className="w-5 h-5" />
-                                                    ) : (
-                                                        <FontAwesomeIcon icon={faAngleDown} className="w-5 h-5" />
-                                                    )}
-                                                </button>
+                                                    <button
+                                                        onClick={() =>
+                                                            setExpanded(isOpen ? null : order.id)
+                                                        }
+                                                        className="p-2 rounded-lg bg-primary-bg border hover:bg-accent hover:text-white transition"
+                                                    >
+                                                        {isOpen ? (
+                                                            <FontAwesomeIcon icon={faAngleUp} className="w-5 h-5" />
+                                                        ) : (
+                                                            <FontAwesomeIcon icon={faAngleDown} className="w-5 h-5" />
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -150,7 +152,7 @@ export default function OrdersByUserPage() {
                                                     key={item.id}
                                                     className="flex items-center gap-4 bg-primary-bg rounded-xl p-3 shadow-md hover:scale-102 transition-all"
                                                 >
-                                                    <a href={`./products/${item.productId}`} className="relative size-20 flex-shrink-0 rounded-lg overflow-hidden border">
+                                                    <a href={`./products/${item.productId}`} className="relative sm:size-20 size-16 flex-shrink-0 rounded-lg overflow-hidden border">
                                                         <Image
                                                             src={`/products/${item.product?.imageUrl}`}
                                                             alt={item.product?.name || item.productName}
@@ -159,10 +161,10 @@ export default function OrdersByUserPage() {
                                                         />
                                                     </a>
                                                     <div className="flex-1">
-                                                        <p className="font-medium text-primary-text">
+                                                        <p className="font-medium sm:text-base text-sm text-primary-text">
                                                             {item.product?.name || item.productName}
                                                         </p>
-                                                        <p className="text-sm text-secondary-text">
+                                                        <p className="sm:text-sm text-xs text-secondary-text">
                                                             Qty: {item.quantity} × $
                                                             {(item.product?.price ?? 0).toFixed(2)}
                                                         </p>
@@ -184,8 +186,8 @@ export default function OrdersByUserPage() {
                     </div>
                 ) : (
                     <div className="text-center text-secondary-text py-20">
-                        <p className="text-lg">🛒 You don’t have any orders yet.</p>
-                        <p className="text-sm mt-2">Start shopping to see them here!</p>
+                        <p className="sm:text-lg text-base">🛒 You don’t have any orders yet.</p>
+                        <p className="sm:text-sm text-xs mt-2">Start shopping to see them here!</p>
                     </div>
                 )}
             </main>

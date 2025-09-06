@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Header from "@/components/Header";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -18,7 +20,7 @@ export default function ContactPage() {
         e.preventDefault();
         console.log("Form Submitted:", formData);
         setFormData({ name: "", email: "", message: "" });
-        alert("✅ Your message has been sent! Our support team will contact you soon.");
+        alert("✅ send message comming soon.");
     };
 
     return (
@@ -95,12 +97,12 @@ export default function ContactPage() {
                         <div className="flex-1 flex flex-col justify-between bg-secondary-bg p-8 rounded-3xl shadow-md space-y-6">
                             <div>
                                 <h2 className="text-2xl font-bold mb-3">Contact Info</h2>
-                                <p className="text-secondary-text mb-3">
+                                <p className="text-secondary-text mb-5">
                                     Reach out to our support team via:
                                 </p>
-                                <ul className="space-y-2 text-primary-text">
-                                    <li>
-                                        📧 Email:{" "}
+                                <ul className="space-y-4 text-primary-text ">
+                                    <li className="flex items-center gap-3">
+                                        <FontAwesomeIcon icon={faEnvelope} className="text-2xl" /> Email:{" "}
                                         <a
                                             href="mailto:support@example.com"
                                             className="text-accent hover:underline"
@@ -108,8 +110,8 @@ export default function ContactPage() {
                                             arshiapourfar@gmail.com
                                         </a>
                                     </li>
-                                    <li>📞 Phone: <span className="text-primary-text">+98 912 247 3093</span></li>
-                                    <li>📍 Address: 123 Example Street, New York, NY</li>
+                                    <li className="flex items-center gap-3"><FontAwesomeIcon icon={faPhone} className="text-2xl" /> Phone: <span className="text-primary-text flex items-center">+98 912 247 3093</span></li>
+                                    <li className="flex items-center gap-3"><FontAwesomeIcon icon={faLocationDot} className="text-2xl" /> Address: 123 Example Street, New York, NY</li>
                                 </ul>
                             </div>
 

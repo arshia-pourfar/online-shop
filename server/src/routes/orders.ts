@@ -9,6 +9,7 @@ import {
     deleteOrderItem,
     updateOrderItemQuantity,
     getAllOrdersByUser,
+    updateOrder,
 } from '../controllers/orderController';
 
 const router = express.Router();
@@ -22,5 +23,6 @@ router.delete('/items/:id', deleteOrderItem);
 router.patch('/items/:id', updateOrderItemQuantity);
 router.post('/', createOrder);
 router.delete('/:id', deleteOrder);
+router.put("/:id", updateOrder);
 
 export default router;

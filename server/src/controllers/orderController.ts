@@ -211,9 +211,7 @@ export const createOrder = async (req: Request, res: Response) => {
     try {
         const { userId, items, total, status, customerName, addressId } = req.body;
 
-        console.log("Incoming payload:", req.body);
-
-        if (!userId || !customerName || !addressId || !Array.isArray(items) || items.length === 0) {
+        if (!userId || !customerName || !addressId) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
@@ -222,23 +220,18 @@ export const createOrder = async (req: Request, res: Response) => {
                 userId,
                 customerName,
                 addressId,
-                total,
-                status,
-                items: {
+                total: total || 0,
+                status: status || "PENDING",
+                items: items && items.length > 0 ? {
                     create: items.map((item: { productId: number; quantity: number }) => ({
                         quantity: item.quantity,
-                        product: {
-                            connect: { id: item.productId },
-                        },
+                        product: { connect: { id: item.productId } },
                     })),
-                },
+                } : undefined, // 👈 اینجا
             },
-            include: {
-                items: { include: { product: true } },
-                user: true,
-                address: true, // 👈 حالا آدرس هم همراه سفارش برمی‌گرده
-            },
+            include: { items: { include: { product: true } }, user: true, address: true },
         });
+
 
         res.status(201).json(order);
     } catch (err: unknown) {
@@ -265,6 +258,42 @@ export const deleteOrder = async (req: Request, res: Response) => {
         } else {
             console.error('[createOrder] Unknown error:', err);
             res.status(500).json({ error: 'Unexpected error occurred' });
+        }
+    }
+};
+
+// PUT /api/orders/:id - بروزرسانی سفارش
+export const updateOrder = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { addressId, deliveryTime, status } = req.body;
+
+    try {
+        const updated = await prisma.order.update({
+            where: { id },
+            data: {
+                ...(addressId && {
+                    address: {
+                        connect: { id: addressId }
+                    }
+                }),
+                ...(deliveryTime && { deliveryTime: new Date(deliveryTime) }),
+                ...(status && { status }),
+            },
+            include: {
+                items: { include: { product: true } },
+                user: true,
+                address: true,
+            },
+        });
+
+        res.json(updated);
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error("[updateOrder]", err.message);
+            res.status(500).json({ error: err.message });
+        } else {
+            console.error("[updateOrder] Unknown error:", err);
+            res.status(500).json({ error: "Unexpected error occurred" });
         }
     }
 };

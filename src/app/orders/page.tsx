@@ -8,31 +8,42 @@ import { getAllOrdersByUser } from "@/lib/api/orders";
 import { Order, OrderItem } from "types/order";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { Address } from "types/address";
+import { getAddressById } from "@/lib/api/address";
 
 export default function OrdersByUserPage() {
     const { user } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
+    const [addresses, setAddresses] = useState<Record<string, Address>>({});
 
     useEffect(() => {
-        if (!user) {
-            setIsLoading(false);
-            return;
-        }
+        if (!user) return;
 
-        const fetchData = async () => {
+        const fetchOrdersAndAddresses = async () => {
             try {
                 const data = await getAllOrdersByUser(user?.id);
                 setOrders(data);
-            } catch (error) {
-                console.error("Error fetching user orders:", error);
+
+                // گرفتن آدرس‌ها
+                const addrMap: Record<string, Address> = {};
+                for (const order of data) {
+                    if (order.addressId) {
+                        const addr = await getAddressById(order.addressId);
+                        addrMap[order.id] = addr;
+                    }
+                }
+                setAddresses(addrMap);
+
+            } catch (err) {
+                console.error(err);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchData();
+        fetchOrdersAndAddresses();
     }, [user]);
 
     const calcOrderTotal = (items: OrderItem[]) => {
@@ -96,7 +107,9 @@ export default function OrdersByUserPage() {
                                                     </span>
                                                 </p>
                                                 <p className="sm:text-sm text-xs text-secondary-text">
-                                                    Shipping: {order.shippingAddress}
+                                                    Shipping: {addresses[order.id]
+                                                        ? `${addresses[order.id].title}, ${addresses[order.id].street}, ${addresses[order.id].city}, ${addresses[order.id].postalCode}, ${addresses[order.id].country}`
+                                                        : "Not specified"}
                                                 </p>
                                             </div>
 

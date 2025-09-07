@@ -65,12 +65,13 @@ model Order {
   user            User        @relation(fields: [userId], references: [id])
   userId          String
   address         Address?    @relation(fields: [addressId], references: [id])
-  addressId       Int?        // 👈 آدرس سفارش
+  addressId       Int?
   customerName    String
   status          OrderStatus @default(PENDING)
   total           Float
   items           OrderItem[]
   createdAt       DateTime    @default(now())
+  deliveryTime    DateTime? 
 }
 
 model OrderItem {

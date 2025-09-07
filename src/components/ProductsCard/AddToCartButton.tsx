@@ -2,42 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faCartShopping,
-    faMinus,
-    faPlus,
-    faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
+import { getAddressesByUser } from "@/lib/api/address";
 
-const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
-type Product = {
-    id: number;
-    name: string;
-    price: number;
-};
+type Product = { id: number; name: string; price: number };
+type CartItem = { id: number; quantity: number; product: Product };
+type CustomStyle = { main: string; button: string; text: string };
 
-type CartItem = {
-    id: number;
-    quantity: number;
-    product: Product;
-};
-
-type CustomStyle = {
-    main: string;
-    button: string;
-    text: string;
-};
-
-export default function AddToCartButton({
-    product,
-    customStyle,
-}: {
-    product: Product;
-    customStyle?: CustomStyle;
-}) {
+export default function AddToCartButton({ product, customStyle }: { product: Product; customStyle?: CustomStyle }) {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [cartItem, setCartItem] = useState<CartItem | null>(null);
@@ -47,15 +22,10 @@ export default function AddToCartButton({
 
         const fetchCart = async () => {
             try {
-                const res = await fetch(
-                    `${API_BASE}/api/orders/user/${user.id}?status=PENDING`
-                );
+                const res = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
                 const order = await res.json();
-
                 if (order && order.items) {
-                    const found = order.items.find(
-                        (i: CartItem) => i.product.id === product.id
-                    );
+                    const found = order.items.find((i: CartItem) => i.product.id === product.id);
                     if (found) setCartItem(found);
                 }
             } catch (err) {
@@ -71,47 +41,51 @@ export default function AddToCartButton({
         setLoading(true);
 
         try {
-            const payload = { productId: product.id, quantity: 1 };
-
-            // چک کن آیا سفارش Pending وجود دارد؟
-            const resCheck = await fetch(
-                `${API_BASE}/api/orders/user/${user.id}?status=PENDING`
-            );
+            // بررسی سفارش Pending موجود
+            const resCheck = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
             const existingOrder = await resCheck.json();
 
-            if (existingOrder && existingOrder.id) {
-                // سفارش باز وجود داره → آیتم اضافه کن
-                await fetch(`${API_BASE}/api/orders/${existingOrder.id}/items`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                });
-            } else {
-                // سفارش Pending وجود نداره → جدید بساز
-                const newOrderPayload = {
-                    userId: user.id,
-                    customerName: user.name || "Arshia",
-                    shippingAddress: "Tehran",
-                    total: product.price,
-                    status: "PENDING",
-                    items: [payload],
-                };
+            let orderId = existingOrder?.id;
 
-                await fetch(`${API_BASE}/api/orders`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newOrderPayload),
-                });
+            // گرفتن اولین آدرس کاربر
+            let addressId = 1; // پیش‌فرض اگر آدرس نداشت
+            const addresses = await getAddressesByUser(user.id);
+            if (addresses && addresses.length > 0) {
+                addressId = addresses[0].id; // اولین آدرس واقعی کاربر
             }
 
-            // آیتم آپدیت‌شده رو دوباره بگیر
-            const resOrder = await fetch(
-                `${API_BASE}/api/orders/user/${user.id}?status=PENDING`
-            );
-            const order = await resOrder.json();
-            const updatedItem = order.items.find(
-                (i: CartItem) => i.product.id === product.id
-            );
+            // اگر سفارش موجود نبود، بساز
+            if (!orderId) {
+                const resNewOrder = await fetch(`${API_BASE}/api/orders`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        status: "PENDING",
+                        customerName: user.name || "Unknown",
+                        addressId,
+                        items: [], // سفارش اولیه بدون آیتم
+                    }),
+                });
+
+                const newOrder = await resNewOrder.json();
+                orderId = newOrder.id;
+            }
+
+            if (!orderId) {
+                console.error("سفارش ساخته نشد!");
+                setLoading(false);
+                return;
+            }
+
+            // اضافه کردن آیتم به سفارش
+            const resAddItem = await fetch(`${API_BASE}/api/orders/${orderId}/items`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productId: product.id, quantity: 1 }),
+            });
+
+            const updatedItem = await resAddItem.json();
             setCartItem(updatedItem);
         } catch (err) {
             console.error("خطا در افزودن به سبد:", err);
@@ -119,6 +93,7 @@ export default function AddToCartButton({
             setLoading(false);
         }
     };
+
 
     const handleQuantityChange = async (newQty: number) => {
         if (!cartItem) return;
@@ -145,9 +120,7 @@ export default function AddToCartButton({
         if (!cartItem) return;
 
         try {
-            await fetch(`${API_BASE}/api/orders/items/${cartItem.id}`, {
-                method: "DELETE",
-            });
+            await fetch(`${API_BASE}/api/orders/items/${cartItem.id}`, { method: "DELETE" });
             setCartItem(null);
         } catch (err) {
             console.error("خطا در حذف آیتم:", err);
@@ -157,61 +130,25 @@ export default function AddToCartButton({
     return (
         <div className="flex items-center">
             {cartItem ? (
-                <div
-                    className={`${customStyle?.main} flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg`}
-                >
+                <div className={`${customStyle?.main} flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg`}>
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => handleQuantityChange(cartItem.quantity - 1)}
-                            className={`${customStyle?.button
-                                    ? customStyle?.button
-                                    : "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"
-                                } bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
-                            disabled={cartItem.quantity <= 1}
-                        >
+                        <button onClick={() => handleQuantityChange(cartItem.quantity - 1)} className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`} disabled={cartItem.quantity <= 1}>
                             <FontAwesomeIcon icon={faMinus} />
                         </button>
-                        <span
-                            className={`${customStyle?.text
-                                    ? customStyle?.text
-                                    : "sm:text-base sm:size-6 text-lg size-8"
-                                } font-medium flex items-center justify-center`}
-                        >
+                        <span className={`${customStyle?.text || "sm:text-base sm:size-6 text-lg size-8"} font-medium flex items-center justify-center`}>
                             {cartItem.quantity}
                         </span>
-                        <button
-                            onClick={() => handleQuantityChange(cartItem.quantity + 1)}
-                            className={`${customStyle?.button
-                                    ? customStyle?.button
-                                    : "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"
-                                } bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
-                        >
+                        <button onClick={() => handleQuantityChange(cartItem.quantity + 1)} className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}>
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
-                    <button
-                        onClick={handleRemove}
-                        className={`${customStyle?.text ? customStyle?.text : "sm:text-lg text-xl"
-                            } text-accent hover:text-accent/70 cursor-pointer transition sm:mx-1 ml-6 mr-2 flex items-center`}
-                    >
+                    <button onClick={handleRemove} className={`${customStyle?.text || "sm:text-lg text-xl"} text-accent hover:text-accent/70 cursor-pointer transition sm:mx-1 ml-6 mr-2 flex items-center`}>
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
                 </div>
             ) : (
-                <button
-                    onClick={handleAddToCart}
-                    disabled={loading}
-                    className={`${customStyle ? "py-5 px-10 text-2xl" : "sm:px-4 sm:py-2 px-6 py-3"
-                        } bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}
-                >
-                    {loading ? (
-                        <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div>
-                    ) : (
-                        <>
-                            <FontAwesomeIcon icon={faCartShopping} />
-                            <span>Add</span>
-                        </>
-                    )}
+                <button onClick={handleAddToCart} disabled={loading} className={`${customStyle ? "py-5 px-10 text-2xl" : "sm:px-4 sm:py-2 px-6 py-3"} bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}>
+                    {loading ? <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div> : <><FontAwesomeIcon icon={faCartShopping} /><span>Add</span></>}
                 </button>
             )}
         </div>

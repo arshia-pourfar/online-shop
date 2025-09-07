@@ -4,10 +4,17 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useParams, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMapMarkerAlt, faClock, faArrowRight, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+    faMapMarkerAlt,
+    faClock,
+    faArrowRight,
+    faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
 import { Address } from "types/address";
 import { getAddressesByUser, addAddress } from "@/lib/api/address";
+import { updateOrder } from "@/lib/api/orders";
 
 export default function OrderConfirmationPage() {
     const params = useParams();
@@ -38,21 +45,35 @@ export default function OrderConfirmationPage() {
     }, [user]);
 
     const handleAddAddress = async () => {
-        if (Object.values(newAddress).some((v) => !v)) return alert("Please fill in all fields");
+        if (Object.values(newAddress).some((v) => !v)) {
+            return alert("Please fill in all fields");
+        }
         const added = await addAddress(user!.id, newAddress);
         setAddresses((prev) => [...prev, added]);
         setSelectedAddressId(added.id);
         setNewAddress({ title: "", street: "", city: "", postalCode: "", country: "" });
     };
 
-    const handleConfirmOrder = () => {
-        if (!selectedAddressId || selectedAddressId === "new") return alert("Please select an address");
-        if (!orderTime) return alert("Please select a delivery time");
+    const handleConfirmOrder = async () => {
+        if (!selectedAddressId || selectedAddressId === "new") {
+            return alert("لطفاً یک آدرس انتخاب کنید");
+        }
+        if (!orderTime) {
+            return alert("لطفاً زمان تحویل را انتخاب کنید");
+        }
 
-        // می‌تونی اینجا PATCH بزنیم برای ذخیره سفارش با آدرس و زمان
-        console.log("Order confirmed with:", { selectedAddressId, orderTime, orderId });
+        try {
+            if (!orderId) return;
+            await updateOrder(orderId, {
+                addressId: selectedAddressId as number,
+                deliveryTime: orderTime,
+            });
 
-        router.push(`/order-confirmation/${orderId}/payment`);
+            router.push(`/order-confirmation/${orderId}/payment`);
+        } catch (error) {
+            console.error("خطا در ثبت سفارش:", error);
+            alert("ثبت سفارش با مشکل مواجه شد. لطفاً دوباره تلاش کنید.");
+        }
     };
 
     return (
@@ -70,16 +91,15 @@ export default function OrderConfirmationPage() {
                 ) : (
                     <div className="bg-secondary-bg rounded-xl shadow-md p-6 space-y-6">
                         {/* Address Selector */}
-                        <div className="flex flex-col space-y-2">
-                            <label className="flex items-center gap-2 font-medium text-lg">
+                        <section>
+                            <label className="flex items-center gap-2 font-medium text-lg mb-2">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Address
                             </label>
                             <select
                                 value={selectedAddressId ?? ""}
                                 onChange={(e) => {
                                     const val = e.target.value;
-                                    if (val === "new") setSelectedAddressId("new");
-                                    else setSelectedAddressId(Number(val));
+                                    setSelectedAddressId(val === "new" ? "new" : Number(val));
                                 }}
                                 className="w-full p-3 rounded-lg border bg-primary-bg text-primary-text"
                             >
@@ -93,11 +113,11 @@ export default function OrderConfirmationPage() {
                                 ))}
                                 <option value="new">Add new address</option>
                             </select>
-                        </div>
+                        </section>
 
                         {/* New Address Form */}
                         {selectedAddressId === "new" && (
-                            <div className="p-4 border rounded-lg space-y-2 bg-primary-bg">
+                            <section className="p-4 border rounded-lg space-y-2 bg-primary-bg">
                                 {["title", "street", "city", "postalCode", "country"].map((field) => (
                                     <input
                                         key={field}
@@ -116,12 +136,12 @@ export default function OrderConfirmationPage() {
                                 >
                                     Add Address <FontAwesomeIcon icon={faPlus} />
                                 </button>
-                            </div>
+                            </section>
                         )}
 
                         {/* Delivery Time */}
-                        <div className="flex flex-col space-y-2">
-                            <label className="flex items-center gap-2 font-medium text-lg">
+                        <section>
+                            <label className="flex items-center gap-2 font-medium text-lg mb-2">
                                 <FontAwesomeIcon icon={faClock} /> Delivery Time
                             </label>
                             <input
@@ -130,7 +150,7 @@ export default function OrderConfirmationPage() {
                                 onChange={(e) => setOrderTime(e.target.value)}
                                 className="w-full p-3 rounded-lg border bg-primary-bg placeholder:text-secondary-text"
                             />
-                        </div>
+                        </section>
 
                         {/* Confirm Button */}
                         <button

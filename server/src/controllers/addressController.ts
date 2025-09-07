@@ -43,3 +43,17 @@ export const deleteAddress = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete address' });
   }
 };
+
+// controllers/addressController.ts
+export const getAddressById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const address = await prisma.address.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!address) return res.status(404).json({ error: 'Address not found' });
+    res.json(address);
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch address' });
+  }
+};

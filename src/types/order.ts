@@ -35,7 +35,8 @@ export type Order = {
     customerName: string;
     status: string;
     items: OrderItem[];
-    shippingAddress: string;
+    address: string;
+    addressId: number;
     deliveryTime?: string;
 };
 

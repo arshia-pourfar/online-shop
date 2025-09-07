@@ -40,7 +40,7 @@ export async function addOrder(order: Partial<Order>): Promise<Order> {
   return res.json();
 }
 
-export async function updateOrder(id: number, order: Partial<Order>): Promise<Order> {
+export async function updateOrder(id: string, order: Partial<Order>): Promise<Order> {
   const res = await fetch(`${API_BASE}/api/orders/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -52,7 +52,7 @@ export async function updateOrder(id: number, order: Partial<Order>): Promise<Or
   return res.json();
 }
 
-export async function deleteOrder(id: number): Promise<void> {
+export async function deleteOrder(id: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/orders/${id}`, {
     method: "DELETE",
   });

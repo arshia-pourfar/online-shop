@@ -23,3 +23,10 @@ export async function deleteAddress(id: number): Promise<void> {
     const res = await fetch(`${API_BASE}/api/addresses/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Failed to delete address");
 }
+
+// lib/api/address.ts
+export async function getAddressById(id: number): Promise<Address> {
+    const res = await fetch(`${API_BASE}/api/addresses/${id}`);
+    if (!res.ok) throw new Error("Failed to fetch address");
+    return res.json();
+}

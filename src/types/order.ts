@@ -36,6 +36,7 @@ export type Order = {
     status: string;
     items: OrderItem[];
     shippingAddress: string;
+    deliveryTime?: string;
 };
 
 export type OrderField = keyof Order; // کلیدهای مستقیم Order

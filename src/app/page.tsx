@@ -279,7 +279,7 @@ const Home = () => {
                   >
                     <div className="relative md:size-24 size-20 mb-3">
                       <Image
-                        src={`/categories/${category.imageSrc || "default.png"}`}
+                        src={`/categories/${category.imageSrc}`}
                         alt={category.name}
                         fill
                         className="object-contain rounded-full"

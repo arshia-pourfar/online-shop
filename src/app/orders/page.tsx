@@ -7,8 +7,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { getAllOrdersByUser } from "@/lib/api/orders";
 import { Order, OrderItem } from "types/order";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
-
+import { faAngleDown, faAngleUp, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default function OrdersByUserPage() {
     const { user } = useAuth();
@@ -17,7 +16,10 @@ export default function OrdersByUserPage() {
     const [expanded, setExpanded] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setIsLoading(false);
+            return;
+        }
 
         const fetchData = async () => {
             try {
@@ -50,8 +52,9 @@ export default function OrdersByUserPage() {
                 </h1>
 
                 {isLoading ? (
-                    <div className="text-center text-secondary-text py-20 animate-pulse">
-                        Loading your orders...
+                    <div className="flex justify-center items-center py-20 text-accent">
+                        <FontAwesomeIcon icon={faSpinner} spin className="text-4xl" />
+                        <span className="ml-3 text-lg">Loading your orders...</span>
                     </div>
                 ) : orders.length > 0 ? (
                     <div className="space-y-6">
@@ -92,7 +95,6 @@ export default function OrdersByUserPage() {
                                                         {order.status}
                                                     </span>
                                                 </p>
-                                                {/* Shipping address همیشه دیده بشه */}
                                                 <p className="sm:text-sm text-xs text-secondary-text">
                                                     Shipping: {order.shippingAddress}
                                                 </p>
@@ -152,7 +154,10 @@ export default function OrdersByUserPage() {
                                                     key={item.id}
                                                     className="flex items-center gap-4 bg-primary-bg rounded-xl p-3 shadow-md hover:scale-102 transition-all"
                                                 >
-                                                    <a href={`./products/${item.productId}`} className="relative sm:size-20 size-16 flex-shrink-0 rounded-lg overflow-hidden border">
+                                                    <a
+                                                        href={`./products/${item.productId}`}
+                                                        className="relative sm:size-20 size-16 flex-shrink-0 rounded-lg overflow-hidden border"
+                                                    >
                                                         <Image
                                                             src={`/products/${item.product?.imageUrl}`}
                                                             alt={item.product?.name || item.productName}

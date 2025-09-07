@@ -209,11 +209,11 @@ export const getPendingOrderByUser = async (req: Request, res: Response) => {
 // POST /orders - ساخت سفارش جدید
 export const createOrder = async (req: Request, res: Response) => {
     try {
-        const { userId, items, total, status, customerName, shippingAddress } = req.body;
+        const { userId, items, total, status, customerName, addressId } = req.body;
 
         console.log("Incoming payload:", req.body);
 
-        if (!userId || !customerName || !shippingAddress || !Array.isArray(items) || items.length === 0) {
+        if (!userId || !customerName || !addressId || !Array.isArray(items) || items.length === 0) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
@@ -221,7 +221,7 @@ export const createOrder = async (req: Request, res: Response) => {
             data: {
                 userId,
                 customerName,
-                shippingAddress,
+                addressId,
                 total,
                 status,
                 items: {
@@ -236,6 +236,7 @@ export const createOrder = async (req: Request, res: Response) => {
             include: {
                 items: { include: { product: true } },
                 user: true,
+                address: true, // 👈 حالا آدرس هم همراه سفارش برمی‌گرده
             },
         });
 

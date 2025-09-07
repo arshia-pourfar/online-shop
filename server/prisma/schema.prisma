@@ -23,7 +23,20 @@ model User {
   role      Role         @default(USER)
   orders    Order[]
   reports   Report[]
+  addresses Address[]    // ارتباط با آدرس‌ها
   createdAt DateTime     @default(now())
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  title      String
+  street     String
+  city       String
+  postalCode String
+  country    String
+  orders     Order[]  
 }
 
 model Category {
@@ -51,11 +64,12 @@ model Order {
   id              String      @id @default(cuid())
   user            User        @relation(fields: [userId], references: [id])
   userId          String
+  address         Address?    @relation(fields: [addressId], references: [id])
+  addressId       Int?        // 👈 آدرس سفارش
   customerName    String
   status          OrderStatus @default(PENDING)
   total           Float
   items           OrderItem[]
-  shippingAddress String
   createdAt       DateTime    @default(now())
 }
 
@@ -77,7 +91,6 @@ model SalesStats {
   createdAt DateTime @default(now())
 }
 
-// New model for reports
 model Report {
   id          String      @id @default(cuid())
   title       String
@@ -120,7 +133,6 @@ enum UserStatus {
   SUSPENDED
 }
 
-// New enum for report statuses
 enum ReportStatus {
   GENERATED
   FAILED

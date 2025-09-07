@@ -12,6 +12,7 @@ import authRoutes from './routes/auth';
 import categoryRoutes from './routes/categories';
 import statusRoutes from './routes/statuses';
 import reportsRouter from './routes/reports';
+import addressRoutes from './routes/address';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -19,6 +20,7 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
+app.use('/api', addressRoutes); // تمام مسیرها با /api شروع می‌شوند
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);

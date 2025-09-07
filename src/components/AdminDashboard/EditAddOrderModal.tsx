@@ -23,7 +23,7 @@ export default function OrderModal(
         createdAt: new Date().toISOString().split("T")[0],
         total: 0,
         status: "PENDING",
-        shippingAddress: "",
+        address: "",
         items: [],
     });
 
@@ -37,7 +37,7 @@ export default function OrderModal(
                 createdAt: order.createdAt.split("T")[0],
                 total: order.total,
                 status: order.status,
-                shippingAddress: order.shippingAddress,
+                address: order.address,
                 items: order.items || [],
             });
         } else if (type === "add") {
@@ -46,7 +46,7 @@ export default function OrderModal(
                 createdAt: new Date().toISOString().split("T")[0],
                 total: 0,
                 status: allStatuses[0] || "PENDING",
-                shippingAddress: "",
+                address: "",
                 items: [],
             });
         }
@@ -108,7 +108,7 @@ export default function OrderModal(
                 // orderDate: formData.orderDate,
                 // totalAmount: formData.totalAmount || 0,
                 status: formData.status,
-                shippingAddress: formData.shippingAddress || "",
+                address: formData.address || "",
                 items: formData.items || [],
             };
 
@@ -211,16 +211,16 @@ export default function OrderModal(
 
                     <div>
                         <label
-                            htmlFor="shippingAddress"
+                            htmlFor="address"
                             className="block mb-2 text-sm font-semibold text-secondary-text"
                         >
                             Shipping Address
                         </label>
                         <textarea
-                            id="shippingAddress"
-                            name="shippingAddress"
+                            id="address"
+                            name="address"
                             rows={3}
-                            value={formData.shippingAddress || ""}
+                            value={formData.address || ""}
                             onChange={handleChange}
                             placeholder="Enter shipping address"
                             className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"

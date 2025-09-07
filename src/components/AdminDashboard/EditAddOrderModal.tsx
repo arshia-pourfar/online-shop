@@ -85,7 +85,6 @@ export default function OrderModal(
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // اعتبارسنجی ساده
         if (!formData.customerName?.trim() || !formData.createdAt || !formData.status) {
             setFeedbackMessage("Please fill in all required fields.");
             return;
@@ -95,23 +94,17 @@ export default function OrderModal(
         setFeedbackMessage("");
 
         try {
-            // شبیه به API call: جایگزین کن با منطق خودت
-            // مثلا: const savedOrder = await saveOrderAPI(formData);
-            // اینجا فقط فرضی برای نمایش
             const savedOrder: Order = {
                 id: order?.id || Date.now().toString(),
-                userId: order?.userId || "",  // مقدار مناسب یا خالی
-                // customerId: order?.userId || "", // مقدار مناسب یا خالی
-                total: formData.total ?? 0, // ممکنه totalAmount همون total باشه
+                userId: order?.userId || "",
+                total: formData.total ?? 0,
                 createdAt: order?.createdAt || new Date().toISOString(),
                 customerName: formData.customerName.trim(),
-                // orderDate: formData.orderDate,
-                // totalAmount: formData.totalAmount || 0,
                 status: formData.status,
                 address: formData.address || "",
+                addressId: order?.addressId || 1, // <-- اضافه شد
                 items: formData.items || [],
             };
-
 
             onSave(savedOrder);
             onClose();
@@ -121,6 +114,7 @@ export default function OrderModal(
             setIsLoading(false);
         }
     };
+
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-4">

@@ -15,6 +15,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { Address } from "types/address";
 import { getAddressesByUser, addAddress } from "@/lib/api/address";
 import { updateOrder } from "@/lib/api/orders";
+type DeliveryOption = 'today' | 'tomorrow' | 'dayAfterTomorrow' | 'threeDaysLater' | 'custom';
 
 export default function OrderConfirmationPage() {
     const params = useParams();
@@ -33,7 +34,10 @@ export default function OrderConfirmationPage() {
         country: "",
     });
     const [loading, setLoading] = useState(true);
-    const [orderTime, setOrderTime] = useState<string>("");
+
+    // delivery time state
+    const [deliveryOption, setDeliveryOption] = useState<DeliveryOption | "">("");
+    const [customDate, setCustomDate] = useState("");
 
     useEffect(() => {
         if (!user?.id) return;
@@ -56,68 +60,137 @@ export default function OrderConfirmationPage() {
 
     const handleConfirmOrder = async () => {
         if (!selectedAddressId || selectedAddressId === "new") {
-            return alert("لطفاً یک آدرس انتخاب کنید");
+            return alert("Please select an address");
         }
-        if (!orderTime) {
-            return alert("لطفاً زمان تحویل را انتخاب کنید");
+        if (!deliveryOption) {
+            return alert("Please select a delivery time");
+        }
+
+        let deliveryTime: string;
+        const now = new Date();
+
+        switch (deliveryOption) {
+            case "today":
+                now.setHours(10, 0, 0, 0);
+                deliveryTime = now.toISOString();
+                break;
+            case "tomorrow":
+                now.setDate(now.getDate() + 1);
+                now.setHours(10, 0, 0, 0);
+                deliveryTime = now.toISOString();
+                break;
+            case "dayAfterTomorrow":
+                now.setDate(now.getDate() + 2);
+                now.setHours(10, 0, 0, 0);
+                deliveryTime = now.toISOString();
+                break;
+            case "threeDaysLater":
+                now.setDate(now.getDate() + 3);
+                now.setHours(10, 0, 0, 0);
+                deliveryTime = now.toISOString();
+                break;
+            case "custom":
+                if (!customDate) return alert("Please select a custom date");
+                deliveryTime = new Date(`${customDate}T10:00`).toISOString();
+                break;
+            default:
+                return alert("Invalid delivery option");
         }
 
         try {
             if (!orderId) return;
             await updateOrder(orderId, {
                 addressId: selectedAddressId as number,
-                deliveryTime: orderTime,
+                deliveryTime,
             });
 
             router.push(`/order-confirmation/${orderId}/payment`);
-        } catch (error) {
-            console.error("خطا در ثبت سفارش:", error);
-            alert("ثبت سفارش با مشکل مواجه شد. لطفاً دوباره تلاش کنید.");
+        } catch (error: unknown) {
+            console.error("Order confirmation error:", error);
+            if (error instanceof Error) {
+                alert(error.message);
+            } else {
+                alert("Failed to update order. Please try again.");
+            }
         }
     };
 
+    const getMinDate = () => {
+        const date = new Date();
+        date.setDate(date.getDate() + 4);
+        return date.toISOString().split("T")[0];
+    };
+
+    const getMaxDate = () => {
+        const date = new Date();
+        date.setDate(date.getDate() + 10);
+        return date.toISOString().split("T")[0];
+    };
+
     return (
-        <div className="min-h-screen w-full bg-primary-bg text-primary-text">
+        <div className="min-h-screen w-full bg-[var(--color-primary-bg)] text-[var(--color-primary-text)]">
             <Header />
 
             <main className="p-4 md:p-8 space-y-6 max-w-3xl mx-auto">
-                <h1 className="text-4xl font-bold text-accent mb-6">Order Confirmation</h1>
+                <h1 className="text-3xl font-bold text-[var(--color-accent)] mb-6">
+                    Order Confirmation
+                </h1>
 
                 {loading ? (
-                    <div className="flex justify-center items-center py-20 text-accent">
+                    <div className="flex justify-center items-center py-20 text-[var(--color-accent)]">
                         <FontAwesomeIcon icon={faSpinner} spin className="text-4xl" />
                         <span className="ml-3 text-lg">Loading addresses...</span>
                     </div>
                 ) : (
-                    <div className="bg-secondary-bg rounded-xl shadow-md p-6 space-y-6">
-                        {/* Address Selector */}
+                    <div className="space-y-6">
+                        {/* Address List */}
                         <section>
-                            <label className="flex items-center gap-2 font-medium text-lg mb-2">
-                                <FontAwesomeIcon icon={faMapMarkerAlt} /> Address
+                            <label className="flex items-center gap-2 font-medium text-lg mb-3">
+                                <FontAwesomeIcon icon={faMapMarkerAlt} /> Select Address
                             </label>
-                            <select
-                                value={selectedAddressId ?? ""}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setSelectedAddressId(val === "new" ? "new" : Number(val));
-                                }}
-                                className="w-full p-3 rounded-lg border bg-primary-bg text-primary-text"
-                            >
-                                <option value="" disabled>
-                                    Select address
-                                </option>
+                            <div className="space-y-3">
                                 {addresses.map((a) => (
-                                    <option key={a.id} value={a.id}>
-                                        {a.title} - {a.street}, {a.city}
-                                    </option>
+                                    <div
+                                        key={a.id}
+                                        onClick={() => setSelectedAddressId(a.id)}
+                                        className={`cursor-pointer border rounded-xl p-4 transition ${selectedAddressId === a.id
+                                            ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10"
+                                            : "border-gray-300 bg-[var(--color-secondary-bg)]"
+                                            }`}
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <p className="font-bold">{a.title}</p>
+                                                <p className="text-sm text-[var(--color-secondary-text)]">
+                                                    {a.street}, {a.city}, {a.postalCode}, {a.country}
+                                                </p>
+                                            </div>
+                                            <input
+                                                type="radio"
+                                                checked={selectedAddressId === a.id}
+                                                onChange={() => setSelectedAddressId(a.id)}
+                                            />
+                                        </div>
+                                    </div>
                                 ))}
-                                <option value="new">Add new address</option>
-                            </select>
+
+                                {/* Add New Address */}
+                                <div
+                                    onClick={() => setSelectedAddressId("new")}
+                                    className={`cursor-pointer border-dashed rounded-xl p-4 text-center transition ${selectedAddressId === "new"
+                                        ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 border-2"
+                                        : "border-2 border-gray-300 bg-[var(--color-secondary-bg)]"
+                                        }`}
+                                >
+                                    <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                                    Add New Address
+                                </div>
+                            </div>
                         </section>
 
                         {/* New Address Form */}
                         {selectedAddressId === "new" && (
-                            <section className="p-4 border rounded-lg space-y-2 bg-primary-bg">
+                            <section className="p-4 border rounded-lg space-y-3 bg-[var(--color-secondary-bg)] shadow">
                                 {["title", "street", "city", "postalCode", "country"].map((field) => (
                                     <input
                                         key={field}
@@ -127,37 +200,65 @@ export default function OrderConfirmationPage() {
                                         onChange={(e) =>
                                             setNewAddress({ ...newAddress, [field]: e.target.value })
                                         }
-                                        className="w-full p-3 rounded-lg border bg-primary-bg placeholder:text-secondary-text"
+                                        className="w-full p-3 rounded-lg border bg-[var(--color-primary-bg)] placeholder:text-[var(--color-secondary-text)]"
                                     />
                                 ))}
                                 <button
                                     onClick={handleAddAddress}
-                                    className="w-full bg-accent text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium hover:bg-accent/80 transition"
+                                    className="w-full bg-[var(--color-accent)] text-white py-2 rounded-lg flex items-center justify-center gap-2 font-medium hover:opacity-90 transition"
                                 >
-                                    Add Address <FontAwesomeIcon icon={faPlus} />
+                                    Save Address
                                 </button>
                             </section>
                         )}
 
                         {/* Delivery Time */}
                         <section>
-                            <label className="flex items-center gap-2 font-medium text-lg mb-2">
+                            <label className="flex items-center gap-2 font-medium text-lg mb-3">
                                 <FontAwesomeIcon icon={faClock} /> Delivery Time
                             </label>
-                            <input
-                                type="datetime-local"
-                                value={orderTime}
-                                onChange={(e) => setOrderTime(e.target.value)}
-                                className="w-full p-3 rounded-lg border bg-primary-bg placeholder:text-secondary-text"
-                            />
+                            <div className="space-y-3">
+                                {["today", "tomorrow", "dayAfterTomorrow", "threeDaysLater", "custom"].map(option => {
+                                    let label = "";
+                                    switch (option) {
+                                        case "today": label = "Today (10:00 - 18:00)"; break;
+                                        case "tomorrow": label = "Tomorrow (10:00 - 18:00)"; break;
+                                        case "dayAfterTomorrow": label = "Day after tomorrow (10:00 - 18:00)"; break;
+                                        case "threeDaysLater": label = "Three days later (10:00 - 18:00)"; break;
+                                        case "custom": label = "Pick Custom Date"; break;
+                                    }
+                                    return (
+                                        <div key={option} onClick={() => setDeliveryOption(option as DeliveryOption)}
+                                            className={`cursor-pointer border rounded-xl p-4 transition ${deliveryOption === option
+                                                ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10"
+                                                : "border-gray-300 bg-[var(--color-secondary-bg)]"
+                                                }`}>
+                                            <div className="flex items-center justify-between">
+                                                <span>{label}</span>
+                                                <input type="radio" checked={deliveryOption === option} onChange={() => setDeliveryOption(option as DeliveryOption)} />
+                                            </div>
+
+                                            {option === "custom" && deliveryOption === "custom" && (
+                                                <input type="date"
+                                                    value={customDate}
+                                                    min={getMinDate()}
+                                                    max={getMaxDate()}
+                                                    onChange={e => setCustomDate(e.target.value)}
+                                                    className="mt-3 w-full p-3 rounded-lg border bg-[var(--color-primary-bg)] placeholder:text-[var(--color-secondary-text)]"
+                                                />
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </section>
 
                         {/* Confirm Button */}
                         <button
                             onClick={handleConfirmOrder}
-                            className="w-full bg-accent text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:bg-accent/80 transition"
+                            className="w-full bg-[var(--color-accent)] text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:opacity-90 transition"
                         >
-                            Confirm & Continue
+                            Proceed to Payment
                             <FontAwesomeIcon icon={faArrowRight} />
                         </button>
                     </div>

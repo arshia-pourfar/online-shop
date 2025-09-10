@@ -102,7 +102,7 @@ export default function OrderModal(
                 customerName: formData.customerName.trim(),
                 status: formData.status,
                 address: formData.address || "",
-                addressId: order?.addressId || 1, // <-- اضافه شد
+                addressId: order?.addressId || 1,
                 items: formData.items || [],
             };
 
@@ -214,7 +214,7 @@ export default function OrderModal(
                             id="address"
                             name="address"
                             rows={3}
-                            value={formData.address || ""}
+                            value={formData.address || "Not Found"}
                             onChange={handleChange}
                             placeholder="Enter shipping address"
                             className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"

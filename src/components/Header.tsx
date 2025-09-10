@@ -36,11 +36,11 @@ const Header = () => {
                 <div className='sm:flex hidden mr-3'>
                     <ThemeToggle />
                 </div>
-                <a href={user ? './cart' : './login'} className="dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
+                <a href={user ? '/cart' : './login'} className="dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </a>
                 <div className='border-l-2 border-secondary-text h-12'></div>
-                <a href={user ? './setting' : './login'} className=" dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
+                <a href={user ? '/setting' : './login'} className=" dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
                     {/* {user ? user.name : ""} */}
                     <FontAwesomeIcon icon={faUser} className='md:text-3xl text-2xl' />
                 </a>

@@ -5,15 +5,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
 import { getAddressesByUser } from "@/lib/api/address";
+import { useCart } from "@/lib/context/cartContext"; // 👈 اتصال به context
+import { Product } from "types/product";
+import { CartItem } from "types/order";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
-type Product = { id: number; name: string; price: number };
-type CartItem = { id: number; quantity: number; product: Product };
 type CustomStyle = { main: string; button: string; text: string };
 
 export default function AddToCartButton({ product, customStyle }: { product: Product; customStyle?: CustomStyle }) {
     const { user } = useAuth();
+    const { refreshCart } = useCart(); // 👈 گرفتن تابع آپدیت
     const [loading, setLoading] = useState(false);
     const [cartItem, setCartItem] = useState<CartItem | null>(null);
 
@@ -41,20 +43,16 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
         setLoading(true);
 
         try {
-            // بررسی سفارش Pending موجود
             const resCheck = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
             const existingOrder = await resCheck.json();
-
             let orderId = existingOrder?.id;
 
-            // گرفتن اولین آدرس کاربر
-            let addressId = 1; // پیش‌فرض اگر آدرس نداشت
+            let addressId = 1;
             const addresses = await getAddressesByUser(user.id);
             if (addresses && addresses.length > 0) {
-                addressId = addresses[0].id; // اولین آدرس واقعی کاربر
+                addressId = addresses[0].id;
             }
 
-            // اگر سفارش موجود نبود، بساز
             if (!orderId) {
                 const resNewOrder = await fetch(`${API_BASE}/api/orders`, {
                     method: "POST",
@@ -64,7 +62,7 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
                         status: "PENDING",
                         customerName: user.name || "Unknown",
                         addressId,
-                        items: [], // سفارش اولیه بدون آیتم
+                        items: [],
                     }),
                 });
 
@@ -78,7 +76,6 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
                 return;
             }
 
-            // اضافه کردن آیتم به سفارش
             const resAddItem = await fetch(`${API_BASE}/api/orders/${orderId}/items`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -87,13 +84,13 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
 
             const updatedItem = await resAddItem.json();
             setCartItem(updatedItem);
+            await refreshCart(); // 👈 آپدیت تعداد آیتم‌ها در هدر
         } catch (err) {
             console.error("خطا در افزودن به سبد:", err);
         } finally {
             setLoading(false);
         }
     };
-
 
     const handleQuantityChange = async (newQty: number) => {
         if (!cartItem) return;
@@ -111,6 +108,7 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
             });
 
             setCartItem({ ...cartItem, quantity: newQty });
+            await refreshCart(); // 👈 آپدیت بعد از تغییر تعداد
         } catch (err) {
             console.error("خطا در تغییر تعداد:", err);
         }
@@ -122,6 +120,7 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
         try {
             await fetch(`${API_BASE}/api/orders/items/${cartItem.id}`, { method: "DELETE" });
             setCartItem(null);
+            await refreshCart(); // 👈 آپدیت بعد از حذف
         } catch (err) {
             console.error("خطا در حذف آیتم:", err);
         }
@@ -148,7 +147,14 @@ export default function AddToCartButton({ product, customStyle }: { product: Pro
                 </div>
             ) : (
                 <button onClick={handleAddToCart} disabled={loading} className={`${customStyle ? "py-5 px-10 text-2xl" : "sm:px-4 sm:py-2 px-6 py-3"} bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}>
-                    {loading ? <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div> : <><FontAwesomeIcon icon={faCartShopping} /><span>Add</span></>}
+                    {loading ? (
+                        <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div>
+                    ) : (
+                        <>
+                            <FontAwesomeIcon icon={faCartShopping} />
+                            <span>Add</span>
+                        </>
+                    )}
                 </button>
             )}
         </div>

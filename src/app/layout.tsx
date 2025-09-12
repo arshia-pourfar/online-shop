@@ -3,6 +3,7 @@ import { AuthProvider } from "@/lib/context/authContext";
 import "../styles/globals.css";
 
 import { Inter } from "next/font/google";
+import { CartProvider } from "@/lib/context/cartContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 width: "calc(100vw - 80px)",
               }}
             >
-              {children}
+              <CartProvider>
+                {children}
+              </CartProvider>
             </main>
           </div>
         </AuthProvider>

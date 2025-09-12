@@ -47,7 +47,7 @@ export default function FavoritesPage() {
                         You haven’t added any favorites yet.
                     </div>
                 ) : (
-                    <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-6">
+                    <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 md:gap-6 gap-4">
                         {favorites.map((fav) => (
                             // <div  className="basis-1/4 p-3">
                             <ProductCard product={fav.product} key={fav.id} />

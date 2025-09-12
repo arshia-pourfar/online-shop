@@ -12,3 +12,5 @@ export type Product = {
     description: string | null;
     createdAt?: string;
 };
+
+export type MinimalProduct = Pick<Product, "id" | "name" | "price" | "imageUrl" | "description">;

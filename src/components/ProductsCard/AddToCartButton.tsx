@@ -6,14 +6,16 @@ import { faCartShopping, faMinus, faPlus, faTrash } from "@fortawesome/free-soli
 import { useAuth } from "@/lib/context/authContext";
 import { getAddressesByUser } from "@/lib/api/address";
 import { useCart } from "@/lib/context/cartContext"; // 👈 اتصال به context
-import { Product } from "types/product";
+import { MinimalProduct } from "types/product";
 import { CartItem } from "types/order";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
+// type Product = { id: number; name: string; price: number };
+// type CartItem = { id: number; quantity: number; product: Product };
 type CustomStyle = { main: string; button: string; text: string };
 
-export default function AddToCartButton({ product, customStyle }: { product: Product; customStyle?: CustomStyle }) {
+export default function AddToCartButton({ product, customStyle }: { product: MinimalProduct; customStyle?: CustomStyle }) {
     const { user } = useAuth();
     const { refreshCart } = useCart(); // 👈 گرفتن تابع آپدیت
     const [loading, setLoading] = useState(false);

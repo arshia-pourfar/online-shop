@@ -1,7 +1,7 @@
 // lib/context/cartContext.tsx
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { CartItem } from "types/order";
 import { useAuth } from "./authContext";
 
@@ -19,7 +19,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuth();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-    const refreshCart = async () => {
+    const refreshCart = useCallback(async () => {
         if (!user) return;
         try {
             const res = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
@@ -28,11 +28,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (err) {
             console.error("خطا در گرفتن سبد خرید:", err);
         }
-    };
+    }, [user]);
 
     useEffect(() => {
         refreshCart();
-    }, [user]);
+    }, [refreshCart]);
 
     return (
         <CartContext.Provider value={{ cartItems, setCartItems, refreshCart }}>

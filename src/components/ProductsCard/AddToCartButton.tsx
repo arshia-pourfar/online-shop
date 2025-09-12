@@ -9,7 +9,7 @@ import { useCart } from "@/lib/context/cartContext"; // 👈 اتصال به con
 import { MinimalProduct } from "types/product";
 import { CartItem } from "types/order";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.228:5000";
 
 // type Product = { id: number; name: string; price: number };
 // type CartItem = { id: number; quantity: number; product: Product };

@@ -42,7 +42,7 @@ const Header = () => {
                 </div>
                 <a href={user ? '/cart' : '/login'} className="relative dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">
                     <FontAwesomeIcon icon={faCartShopping} />
-                    <span className={`${cartItems.length ? '' : 'hidden'} absolute top-0 right-0.5 bg-accent text-white text-sm font-medium size-5 rounded-full flex items-center justify-center`}>{cartItems.length}</span>
+                    <span className={`${cartItems.length ? '' : 'hidden'} absolute sm:top-0 sm:right-0.5 top-1 right-1 bg-accent text-white text-xs sm:text-sm font-medium sm:size-5 size-4 rounded-full flex items-center justify-center`}>{cartItems.length}</span>
                 </a>
                 <div className='border-l-2 border-secondary-text h-12'></div>
                 <a href={user ? '/setting' : '/login'} className=" dark:hover:bg-primary-bg dark:hover:text-primary-text hover:bg-secondary-text hover:text-secondary-bg transition-all duration-300 flex items-center justify-center size-11 rounded-full">

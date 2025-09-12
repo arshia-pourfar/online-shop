@@ -299,22 +299,22 @@ const Home = () => {
             <div className="flex justify-between items-center">
               <h2 className="text-2xl md:text-3xl font-bold text-accent mb-6 text-center">
                 Featured Products
-                <a href="./shop" className="underline text-xs sm:text-sm ms-4">
+                <a href="/shop" className="underline text-xs sm:text-sm ms-4">
                   See More
                 </a>
               </h2>
               <div className="sm:absolute sm:right-0 sm:top-0 flex justify-between items-center gap-3">
                 <button
                   ref={prevProductRef}
-                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow sm:static absolute left-0 top-1/2"
+                  className="z-10 bg-accent text-white text-2xl rounded-full sm:size-12 size-11 flex justify-center items-center shadow sm:static absolute -left-3 top-3/5"
                 >
-                  <FontAwesomeIcon icon={faAngleLeft} className="text-2xl" />
+                  <FontAwesomeIcon icon={faAngleLeft} className="sm:text-2xl text-xl" />
                 </button>
                 <button
                   ref={nextProductRef}
-                  className="z-10 bg-accent text-primary-text text-2xl rounded-full size-12 shadow sm:static absolute right-0 top-1/2"
+                  className="z-10 bg-accent text-white text-2xl rounded-full sm:size-12 size-11 flex justify-center items-center shadow sm:static absolute -right-3 top-3/5"
                 >
-                  <FontAwesomeIcon icon={faAngleRight} className="text-2xl" />
+                  <FontAwesomeIcon icon={faAngleRight} className="sm:text-2xl text-xl" />
                 </button>
               </div>
             </div>

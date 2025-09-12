@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import AddToCartButton from "@/components/ProductsCard/AddToCartButton";
+import AddToFavorite from "@/components/ProductsCard/AddToFavorite";
 import { getProductById } from "@/lib/api/products";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,22 +74,27 @@ export default function ProductPage() {
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex flex-col justify-between h-full py-1 gap-8">
-                        <div className="space-y-4">
-                            <h1 className="text-4xl font-extrabold leading-tight">{product.name}</h1>
-                            <p className="text-lg text-secondary-text leading-relaxed">
+                    <div className="flex flex-col justify-between h-full py-1 sm:gap-8 gap-4">
+                        <div className="sm:space-y-4 space-y-2">
+                            <h1 className="sm:text-4xl text-3xl font-extrabold leading-tight">
+                                {product.name}
+                            </h1>
+                            <p className="sm:text-lg text-base text-secondary-text leading-relaxed">
                                 {product.description || "No description available"}
                             </p>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-4">
-                                <span className="text-4xl font-bold text-accent">${product.price}</span>
-                                <span className="bg-accent text-white text-sm px-3 py-1 rounded-lg shadow">
-                                    50% OFF
-                                </span>
+                        <div className="flex justify-between items-center">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-4">
+                                    <span className="sm:text-4xl text-3xl font-bold text-accent">${product.price}</span>
+                                    <span className="bg-accent text-white sm:text-sm text-xs px-3 py-1 rounded-lg shadow">
+                                        50% OFF
+                                    </span>
+                                </div>
+                                <span className="line-through text-secondary-text text-base">$250.00</span>
                             </div>
-                            <span className="line-through text-secondary-text text-base">$250.00</span>
+                            <AddToFavorite productId={product?.id} size="sm:text-4xl text-3xl" />
                         </div>
 
                         <div>

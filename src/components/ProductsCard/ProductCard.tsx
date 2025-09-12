@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Product } from "../../types/product";
 import AddToCartButton from "./AddToCartButton";
+import AddToFavorite from "./AddToFavorite";
 
 export default function ProductCard({ product }: { product: Product }) {
     return (
@@ -21,14 +22,17 @@ export default function ProductCard({ product }: { product: Product }) {
             </a>
 
             {/* اطلاعات محصول */}
-            <a href={`./products/${product.id}`} className="flex-1 space-y-2">
-                <h3 className="text-base sm:text-lg font-semibold text-primary-text truncate">
-                    {product.name}
+            <div className="flex-1 space-y-1">
+                <h3 className="text-base sm:text-lg font-semibold text-primary-text truncate flex justify-between">
+                    <a href={`/products/${product.id}`}>
+                        {product.name}
+                    </a>
+                    <AddToFavorite productId={product?.id} />
                 </h3>
-                <p className="text-xs sm:text-sm text-secondary-text line-clamp-2">
+                <a href={`/products/${product.id}`} className="text-xs sm:text-sm text-secondary-text line-clamp-2">
                     {product.description}
-                </p>
-            </a>
+                </a>
+            </div>
 
             {/* قیمت و دکمه افزودن به سبد */}
             <div className="flex lg:flex-row flex-col gap-4 justify-between items-center">

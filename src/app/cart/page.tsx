@@ -97,7 +97,7 @@ export default function CartPage() {
                                             className="object-contain rounded-lg"
                                         />
                                     </a>
-                                    <div className="flex-1 ml-4">
+                                    <div className="flex-1 ml-4 text-left w-full">
                                         <h3 className="text-lg font-semibold">
                                             <a href={`./products/${item.product.id}`}>
                                                 {item.product.name}

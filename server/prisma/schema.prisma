@@ -25,6 +25,7 @@ model User {
   reports   Report[]
   addresses Address[]    // ارتباط با آدرس‌ها
   createdAt DateTime     @default(now())
+  favorites Favorite[]
 }
 
 model Address {
@@ -58,6 +59,7 @@ model Product {
   category    Category      @relation(fields: [categoryId], references: [id])
   categoryId  Int
   orderItems  OrderItem[]
+  favoritedBy Favorite[]
 }
 
 model Order {
@@ -102,6 +104,17 @@ model Report {
   status      ReportStatus @default(GENERATED)
   fileUrl     String?
   createdAt   DateTime    @default(now())
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
 }
 
 // --- Enums ---

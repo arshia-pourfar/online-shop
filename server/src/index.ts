@@ -13,6 +13,7 @@ import categoryRoutes from './routes/categories';
 import statusRoutes from './routes/statuses';
 import reportsRouter from './routes/reports';
 import addressRoutes from './routes/address';
+import favoriteRoutes from './routes/favorite';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/statuses', statusRoutes);
 app.use('/api/reports', reportsRouter);
+app.use('/api/favorites', favoriteRoutes);
 
 app.get('/', (_, res) => {
   res.send('✅ Server is running');

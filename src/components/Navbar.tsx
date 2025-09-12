@@ -35,7 +35,7 @@ const adminNavLinks = [
 const userNavLinks = [
     { href: "/", icon: faHome, text: "Home" },
     { href: "/shop", icon: faStore, text: "Shop" },
-    { href: "/wishlist", icon: faHeart, text: "Wishlist" },
+    { href: "/favorites", icon: faHeart, text: "Favorites" },
     { href: "/cart", icon: faShoppingCart, text: "Cart" },
     { href: "/orders", icon: faClipboardList, text: "My Orders" },
     { href: "/contact", icon: faHeadset, text: "Contact Us" },

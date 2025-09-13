@@ -44,43 +44,35 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
 
     const handleAddToCart = async () => {
         if (!user || isCreatingOrder) return;
-
         setLoading(true);
-        setIsCreatingOrder(true); // 🚨 جلوگیری از چند کلیک همزمان
+        setIsCreatingOrder(true);
 
         try {
-            const resCheck = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
-            const existingOrder = await resCheck.json();
-            let orderId = existingOrder?.id;
-
             let addressId = 1;
             const addresses = await getAddressesByUser(user.id);
-            if (addresses && addresses.length > 0) {
-                addressId = addresses[0].id;
-            }
+            if (addresses?.length) addressId = addresses[0].id;
 
-            if (!orderId) {
+            // صدا زدن API جدید سرور برای گرفتن یا ساخت سفارش PENDING
+            const resOrder = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
+            let order = await resOrder.json();
+
+            if (!order) {
                 const resNewOrder = await fetch(`${API_BASE}/api/orders`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         userId: user.id,
-                        status: "PENDING",
-                        customerName: user.name || "Unknown",
                         addressId,
+                        customerName: user.name || "Unknown",
+                        status: "PENDING",
                         items: [],
                     }),
                 });
-                const newOrder = await resNewOrder.json();
-                orderId = newOrder.id;
+                order = await resNewOrder.json();
             }
 
-            if (!orderId) {
-                console.error("سفارش ساخته نشد!");
-                return;
-            }
-
-            const resAddItem = await fetch(`${API_BASE}/api/orders/${orderId}/items`, {
+            // افزودن محصول به سفارش
+            const resAddItem = await fetch(`${API_BASE}/api/orders/${order.id}/items`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ productId: product.id, quantity: 1 }),
@@ -93,10 +85,9 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
             console.error("خطا در افزودن به سبد:", err);
         } finally {
             setLoading(false);
-            setIsCreatingOrder(false); // ✅ اجازه کلیک بعدی
+            setIsCreatingOrder(false);
         }
     };
-
 
     const handleQuantityChange = async (newQty: number) => {
         if (!cartItem) return;

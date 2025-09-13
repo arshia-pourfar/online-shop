@@ -310,3 +310,33 @@ export const updateOrder = async (req: Request, res: Response) => {
         }
     }
 };
+
+export const getOrCreatePendingOrder = async (
+    userId: string,
+    addressId: number,
+    customerName: string
+) => {
+    return await prisma.$transaction(async (tx) => {
+        // بررسی وجود سفارش PENDING
+        let order = await tx.order.findFirst({
+            where: { userId, status: 'PENDING' },
+            include: { items: { include: { product: true } }, user: true, address: true },
+        });
+
+        // اگر سفارش نبود، بساز
+        if (!order) {
+            order = await tx.order.create({
+                data: {
+                    userId,
+                    addressId,
+                    customerName,
+                    status: 'PENDING',
+                    total: 0,
+                },
+                include: { items: { include: { product: true } }, user: true, address: true },
+            });
+        }
+
+        return order;
+    });
+};

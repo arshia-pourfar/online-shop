@@ -20,6 +20,7 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
     const { refreshCart } = useCart(); // 👈 گرفتن تابع آپدیت
     const [loading, setLoading] = useState(false);
     const [cartItem, setCartItem] = useState<CartItem | null>(null);
+    const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
     useEffect(() => {
         if (!user) return;
@@ -40,9 +41,12 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
         fetchCart();
     }, [user, product.id]);
 
+
     const handleAddToCart = async () => {
-        if (!user) return;
+        if (!user || isCreatingOrder) return;
+
         setLoading(true);
+        setIsCreatingOrder(true); // 🚨 جلوگیری از چند کلیک همزمان
 
         try {
             const resCheck = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
@@ -67,14 +71,12 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
                         items: [],
                     }),
                 });
-
                 const newOrder = await resNewOrder.json();
                 orderId = newOrder.id;
             }
 
             if (!orderId) {
                 console.error("سفارش ساخته نشد!");
-                setLoading(false);
                 return;
             }
 
@@ -86,13 +88,15 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
 
             const updatedItem = await resAddItem.json();
             setCartItem(updatedItem);
-            await refreshCart(); // 👈 آپدیت تعداد آیتم‌ها در هدر
+            await refreshCart();
         } catch (err) {
             console.error("خطا در افزودن به سبد:", err);
         } finally {
             setLoading(false);
+            setIsCreatingOrder(false); // ✅ اجازه کلیک بعدی
         }
     };
+
 
     const handleQuantityChange = async (newQty: number) => {
         if (!cartItem) return;

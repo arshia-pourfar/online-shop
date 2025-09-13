@@ -49,21 +49,25 @@ export default function PaymentSuccessPage() {
 
     // ✅ تغییر وضعیت فقط بعد از تایید پرداخت (یعنی وقتی سفارش لود شد و PENDING بود)
     useEffect(() => {
-        const updateStatus = async () => {
+        const updateStatusAndTotal = async () => {
             if (order && order.status === "PENDING") {
                 try {
+                    const total = order.items
+                        .reduce((sum, item) => sum + (item.product?.price ?? 0) * (item.quantity ?? 1), 0);
+
                     await fetch(`${API_BASE}/api/orders/${order.id}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ status: "PROCESSING" }),
+                        body: JSON.stringify({ status: "PROCESSING", total }),
                     });
-                    setOrder(prev => prev ? { ...prev, status: "PROCESSING" } : prev);
+
+                    setOrder(prev => prev ? { ...prev, status: "PROCESSING", total } : prev);
                 } catch (err) {
-                    console.error("خطا در تغییر وضعیت سفارش:", err);
+                    console.error("خطا در تغییر وضعیت و total سفارش:", err);
                 }
             }
         };
-        updateStatus();
+        updateStatusAndTotal();
     }, [order]);
 
     const formatAddress = (addr: Address | null) => {

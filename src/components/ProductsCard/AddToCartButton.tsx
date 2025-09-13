@@ -5,22 +5,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "@/lib/context/authContext";
 import { getAddressesByUser } from "@/lib/api/address";
-import { useCart } from "@/lib/context/cartContext"; // 👈 اتصال به context
+import { useCart } from "@/lib/context/cartContext";
 import { MinimalProduct } from "types/product";
 import { CartItem } from "types/order";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.1.228:5000";
 
-// type Product = { id: number; name: string; price: number };
-// type CartItem = { id: number; quantity: number; product: Product };
 type CustomStyle = { main: string; button: string; text: string };
 
 export default function AddToCartButton({ product, customStyle }: { product: MinimalProduct; customStyle?: CustomStyle }) {
     const { user } = useAuth();
-    const { refreshCart } = useCart(); // 👈 گرفتن تابع آپدیت
-    const [loading, setLoading] = useState(false);
+    const { refreshCart, globalLoading, setGlobalLoading } = useCart();
     const [cartItem, setCartItem] = useState<CartItem | null>(null);
-    const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
     useEffect(() => {
         if (!user) return;
@@ -41,18 +37,17 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
         fetchCart();
     }, [user, product.id]);
 
-
     const handleAddToCart = async () => {
-        if (!user || isCreatingOrder) return;
-        setLoading(true);
-        setIsCreatingOrder(true);
+        if (!user || globalLoading) return;
+
+        setGlobalLoading(true);
 
         try {
             let addressId = 1;
             const addresses = await getAddressesByUser(user.id);
             if (addresses?.length) addressId = addresses[0].id;
 
-            // صدا زدن API جدید سرور برای گرفتن یا ساخت سفارش PENDING
+            // گرفتن یا ساخت سفارش PENDING
             const resOrder = await fetch(`${API_BASE}/api/orders/user/${user.id}?status=PENDING`);
             let order = await resOrder.json();
 
@@ -84,67 +79,90 @@ export default function AddToCartButton({ product, customStyle }: { product: Min
         } catch (err) {
             console.error("خطا در افزودن به سبد:", err);
         } finally {
-            setLoading(false);
-            setIsCreatingOrder(false);
+            setGlobalLoading(false);
         }
     };
 
     const handleQuantityChange = async (newQty: number) => {
-        if (!cartItem) return;
+        if (!cartItem || globalLoading) return;
 
         if (newQty < 1) {
             await handleRemove();
             return;
         }
 
+        setGlobalLoading(true);
         try {
             await fetch(`${API_BASE}/api/orders/items/${cartItem.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity: newQty }),
             });
-
             setCartItem({ ...cartItem, quantity: newQty });
-            await refreshCart(); // 👈 آپدیت بعد از تغییر تعداد
+            await refreshCart();
         } catch (err) {
             console.error("خطا در تغییر تعداد:", err);
+        } finally {
+            setGlobalLoading(false);
         }
     };
 
     const handleRemove = async () => {
-        if (!cartItem) return;
+        if (!cartItem || globalLoading) return;
 
+        setGlobalLoading(true);
         try {
             await fetch(`${API_BASE}/api/orders/items/${cartItem.id}`, { method: "DELETE" });
             setCartItem(null);
-            await refreshCart(); // 👈 آپدیت بعد از حذف
+            await refreshCart();
         } catch (err) {
             console.error("خطا در حذف آیتم:", err);
+        } finally {
+            setGlobalLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center">
+        <div
+            className="flex items-center"
+            style={{ pointerEvents: globalLoading ? "none" : "auto", opacity: globalLoading ? 0.6 : 1 }}
+        >
             {cartItem ? (
                 <div className={`${customStyle?.main} flex items-center gap-2 dark:bg-primary-bg dark:text-primary-text bg-secondary-text text-secondary-bg p-2 rounded-lg`}>
                     <div className="flex items-center gap-2">
-                        <button onClick={() => handleQuantityChange(cartItem.quantity - 1)} className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`} disabled={cartItem.quantity <= 1}>
+                        <button
+                            onClick={() => handleQuantityChange(cartItem.quantity - 1)}
+                            className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
+                            disabled={cartItem.quantity <= 1 || globalLoading}
+                        >
                             <FontAwesomeIcon icon={faMinus} />
                         </button>
                         <span className={`${customStyle?.text || "sm:text-base sm:size-6 text-lg size-8"} font-medium flex items-center justify-center`}>
                             {cartItem.quantity}
                         </span>
-                        <button onClick={() => handleQuantityChange(cartItem.quantity + 1)} className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}>
+                        <button
+                            onClick={() => handleQuantityChange(cartItem.quantity + 1)}
+                            className={`${customStyle?.button || "dark:bg-secondary-bg dark:text-white dark:hover:bg-secondary-bg/80 sm:text-base sm:size-6 text-lg size-8"} bg-secondary-bg text-primary-text hover:bg-secondary-bg/80 rounded cursor-pointer`}
+                            disabled={globalLoading}
+                        >
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
-                    <button onClick={handleRemove} className={`${customStyle?.text || "sm:text-lg text-xl"} text-accent hover:text-accent/70 cursor-pointer transition sm:mx-1 ml-6 mr-2 flex items-center`}>
+                    <button
+                        onClick={handleRemove}
+                        className={`${customStyle?.text || "sm:text-lg text-xl"} text-accent hover:text-accent/70 cursor-pointer transition sm:mx-1 ml-6 mr-2 flex items-center`}
+                        disabled={globalLoading}
+                    >
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
                 </div>
             ) : (
-                <button onClick={handleAddToCart} disabled={loading} className={`${customStyle ? "py-5 px-10 text-2xl" : "sm:px-4 sm:py-2 px-6 py-3"} bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}>
-                    {loading ? (
+                <button
+                    onClick={handleAddToCart}
+                    disabled={globalLoading}
+                    className={`${customStyle ? "py-5 px-10 text-2xl" : "sm:px-4 sm:py-2 px-6 py-3"} bg-accent text-white rounded-lg hover:bg-accent/75 cursor-pointer transition flex items-center justify-center gap-2`}
+                >
+                    {globalLoading ? (
                         <div className="animate-spin rounded-full size-6 border-t-2 border-white border-opacity-70"></div>
                     ) : (
                         <>

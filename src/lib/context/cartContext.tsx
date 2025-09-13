@@ -11,6 +11,8 @@ type CartContextType = {
     cartItems: CartItem[];
     setCartItems: (items: CartItem[]) => void;
     refreshCart: () => Promise<void>;
+    globalLoading: boolean;
+    setGlobalLoading: (loading: boolean) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -18,6 +20,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuth();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [globalLoading, setGlobalLoading] = useState(false);
 
     const refreshCart = useCallback(async () => {
         if (!user) return;
@@ -35,7 +38,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }, [refreshCart]);
 
     return (
-        <CartContext.Provider value={{ cartItems, setCartItems, refreshCart }}>
+        <CartContext.Provider value={{ cartItems, setCartItems, refreshCart, globalLoading, setGlobalLoading }}>
             {children}
         </CartContext.Provider>
     );

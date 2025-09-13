@@ -260,14 +260,17 @@ export default function OrderModal({
                             type="button"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="px-5 py-3 rounded-xl bg-gray-600 text-white"
+                            className="px-6 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-5 py-3 rounded-xl bg-accent text-white"
+                            className={`px-6 py-3 rounded-3xl font-semibold text-white shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${formData.customerName
+                                ? "bg-accent hover:bg-accent/90 cursor-pointer"
+                                : "bg-gray-600 opacity-70 cursor-not-allowed"
+                                }`}
                         >
                             {isLoading
                                 ? "Saving..."

@@ -128,7 +128,7 @@ export default function CustomerModal({
 
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-3">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 py-3">
             <div className="bg-secondary-bg rounded-xl p-8 w-full h-full overflow-y-auto max-w-lg shadow-xl">
                 <h2 className="text-2xl font-bold text-accent mb-6">
                     {type === "add" ? "Add Customer" : "Edit Customer"}
@@ -269,13 +269,16 @@ export default function CustomerModal({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-5 py-3 rounded-xl bg-gray-600 hover:bg-gray-700 text-white transition duration-300 ease-in-out"
+                            className="px-6 py-3 rounded-3xl bg-gray-700 text-white font-semibold hover:bg-gray-600 shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-5 py-3 rounded-xl bg-accent hover:bg-accent-dark text-white transition duration-300 ease-in-out"
+                            className={`px-6 py-3 rounded-3xl font-semibold text-white shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${formData.name
+                                ? "bg-accent hover:bg-accent/90 cursor-pointer"
+                                : "bg-gray-600 opacity-70 cursor-not-allowed"
+                                }`}
                         >
                             {type === "add" ? "Create Customer" : "Save Change"}
                         </button>

@@ -133,7 +133,7 @@ export default function ProductModal({
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
              */}
     return (
-        < div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-3" >
+        < div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 py-3" >
             <div className="bg-secondary-bg rounded-xl p-8 w-full h-full overflow-y-auto max-w-lg shadow-xl">
                 <h2 className="text-3xl font-extrabold text-accent mb-8 tracking-wide">
                     {type === "add" ? "Add New Product" : "Edit Product"}

@@ -247,30 +247,43 @@ export const createOrder = async (req: Request, res: Response) => {
 
 // DELETE /orders/:id - حذف سفارش
 export const deleteOrder = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.params; // id به صورت string هست
+
     try {
-        await prisma.order.delete({ where: { id } });
+        // ابتدا آیتم‌های مرتبط حذف میشن
+        await prisma.orderItem.deleteMany({
+            where: { orderId: id }, // بدون Number()
+        });
+
+        // سپس خود سفارش حذف میشه
+        await prisma.order.delete({
+            where: { id }, // بدون Number()
+        });
+
         res.json({ message: 'Order deleted successfully' });
     } catch (err: unknown) {
         if (err instanceof Error) {
-            console.error('[createOrder] Full error:', err.message);
+            console.error('[deleteOrder] Full error:', err.message);
             res.status(500).json({ error: err.message });
         } else {
-            console.error('[createOrder] Unknown error:', err);
+            console.error('[deleteOrder] Unknown error:', err);
             res.status(500).json({ error: 'Unexpected error occurred' });
         }
     }
 };
 
+
 // PUT /api/orders/:id - بروزرسانی سفارش
 export const updateOrder = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { addressId, deliveryTime, status } = req.body;
+    const { addressId, deliveryTime, status, customerName, total } = req.body;
 
     try {
         const updated = await prisma.order.update({
             where: { id },
             data: {
+                ...(customerName && { customerName }),
+                ...(total && { total }),
                 ...(addressId && {
                     address: {
                         connect: { id: addressId }

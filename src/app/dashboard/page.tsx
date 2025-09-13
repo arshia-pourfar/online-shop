@@ -15,6 +15,7 @@ import {
 import Header from '@/components/Header';
 import { SaleStats } from 'types/salestats';
 import { getSaleStats } from '@/lib/api/salestats';
+import { useAuth } from '@/lib/context/authContext';
 
 const salesData = [
   { date: 'Jan', Sales: 500, Clicks: 500, Photo: 400 },
@@ -38,6 +39,8 @@ const ordersData = [
 
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
   const [saleStats, setSaleStats] = useState<SaleStats[]>([]);
 
   useEffect(() => {
@@ -45,6 +48,16 @@ export default function DashboardPage() {
       getSaleStats().then(setSaleStats),
     ]).finally();
   }, []);
+
+  if (user?.role !== 'ADMIN') {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-accent font-semibold text-lg">
+          You do not have permission to access this page.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full w-full bg-primary-bg text-primary-text">

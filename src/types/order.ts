@@ -1,3 +1,4 @@
+import { Address } from './address';
 import { User } from './user';
 
 export type OrderItem = {
@@ -35,8 +36,8 @@ export type Order = {
     customerName: string;
     status: string;
     items: OrderItem[];
-    address: string;
     addressId: number;
+    address?: Address;
     deliveryTime?: string;
 };
 

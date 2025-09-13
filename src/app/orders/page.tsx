@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/context/authContext";
 import { getAllOrdersByUser } from "@/lib/api/orders";
 import { Order, OrderItem } from "types/order";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleUp, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faAngleUp, faSpinner} from "@fortawesome/free-solid-svg-icons";
 import { Address } from "types/address";
 import { getAddressById } from "@/lib/api/address";
 
@@ -23,7 +23,7 @@ export default function OrdersByUserPage() {
 
         const fetchOrdersAndAddresses = async () => {
             try {
-                const data = await getAllOrdersByUser(user?.id);
+                const data = await getAllOrdersByUser(user.id);
                 setOrders(data);
 
                 // گرفتن آدرس‌ها
@@ -31,7 +31,7 @@ export default function OrdersByUserPage() {
                 for (const order of data) {
                     if (order.addressId) {
                         const addr = await getAddressById(order.addressId);
-                        addrMap[order.id] = addr;
+                        addrMap[order.addressId] = addr;
                     }
                 }
                 setAddresses(addrMap);
@@ -84,31 +84,29 @@ export default function OrdersByUserPage() {
                                                     Order #{order.id}
                                                 </h2>
                                                 <p className="sm:text-sm text-xs text-secondary-text">
-                                                    {new Date(order.createdAt).toLocaleDateString(
-                                                        "en-US",
-                                                        {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                        }
-                                                    )}
+                                                    {new Date(order.createdAt).toLocaleDateString("en-US", {
+                                                        year: "numeric",
+                                                        month: "short",
+                                                        day: "numeric",
+                                                    })}
                                                 </p>
                                                 <p className="sm:text-sm text-xs">
                                                     Status:{" "}
                                                     <span
                                                         className={`font-semibold ${order.status === "Delivered"
-                                                            ? "text-status-positive"
-                                                            : order.status === "Pending"
-                                                                ? "text-status-neutral"
-                                                                : "text-status-negative"
+                                                                ? "text-status-positive"
+                                                                : order.status === "Pending"
+                                                                    ? "text-status-neutral"
+                                                                    : "text-status-negative"
                                                             }`}
                                                     >
                                                         {order.status}
                                                     </span>
                                                 </p>
                                                 <p className="sm:text-sm text-xs text-secondary-text">
-                                                    Shipping: {addresses[order.id]
-                                                        ? `${addresses[order.id].title}, ${addresses[order.id].street}, ${addresses[order.id].city}, ${addresses[order.id].postalCode}, ${addresses[order.id].country}`
+                                                    Shipping:{" "}
+                                                    {order.addressId && addresses[order.addressId]
+                                                        ? `${addresses[order.addressId].title}, ${addresses[order.addressId].street}, ${addresses[order.addressId].city}, ${addresses[order.addressId].postalCode}, ${addresses[order.addressId].country}`
                                                         : "Not specified"}
                                                 </p>
                                             </div>
@@ -143,9 +141,7 @@ export default function OrdersByUserPage() {
                                                     </div>
 
                                                     <button
-                                                        onClick={() =>
-                                                            setExpanded(isOpen ? null : order.id)
-                                                        }
+                                                        onClick={() => setExpanded(isOpen ? null : order.id)}
                                                         className="p-2 rounded-lg bg-primary-bg border hover:bg-accent hover:text-white transition"
                                                     >
                                                         {isOpen ? (
@@ -154,6 +150,8 @@ export default function OrdersByUserPage() {
                                                             <FontAwesomeIcon icon={faAngleDown} className="w-5 h-5" />
                                                         )}
                                                     </button>
+
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -168,7 +166,7 @@ export default function OrdersByUserPage() {
                                                     className="flex items-center gap-4 bg-primary-bg rounded-xl p-3 shadow-md hover:scale-102 transition-all"
                                                 >
                                                     <a
-                                                        href={`./products/${item.productId}`}
+                                                        href={`/products/${item.productId}`}
                                                         className="relative sm:size-20 size-16 flex-shrink-0 rounded-lg overflow-hidden border"
                                                     >
                                                         <Image

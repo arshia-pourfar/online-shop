@@ -261,7 +261,7 @@ export default function CustomerModal({
 
                     {/* Feedback */}
                     {feedbackMessage && (
-                        <p className="text-red-500 text-sm font-medium mt-2">{feedbackMessage}</p>
+                        <p className="text-accent text-sm font-medium mt-2">{feedbackMessage}</p>
                     )}
 
                     {/* Buttons */}

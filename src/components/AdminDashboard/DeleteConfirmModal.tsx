@@ -15,7 +15,7 @@ export default function DeleteConfirmModal({
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-primary-bg rounded-xl p-6 max-w-sm w-full shadow-lg border border-gray-700">
-                <h3 className="text-xl font-semibold mb-4 text-red-500">
+                <h3 className="text-xl font-semibold mb-4 text-accent">
                     Confirm Delete
                 </h3>
                 <p className="mb-6 text-primary-text">

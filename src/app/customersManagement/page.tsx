@@ -17,8 +17,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/user"; // Import the User type
 import CustomerStatusBadge from "@/components/AdminDashboard/CustomerStatusBadge";
+import { useAuth } from "@/lib/context/authContext";
 
 export default function CustomersPage() {
+    const { user } = useAuth();
+
     const [customers, setCustomers] = useState<User[]>([]);
     const [customerStatuses, setCustomerStatuses] = useState<string[]>([]); // Re-added for status filter and modal
 
@@ -245,6 +248,16 @@ export default function CustomersPage() {
         setCurrentPage(page);
         setSelectedIds([]); // Clear selection on page change for consistency
     };
+
+    if (user?.role !== 'ADMIN') {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-accent font-semibold text-lg">
+                    You do not have permission to access this page.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full h-full flex flex-col">

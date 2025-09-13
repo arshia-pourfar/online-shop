@@ -6,25 +6,27 @@ import OrderModal from "@/components/AdminDashboard/EditAddOrderModal";
 import Header from "@/components/Header";
 import Pagination from "@/components/Pagination";
 import SortableTH from "@/components/AdminDashboard/Sortable";
-import OrderStatusBadge from "@/components/AdminDashboard/ProductStatusBadge";
-import { getOrders } from "@/lib/api/orders";
+import OrderStatusBadge from "@/components/AdminDashboard/OrderStatusBadge";
+import { addOrder, deleteOrder, getOrders, updateOrder } from "@/lib/api/orders";
 import { getOrderStatuses } from "@/lib/api/statuses";
 import { Order, SortableField } from "types/order";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "@/lib/context/authContext";
+import { getAddressesByUser } from "@/lib/api/address";
+import { Address } from "types/address";
 
 const OrdersPage: React.FC = () => {
+    const { user } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [orderStatuses, setOrderStatuses] = useState<Order["status"][]>([]);
     const [search, setSearch] = useState("");
     const [filterStatus, setFilterStatus] = useState<Order["status"] | "">("");
     const [filterMinTotalAmount, setFilterMinTotalAmount] = useState<number | "">("");
-    // const [sortField, setSortField] = useState<keyof Order | null>(null);
+    const [sortField, setSortField] = useState<SortableField | null>(null);
     const [sortAsc, setSortAsc] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
-
-    const [sortField, setSortField] = useState<SortableField | null>(null);
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [showModal, setShowModal] = useState(false);
@@ -36,35 +38,56 @@ const OrdersPage: React.FC = () => {
 
     const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
     const [feedbackType, setFeedbackType] = useState<"success" | "error" | null>(null);
+    const [allAddresses, setAllAddresses] = useState<Address[]>([]);
 
+    const handleEditClick = async (order: Order) => {
+        setModalType("edit");
+        setCurrentOrder(order);
+
+        try {
+            // فقط آدرس‌های مربوط به userId سفارش
+            const addressesData = await getAddressesByUser(order.userId);
+            setAllAddresses(addressesData);
+        } catch (err) {
+            console.error(err);
+            setAllAddresses([]);
+        }
+
+        setShowModal(true);
+    };
+
+
+    // Load orders and statuses
     useEffect(() => {
-        getOrders().then(setOrders);
-        getOrderStatuses().then(setOrderStatuses);
+        const fetchData = async () => {
+            try {
+                const [ordersData, statusesData] = await Promise.all([getOrders(), getOrderStatuses()]);
+                setOrders(ordersData);
+                setOrderStatuses(statusesData);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchData();
     }, []);
 
-    // add this section ////////////////////////////////////////////////////////////////////////
-    // const totalOrders = orders.length;
-    // const pendingOrders = orders.filter((o) => o.status === "PENDING").length;
-    // const processingOrders = orders.filter((o) => o.status === "PROCESSING").length;
-    // const shippedOrders = orders.filter((o) => o.status === "SHIPPED").length;
-    // const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
-    // const cancelledOrders = orders.filter((o) => o.status === "CANCELLED").length;
+    const totalOrders = orders.length;
+    const pendingOrders = orders.filter(o => o.status === "PENDING").length;
+    const processingOrders = orders.filter(o => o.status === "PROCESSING").length;
+    const shippedOrders = orders.filter(o => o.status === "SHIPPED").length;
+    const deliveredOrders = orders.filter(o => o.status === "DELIVERED").length;
+    const cancelledOrders = orders.filter(o => o.status === "CANCELLED").length;
+
 
     function isNestedField(field: SortableField): field is "user.email" | "user.phone" {
         return field === "user.email" || field === "user.phone";
     }
 
-    function getSortableValue(order: Order, field: SortableField): string | number {
+    function getSortableValue(order: Order, field: SortableField) {
         if (isNestedField(field)) {
-            switch (field) {
-                case "user.email":
-                    return order.user?.email ?? "";
-                case "user.phone":
-                    return order.user?.phone ?? "";
-            }
+            return field === "user.email" ? order.user?.email ?? "" : order.user?.phone ?? "";
         }
-
-        return order[field] as string | number;
+        return order[field] ?? "";
     }
 
     function sortOrders(orders: Order[], field: SortableField, asc: boolean): Order[] {
@@ -73,28 +96,32 @@ const OrdersPage: React.FC = () => {
             const valB = getSortableValue(b, field);
 
             if (field === "createdAt") {
-                const dateA = new Date(valA as string).getTime();
-                const dateB = new Date(valB as string).getTime();
-                return asc ? dateA - dateB : dateB - dateA;
+                return asc
+                    ? new Date(String(valA)).getTime() - new Date(String(valB)).getTime()
+                    : new Date(String(valB)).getTime() - new Date(String(valA)).getTime();
             }
 
             if (typeof valA === "number" && typeof valB === "number") {
                 return asc ? valA - valB : valB - valA;
             }
 
-            const strA = String(valA).toLowerCase();
-            const strB = String(valB).toLowerCase();
-            return asc ? strA.localeCompare(strB) : strB.localeCompare(strA);
+            return asc
+                ? String(valA).toLowerCase().localeCompare(String(valB).toLowerCase())
+                : String(valB).toLowerCase().localeCompare(String(valA).toLowerCase());
         });
     }
 
     let filteredOrders = orders.filter((order) => {
         const q = search.trim().toLowerCase();
         const matchesSearch =
-            !q || order.id.toLowerCase().includes(q) || order.customerName.toLowerCase().includes(q);
+            !q ||
+            order.id.toLowerCase().includes(q) ||
+            order.customerName.toLowerCase().includes(q) ||
+            order.user?.email?.toLowerCase().includes(q) ||
+            order.user?.phone?.toLowerCase().includes(q);
         const matchesStatus = !filterStatus || order.status === filterStatus;
         const matchesMinAmount =
-            filterMinTotalAmount === "" || order.total >= filterMinTotalAmount;
+            filterMinTotalAmount === "" || (order.total ?? 0) >= filterMinTotalAmount;
         return matchesSearch && matchesStatus && matchesMinAmount;
     });
 
@@ -109,17 +136,11 @@ const OrdersPage: React.FC = () => {
     );
 
     const toggleSelectAll = () => {
-        if (selectedIds.length === paginatedOrders.length && paginatedOrders.length > 0) {
-            setSelectedIds([]);
-        } else {
-            setSelectedIds(paginatedOrders.map((o) => o.id));
-        }
+        setSelectedIds(selectedIds.length === paginatedOrders.length ? [] : paginatedOrders.map(o => o.id));
     };
 
     const toggleSelectId = (id: string) => {
-        setSelectedIds((prev) =>
-            prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
-        );
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
     };
 
     const confirmDelete = (id: string) => {
@@ -136,33 +157,19 @@ const OrdersPage: React.FC = () => {
     };
 
     const executeDelete = async () => {
-        if (deleteTargetId === null) return;
-
+        if (!deleteTargetId) return;
         try {
-            let successMessage = "";
             if (deleteTargetId === "bulk") {
-                const deleteRequests = selectedIds.map((id) =>
-                    fetch(`http://localhost:5000/api/orders/${id}`, { method: "DELETE" })
-                );
-                const responses = await Promise.all(deleteRequests);
-                const allOk = responses.every((res) => res.ok);
-                if (!allOk) throw new Error("Some orders could not be deleted.");
-
-                setOrders((prev) => prev.filter((o) => !selectedIds.includes(o.id)));
+                await Promise.all(selectedIds.map(id => deleteOrder(id)));
+                setOrders(prev => prev.filter(o => !selectedIds.includes(o.id)));
                 setSelectedIds([]);
-                successMessage = `${selectedIds.length} orders deleted successfully.`;
+                setFeedbackMessage(`${selectedIds.length} orders deleted successfully.`);
             } else {
-                const res = await fetch(`http://localhost:5000/api/orders/${deleteTargetId}`, {
-                    method: "DELETE",
-                });
-                if (!res.ok) throw new Error("Order deletion failed.");
-
-                setOrders((prev) => prev.filter((o) => o.id !== deleteTargetId));
-                setSelectedIds((prev) => prev.filter((id) => id !== deleteTargetId));
-                successMessage = "Order deleted successfully.";
+                await deleteOrder(deleteTargetId);
+                setOrders(prev => prev.filter(o => o.id !== deleteTargetId));
+                setSelectedIds(prev => prev.filter(id => id !== deleteTargetId));
+                setFeedbackMessage("Order deleted successfully.");
             }
-
-            setFeedbackMessage(successMessage);
             setFeedbackType("success");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "An unexpected error occurred.";
@@ -179,26 +186,38 @@ const OrdersPage: React.FC = () => {
         }
     };
 
-    const handleSave = (order: Order) => {
-        if (modalType === "add") {
-            setOrders([order, ...orders]);
-        } else {
-            setOrders(orders.map((o) => (o.id === order.id ? order : o)));
+    const handleSave = async (order: Order) => {
+        try {
+            let savedOrder: Order;
+            if (modalType === "add") {
+                savedOrder = await addOrder(order);
+                setOrders([savedOrder, ...orders]);
+            } else {
+                savedOrder = await updateOrder(order.id, order);
+                setOrders(orders.map(o => o.id === savedOrder.id ? savedOrder : o));
+            }
+            setShowModal(false);
+            setFeedbackMessage("Order saved successfully.");
+            setFeedbackType("success");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "An unexpected error occurred.";
+            setFeedbackMessage(`Save failed: ${message}`);
+            setFeedbackType("error");
+        } finally {
+            setTimeout(() => {
+                setFeedbackMessage(null);
+                setFeedbackType(null);
+            }, 3000);
         }
-        setShowModal(false);
-        setFeedbackMessage("Order saved successfully.");
-        setFeedbackType("success");
     };
 
     const onSortClick = (field: SortableField) => {
-        if (sortField === field) {
-            setSortAsc(!sortAsc);
-        } else {
+        if (sortField === field) setSortAsc(!sortAsc);
+        else {
             setSortField(field);
             setSortAsc(true);
         }
     };
-
 
     const goToPage = (page: number) => {
         if (page < 1 || page > pageCount) return;
@@ -206,10 +225,48 @@ const OrdersPage: React.FC = () => {
         setSelectedIds([]);
     };
 
+    if (user?.role !== 'ADMIN') {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-accent font-semibold text-lg">
+                    You do not have permission to access this page.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="w-full h-full flex flex-col">
             <Header />
             <div className="p-8 bg-primary-bg text-primary-text font-sans">
+                {/* Orders Statistics */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-secondary-text mb-1">Total Orders</div>
+                        <div className="text-2xl font-bold text-primary-text">{totalOrders}</div>
+                    </div>
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-status-neutral mb-1">Pending Orders</div>
+                        <div className="text-2xl font-bold text-status-neutral">{pendingOrders}</div>
+                    </div>
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-accent mb-1">Processing Orders</div>
+                        <div className="text-2xl font-bold text-accent">{processingOrders}</div>
+                    </div>
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-accent-alt mb-1">Shipped Orders</div>
+                        <div className="text-2xl font-bold text-accent-alt">{shippedOrders}</div>
+                    </div>
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-status-positive mb-1">Delivered Orders</div>
+                        <div className="text-2xl font-bold text-status-positive">{deliveredOrders}</div>
+                    </div>
+                    <div className="bg-secondary-bg p-5 rounded-2xl shadow flex flex-col items-center">
+                        <div className="text-sm text-status-negative mb-1">Cancelled Orders</div>
+                        <div className="text-2xl font-bold text-status-negative">{cancelledOrders}</div>
+                    </div>
+                </div>
+
                 {/* Filters */}
                 <div className="flex flex-col md:flex-row gap-4 mb-6 flex-wrap">
                     <input
@@ -387,6 +444,7 @@ const OrdersPage: React.FC = () => {
                                         <td className="px-2 py-2">
                                             <OrderStatusBadge status={order.status || "UNKNOWN"} />
                                         </td>
+
                                         <td className="px-2 py-2 font-bold text-primary-text">
                                             {typeof order.total === "number"
                                                 ? `$${order.total.toFixed(2)}`
@@ -396,14 +454,11 @@ const OrdersPage: React.FC = () => {
                                             <button
                                                 title="Edit"
                                                 className="text-yellow-400 hover:text-yellow-500"
-                                                onClick={() => {
-                                                    setModalType("edit");
-                                                    setCurrentOrder(order);
-                                                    setShowModal(true);
-                                                }}
+                                                onClick={() => handleEditClick(order)}
                                             >
                                                 <FontAwesomeIcon icon={faEdit} className="text-xl" />
                                             </button>
+
                                             <button
                                                 title="Delete"
                                                 className="text-red-600 hover:text-red-700"
@@ -427,7 +482,6 @@ const OrdersPage: React.FC = () => {
                 />
             </div>
 
-            {/* Modals */}
             {showModal && (
                 <OrderModal
                     type={modalType}
@@ -435,6 +489,7 @@ const OrdersPage: React.FC = () => {
                     onSave={handleSave}
                     onClose={() => setShowModal(false)}
                     allStatuses={orderStatuses}
+                    allAddresses={allAddresses} // اینجا پاس میشه
                 />
             )}
 

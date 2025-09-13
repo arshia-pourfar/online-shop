@@ -20,8 +20,11 @@ import AnswerReportsModal from "@/components/AdminDashboard/AnswerReportsModal";
 import { getReports, deleteReport, saveReport } from '@/lib/api/reports';
 import { Report } from "../../types/report";
 import { useDebounce } from 'use-debounce';
+import { useAuth } from "@/lib/context/authContext";
 
 export default function ReportsPage() {
+    const { user } = useAuth();
+
     // State Management
     const [reports, setReports] = useState<Report[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -245,9 +248,19 @@ export default function ReportsPage() {
     if (error) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-primary-bg p-4 font-sans">
-                <div className="text-red-500 font-semibold p-4 border rounded-md bg-secondary-bg shadow-lg">
+                <div className="text-accent font-semibold p-4 border rounded-md bg-secondary-bg shadow-lg">
                     Error: {error}. Please ensure your backend server is running and accessible at http://localhost:5000.
                 </div>
+            </div>
+        );
+    }
+
+    if (user?.role !== 'ADMIN') {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-accent font-semibold text-lg">
+                    You do not have permission to access this page.
+                </p>
             </div>
         );
     }

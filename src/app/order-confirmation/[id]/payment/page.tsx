@@ -37,17 +37,6 @@ export default function PaymentSuccessPage() {
                     setAddress(addr);
                 }
 
-                // 3️⃣ آپدیت وضعیت سفارش (مثلاً PENDING -> PROCESSING)
-                if (data.status === "PENDING") {
-                    await fetch(`${API_BASE}/api/orders/${id}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ status: "PROCESSING" })
-                    });
-                    // وضعیت جدید رو در state هم ست می‌کنیم
-                    setOrder(prev => prev ? { ...prev, status: "PROCESSING" } : prev);
-                }
-
             } catch (error) {
                 console.error("خطا در گرفتن سفارش یا آدرس:", error);
             } finally {
@@ -57,6 +46,25 @@ export default function PaymentSuccessPage() {
 
         fetchOrderAndAddress();
     }, [id]);
+
+    // ✅ تغییر وضعیت فقط بعد از تایید پرداخت (یعنی وقتی سفارش لود شد و PENDING بود)
+    useEffect(() => {
+        const updateStatus = async () => {
+            if (order && order.status === "PENDING") {
+                try {
+                    await fetch(`${API_BASE}/api/orders/${order.id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: "PROCESSING" }),
+                    });
+                    setOrder(prev => prev ? { ...prev, status: "PROCESSING" } : prev);
+                } catch (err) {
+                    console.error("خطا در تغییر وضعیت سفارش:", err);
+                }
+            }
+        };
+        updateStatus();
+    }, [order]);
 
     const formatAddress = (addr: Address | null) => {
         if (!addr) return "Not specified";

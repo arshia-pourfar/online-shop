@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Order, OrderItem } from "../../types/order";
+import { Address } from "types/address";
+import { addOrder, updateOrder } from "@/lib/api/orders";
 
 interface OrderModalProps {
     type: "add" | "edit" | "view";
@@ -8,37 +10,49 @@ interface OrderModalProps {
     onSave: (order: Order) => void;
     onClose: () => void;
     allStatuses: string[];
+    allAddresses: Address[];
 }
 
-export default function OrderModal(
-    {
-        type,
-        order,
-        onSave,
-        onClose,
-        allStatuses,
-    }: OrderModalProps) {
+export default function OrderModal({
+    type,
+    order,
+    onSave,
+    onClose,
+    allStatuses,
+    allAddresses,
+}: OrderModalProps) {
     const [formData, setFormData] = useState<Partial<Order>>({
         customerName: "",
         createdAt: new Date().toISOString().split("T")[0],
         total: 0,
-        status: "PENDING",
-        address: "",
+        status: allStatuses?.[0] ?? "PENDING",
         items: [],
+        addressId: allAddresses?.[0]?.id ?? 1,
     });
 
     const [feedbackMessage, setFeedbackMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    // محاسبه توتال
+    const calculateTotal = (items: OrderItem[]) =>
+        items.reduce(
+            (sum, item) => sum + (item.product?.price ?? 0) * (item.quantity ?? 0),
+            0
+        );
+
+
+    // وقتی سفارش برای ادیت لود میشه
     useEffect(() => {
         if (type === "edit" && order) {
             setFormData({
                 customerName: order.customerName,
                 createdAt: order.createdAt.split("T")[0],
-                total: order.total,
+                total: calculateTotal(order.items || []),
                 status: order.status,
-                address: order.address,
                 items: order.items || [],
+                userId: order.userId,
+                addressId:
+                    order.address?.id || order.addressId || allAddresses[0]?.id || 1,
             });
         } else if (type === "add") {
             setFormData({
@@ -46,25 +60,35 @@ export default function OrderModal(
                 createdAt: new Date().toISOString().split("T")[0],
                 total: 0,
                 status: allStatuses[0] || "PENDING",
-                address: "",
                 items: [],
+                addressId: allAddresses[0]?.id || 1,
             });
         }
         setFeedbackMessage("");
-    }, [type, order, allStatuses]);
+    }, [type, order, allStatuses, allAddresses]);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value } = e.target;
+    // هر وقت آیتم‌ها تغییر کردن → توتال دوباره محاسبه میشه
+    useEffect(() => {
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "totalAmount" ? Number(value) : value,
+            total: calculateTotal(prev.items || []),
         }));
+    }, [formData.items]);
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === "addressId" ? Number(value) : value,
+        }));
+
         setFeedbackMessage("");
     };
 
-    // فقط یک نمایش ساده برای آیتم‌ها (امکان ویرایش آیتم‌ها اضافه نشده)
+    // نمایش آیتم‌ها
     const renderItems = () => {
         if (!formData.items || formData.items.length === 0)
             return <p className="text-gray-400">No items added.</p>;
@@ -74,10 +98,8 @@ export default function OrderModal(
                 key={idx}
                 className="flex justify-between bg-secondary-bg rounded-xl p-3 mb-2 text-primary-text"
             >
-                <span>
-                    {item.productName} (x{item.quantity})
-                </span>
-                <span>${item.price.toFixed(2)}</span>
+                <span>{item.product?.name ?? "Unknown"} (x{item.quantity ?? 0})</span>
+                <span>${((item.product?.price ?? 0) * (item.quantity ?? 0)).toFixed(2)}</span>
             </div>
         ));
     };
@@ -85,7 +107,12 @@ export default function OrderModal(
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.customerName?.trim() || !formData.createdAt || !formData.status) {
+        if (
+            !formData.customerName?.trim() ||
+            !formData.createdAt ||
+            !formData.status ||
+            !formData.addressId
+        ) {
             setFeedbackMessage("Please fill in all required fields.");
             return;
         }
@@ -94,108 +121,100 @@ export default function OrderModal(
         setFeedbackMessage("");
 
         try {
-            const savedOrder: Order = {
-                id: order?.id || Date.now().toString(),
-                userId: order?.userId || "",
-                total: formData.total ?? 0,
-                createdAt: order?.createdAt || new Date().toISOString(),
+            const selectedAddress = allAddresses.find(
+                (a) => a.id === formData.addressId
+            );
+
+            const payload: Partial<Order> = {
                 customerName: formData.customerName.trim(),
+                createdAt: formData.createdAt,
                 status: formData.status,
-                address: formData.address || "",
-                addressId: order?.addressId || 1,
-                items: formData.items || [],
+                total: calculateTotal(formData.items || []),
+                items: formData.items,
+                addressId: selectedAddress?.id,
             };
 
+            let savedOrder: Order;
+            if (type === "add") {
+                savedOrder = await addOrder(payload);
+            } else {
+                savedOrder = await updateOrder(order!.id, payload);
+            }
+
             onSave(savedOrder);
-            onClose();
-        } catch {
+        } catch (err) {
+            console.error(err);
             setFeedbackMessage("Failed to save order. Please try again.");
         } finally {
             setIsLoading(false);
         }
     };
 
-
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 py-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 py-4">
             <div className="bg-secondary-bg rounded-xl p-8 w-full max-w-lg max-h-[90vh] overflow-auto shadow-xl">
                 <h2 className="text-2xl font-bold text-accent mb-6">
                     {type === "add" ? "Add New Order" : `Edit Order #${order?.id}`}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Customer Name */}
                     <div>
-                        <label
-                            htmlFor="customerName"
-                            className="block mb-2 text-sm font-semibold text-secondary-text"
-                        >
+                        <label className="block mb-2 text-sm font-semibold text-secondary-text">
                             Customer Name
                         </label>
                         <input
                             type="text"
-                            id="customerName"
                             name="customerName"
                             value={formData.customerName || ""}
                             onChange={handleChange}
-                            placeholder="Enter customer name"
                             required
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text"
                         />
                     </div>
 
+                    {/* Order Date */}
                     <div>
-                        <label
-                            htmlFor="orderDate"
-                            className="block mb-2 text-sm font-semibold text-secondary-text"
-                        >
+                        <label className="block mb-2 text-sm font-semibold text-secondary-text">
                             Order Date
                         </label>
                         <input
                             type="date"
-                            id="orderDate"
-                            name="orderDate"
+                            name="createdAt"
                             value={formData.createdAt || ""}
                             onChange={handleChange}
                             required
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text"
                         />
                     </div>
 
+                    {/* Total Amount (ReadOnly) */}
                     <div>
-                        <label
-                            htmlFor="totalAmount"
-                            className="block mb-2 text-sm font-semibold text-secondary-text"
-                        >
+                        <label className="block mb-2 text-sm font-semibold text-secondary-text">
                             Total Amount
                         </label>
                         <input
                             type="number"
-                            id="totalAmount"
-                            name="totalAmount"
+                            name="total"
                             value={formData.total || 0}
-                            onChange={handleChange}
-                            min={0}
-                            step={0.01}
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
+                            readOnly
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-gray-800 text-primary-text"
                         />
                     </div>
 
+                    {/* Status */}
                     <div>
-                        <label
-                            htmlFor="status"
-                            className="block mb-2 text-sm font-semibold text-secondary-text"
-                        >
+                        <label className="block mb-2 text-sm font-semibold text-secondary-text">
                             Status
                         </label>
                         <select
-                            id="status"
                             name="status"
-                            value={formData.status || "PENDING"}
+                            value={formData.status || allStatuses[0]}
                             onChange={handleChange}
                             required
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text"
                         >
-                            {["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map((st) => (
+                            {allStatuses.map((st) => (
                                 <option key={st} value={st}>
                                     {st}
                                 </option>
@@ -203,50 +222,58 @@ export default function OrderModal(
                         </select>
                     </div>
 
-                    <div>
-                        <label
-                            htmlFor="address"
-                            className="block mb-2 text-sm font-semibold text-secondary-text"
-                        >
-                            Shipping Address
-                        </label>
-                        <textarea
-                            id="address"
-                            name="address"
-                            rows={3}
-                            value={formData.address || "Not Found"}
-                            onChange={handleChange}
-                            placeholder="Enter shipping address"
-                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-accent transition duration-300"
-                        />
-                    </div>
-
+                    {/* Address */}
                     <div>
                         <label className="block mb-2 text-sm font-semibold text-secondary-text">
-                            Order Items (simplified)
+                            Shipping Address
+                        </label>
+                        <select
+                            name="addressId"
+                            value={formData.addressId || allAddresses[0]?.id}
+                            onChange={handleChange}
+                            className="w-full p-4 rounded-xl border border-gray-600 bg-secondary-bg text-primary-text"
+                        >
+                            {allAddresses.map((addr) => (
+                                <option key={addr.id} value={addr.id}>
+                                    {addr.street}, {addr.city}, {addr.postalCode}, {addr.country}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Items */}
+                    <div>
+                        <label className="block mb-2 text-sm font-semibold text-secondary-text">
+                            Order Items
                         </label>
                         <div className="max-h-40 overflow-auto">{renderItems()}</div>
                     </div>
 
+                    {/* Feedback */}
                     {feedbackMessage && (
-                        <p className="text-red-500 font-medium text-sm">{feedbackMessage}</p>
+                        <p className="text-accent font-medium text-sm">{feedbackMessage}</p>
                     )}
 
+                    {/* Buttons */}
                     <div className="flex justify-end gap-4 pt-4">
                         <button
                             type="button"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="px-5 py-3 rounded-xl bg-gray-600 hover:bg-gray-700 text-white transition duration-300 ease-in-out"
+                            className="px-5 py-3 rounded-xl bg-gray-600 text-white"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-5 py-3 rounded-xl bg-accent hover:bg-accent-dark text-white transition duration-300 ease-in-out"
+                            className="px-5 py-3 rounded-xl bg-accent text-white"
                         >
-                            {isLoading ? "Saving..." : type === "add" ? "Create Order" : "Save Changes"}
+                            {isLoading
+                                ? "Saving..."
+                                : type === "add"
+                                    ? "Create Order"
+                                    : "Save Changes"}
                         </button>
                     </div>
                 </form>

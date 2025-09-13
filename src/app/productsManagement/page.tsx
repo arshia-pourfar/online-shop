@@ -19,8 +19,10 @@ import {
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import ProductStatusBadge from "@/components/AdminDashboard/ProductStatusBadge";
+import { useAuth } from "@/lib/context/authContext";
 
 export default function ProductsPage() {
+    const { user } = useAuth();
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [statuses, setStatuses] = useState<string[]>([]);
@@ -223,6 +225,16 @@ export default function ProductsPage() {
         setCurrentPage(page);
         setSelectedIds([]);
     };
+
+    if (user?.role !== 'ADMIN') {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-accent font-semibold text-lg">
+                    You do not have permission to access this page.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full h-full flex flex-col">

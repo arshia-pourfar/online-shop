@@ -11,7 +11,7 @@ const inter = Inter({
   display: "swap",
 });
 export const metadata = {
-  title: "Order Dashboard",
+  title: "Online Shop",
   description: "A dashboard for managing orders",
 };
 

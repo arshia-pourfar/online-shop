@@ -4,6 +4,7 @@ import "../styles/globals.css";
 
 import { Inter } from "next/font/google";
 import { CartProvider } from "@/lib/context/cartContext";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.className} bg-[var(--color-primary-bg)] text-[var(--color-primary-text)] overflow-hidden antialiased`}
       >
+
         <AuthProvider>
+
           <div className="flex h-[100dvh] w-screen overflow-y-auto overflow-x-hidden">
             <Navbar />
             <div className="md:pl-20"></div>
@@ -33,12 +36,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 width: "calc(100vw - 80px)",
               }}
             >
+
               <CartProvider>
                 {children}
               </CartProvider>
             </main>
           </div>
         </AuthProvider>
+        <Script src="/ai-tracker.js" strategy="afterInteractive" />
+
       </body>
     </html>
   );

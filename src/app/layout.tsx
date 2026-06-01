@@ -45,6 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
         <Script src="/ai-tracker.js" strategy="afterInteractive" />
 
+        <Script src="https://assist-chatbot-arshia-pourfar.vercel.app/widget.js"
+          data-bot-id="fd3e49f4-c549-423e-9b5e-d7907d6280dc"
+          data-api-base-url="https://assist-chatbot-arshia-pourfar.vercel.app"></Script>
       </body>
     </html>
   );

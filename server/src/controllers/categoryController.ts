@@ -7,10 +7,12 @@ export const getCategories = async (req: Request, res: Response) => {
         const categories = await prisma.category.findMany();
         res.json(categories);
     } catch (err: unknown) {
-        if (err instanceof Error) {
-            console.error('[getAllCategories]', err.message);
-        }
-        res.status(500).json({ error: 'Failed to get categories' });
+        console.error('[getCategories]', err);
+
+        res.status(500).json({
+            error: 'Failed to get categories',
+            details: err instanceof Error ? err.message : String(err)
+        });
     }
 };
 
